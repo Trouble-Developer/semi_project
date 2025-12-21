@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/header.css" />
+  </head>
+  <body>
+    <header>
+      <section id="header-content-1">
+        <ul id="user">
+          <!-- 로그인 안했을 때 -->
+          <!-- <li><a href="#" id="loginText">로그인</a></li> -->
+          <!-- <li><a href="#" id="signInText">회원가입</a></li> -->
+          <!-- 로그인 했을 때 (일반 유저) -->
+          <!-- <li><b>동근동근</b>님 환영합니다.</li> -->
+          <!-- <li><a href="#" id="loginText">로그아웃</a></li> -->
+          <!-- <li><a href="#" id="signInText">마이페이지</a></li> -->
+          <!-- 로그인 했을 때 (관리자) -->
+          <li><b>관리자님</b> 환영합니다.</li>
+          <li><a href="#" id="loginText">로그아웃</a></li>
+        </ul>
+      </section>
+      <div id="header">
+        <!-- home으로 -> "/" -->
+        <a href="../메인페이지/main.html">
+          <img src="../logo.jpg" alt="logo" id="logo" />
+        </a>
+        <nav id="nav">
+          <ul id="navigation">
+            <!-- <th:block th:each="boardType : ${application.boardTypeList}" -->
+            <!-- <a th:href="@{/board/{boardCode}(boardCode=${boardType.boardCode})}"
+          th:text="${boardType.boardName}"> 게시판이름</a>-->
+            <li class="navList">
+              <a href="../자유게시판/freeBoard.html" id="freeBoard"
+                >자유 게시판</a
+              >
+            </li>
+            <li class="navList">
+              <a href="#" id="reviewBoard">정보 게시판</a>
+            </li>
+            <li class="navList">
+              <a href="../봉사후기/volReview.html" id="notice">봉사후기</a>
+            </li>
+            <li class="navList">
+              <a href="#" id="customerSupport">공지사항</a>
+            </li>
+            <li class="navList">
+              <a href="#" id="admin">고객지원</a>
+            </li>
+            <!-- 로그인한 회원이 관리자일 때 -->
+            <!-- <li class="navList">
+              <a href="#" id="infoBoard">관리자</a>
+            </li> -->
+          </ul>
+        </nav>
+        <div></div>
+      </div>
+    </header>
+  </body>
+</html>
