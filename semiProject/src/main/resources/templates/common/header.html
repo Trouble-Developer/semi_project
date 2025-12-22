@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -32,27 +32,17 @@
             <!-- <th:block th:each="boardType : ${application.boardTypeList}" -->
             <!-- <a th:href="@{/board/{boardCode}(boardCode=${boardType.boardCode})}"
           th:text="${boardType.boardName}"> 게시판이름</a>-->
-            <li class="navList">
-              <a href="../자유게시판/freeBoard.html" id="freeBoard"
-                >자유 게시판</a
-              >
-            </li>
-            <li class="navList">
-              <a href="#" id="reviewBoard">정보 게시판</a>
-            </li>
-            <li class="navList">
-              <a href="../봉사후기/volReview.html" id="notice">봉사후기</a>
-            </li>
-            <li class="navList">
-              <a href="#" id="customerSupport">공지사항</a>
-            </li>
-            <li class="navList">
-              <a href="#" id="admin">고객지원</a>
-            </li>
-            <!-- 로그인한 회원이 관리자일 때 -->
-            <!-- <li class="navList">
-              <a href="#" id="infoBoard">관리자</a>
-            </li> -->
+            <th:block th:each="boardType : ${application.boardTypeList}">
+              <li class="navList">
+                <a
+                  th:href="@{/board/{boardCode}(boardCode=${boardType.boardCode})}"
+                  th:text="${boardType.boardName}"
+                  id="freeBoard"
+                  >게시판 글 타입</a
+                >
+              </li>
+              <!-- 관리자는 추후 회원관리 기능 구현되면 추가할 것 -->
+            </th:block>
           </ul>
         </nav>
         <div></div>
