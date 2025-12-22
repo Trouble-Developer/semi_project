@@ -4,10 +4,17 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.session.RowBounds;
+
+import edu.kh.project.board.model.dto.Board;
 
 @Mapper
 public interface BoardMapper {
 
 	List<Map<String, Object>> selectBoardTypeList();
+
+	int getFreeBoardListCount(int boardCode);
+
+	List<Board> getFreeBoardList(int boardCode, RowBounds rowBounds);
 
 }

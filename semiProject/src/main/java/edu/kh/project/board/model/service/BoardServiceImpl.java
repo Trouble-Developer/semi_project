@@ -8,7 +8,6 @@ import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import edu.kh.project.board.controller.BoardController;
 import edu.kh.project.board.model.dto.Board;
 import edu.kh.project.board.model.dto.Pagination;
 import edu.kh.project.board.model.mapper.BoardMapper;
@@ -17,15 +16,9 @@ import edu.kh.project.board.model.mapper.BoardMapper;
 @Transactional(rollbackFor = Exception.class)
 public class BoardServiceImpl implements BoardService{
 
-    private final BoardController boardController;
+    
 	@Autowired
 	private BoardMapper mapper;
-
-
-    BoardServiceImpl(BoardController boardController) {
-        this.boardController = boardController;
-    }
-	
 	
 	/**
 	 * dev.안재훈
@@ -54,8 +47,9 @@ public class BoardServiceImpl implements BoardService{
 		
 		Map<String, Object> map = new HashMap<>();
 		
-		
-		return null;
+		map.put("pagination", pagination);
+		map.put("freeBoardList", boardList);
+		return map;
 	}
 	
 }
