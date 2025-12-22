@@ -220,15 +220,15 @@ sendAuthKeyBtn.addEventListener("click", () => {
     clearInterval(authTimer);
 
     fetch("/email/signup", {
-        method: "POST",
-        headers: {"Content-Type" : "application/json"},
-        body: memberEmail.value
-    })
-    .then(resp => resp.text())
-    .then(result => {
-        if(result == 1) console.log("인증번호 발송 성공");
-        else console.log("인증번호 발송 실패");
-    });
+    method: "POST",
+    headers: {"Content-Type" : "text/plain; charset=UTF-8"},
+    body: memberEmail.value
+})
+.then(resp => resp.text())
+.then(result => {
+    if(result == 1) console.log("인증번호 발송 성공");
+    else console.log("인증번호 발송 실패");
+});
 
     authKeyMessage.innerText = initTime;
     authKeyMessage.classList.remove("confirm", "error");
@@ -387,12 +387,12 @@ memberRrn1.addEventListener("input", (e) => {
 
     if(memberRrn1.value.length === 6){
         if(memberRrn2.value.length === 7){
-             checkObj.memberRrn = true;
-             rrnMessage.innerText = "유효한 형식입니다.";
-             rrnMessage.classList.add("confirm");
-             rrnMessage.classList.remove("error");
+            checkObj.memberRrn = true;
+            rrnMessage.innerText = "유효한 형식입니다.";
+            rrnMessage.classList.add("confirm");
+            rrnMessage.classList.remove("error");
         } else {
-             checkObj.memberRrn = false;
+            checkObj.memberRrn = false;
              memberRrn2.focus(); // 앞자리 다 치면 뒷자리로 이동
         }
     } else {
