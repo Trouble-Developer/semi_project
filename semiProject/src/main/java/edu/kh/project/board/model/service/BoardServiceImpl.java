@@ -1,22 +1,61 @@
 package edu.kh.project.board.model.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import edu.kh.project.board.controller.BoardController;
+import edu.kh.project.board.model.dto.Board;
+import edu.kh.project.board.model.dto.Pagination;
 import edu.kh.project.board.model.mapper.BoardMapper;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class BoardServiceImpl implements BoardService{
+
+    private final BoardController boardController;
 	@Autowired
 	private BoardMapper mapper;
+
+
+    BoardServiceImpl(BoardController boardController) {
+        this.boardController = boardController;
+    }
 	
+	
+	/**
+	 * dev.안재훈
+	 * 게시판 종류별 데이터 가져오기
+	 */
 	public List<Map<String, Object>> selectBoardTypeList(){
 		return mapper.selectBoardTypeList();
+	}
+
+	/**
+	 * dev. 안재훈
+	 * 자유게시판 list 가져오기
+	 */
+	@Override
+	public Map<String, Object> getFreeBoardList(int boardCode, int cp) {
+		int listCount = mapper.getFreeBoardListCount(boardCode);
+		
+		Pagination pagination = new Pagination(cp, listCount);
+		
+		int limit = pagination.getLimit();
+		int offset = (cp - 1) * limit;
+		
+		RowBounds rowBounds = new RowBounds(offset, limit);
+		
+		List<Board> boardList = mapper.getFreeBoardList(boardCode, rowBounds);
+		
+		Map<String, Object> map = new HashMap<>();
+		
+		
+		return null;
 	}
 	
 }

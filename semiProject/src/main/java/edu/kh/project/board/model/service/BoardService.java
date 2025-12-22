@@ -6,4 +6,6 @@ import java.util.Map;
 public interface BoardService {
 
 	List<Map<String, Object>> selectBoardTypeList();
+
+	Map<String, Object> getFreeBoardList(int boardCode, int cp);
 }
