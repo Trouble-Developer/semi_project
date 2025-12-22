@@ -1,24 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="edu.kh.project.member.model.mapper.MemberMapper">
-	<resultMap type="Member" id="member_rm">
-		<id property="memberNo" column="MEMBER_NO"/>
-
-		<result property="memberId" column="MEMBER_ID"/>
-		<result property="memberPw" column="MEMBER_PW"/>
-		<result property="memberNickname" column="MEMBER_NICKNAME"/>
-		<result property="memberEmail" column="MEMBER_EMAIL"/>
-		<result property="memberRrn" column="MEMBER_RRN"/>
-		<result property="memberTel" column="MEMBER_TEL"/>
-		<result property="memberAddress" column="MEMBER_ADDRESS"/>
-		
-		<result property="profileImage" column="PROFILE_IMG"/>
-		<result property="enrollDate" column="ENROLL_DATE"/>
-		<result property="memberDelFl" column="MEMBER_DEL_FL"/>
-		<result property="authority" column="AUTHORITY"/>
-	</resultMap>
-
-
+	
 	<select id="checkId" resultType="_int">
 		SELECT COUNT(*) 
 		FROM "MEMBER"

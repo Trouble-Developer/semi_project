@@ -21,7 +21,7 @@ public class Member {
     private String memberRrn;       // MEMBER_RRN (주민번호 전체: 000000-1234567)
     private String memberTel;       // MEMBER_TEL
     private String memberAddress;   // MEMBER_ADDRESS (주소 전체)
-    private String profileImage;    // PROFILE_IMG
+    private String profileImg;    	// PROFILE_IMG
     private String enrollDate;      // ENROLL_DATE
     private String memberDelFl;     // MEMBER_DEL_FL
     private int authority;          // AUTHORITY
