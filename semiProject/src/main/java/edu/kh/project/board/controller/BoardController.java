@@ -33,20 +33,20 @@ public class BoardController {
 	@GetMapping("1")
 	public String getFreeBoardList(@RequestParam(value = "cp", required = false, defaultValue = "1") int cp, Model model,
 			Map<String, Object> paramMap) {
-//		int boardCode = 1;
-//		
-//		Map<String, Object> map = null;
-//		
-//		if(paramMap.get("key") == null) {
-//			// 검색창이 아닌 경우
-//			map = service.getFreeBoardList(boardCode, cp);
-//		} else {
-//			
-//		}
-//		
-//		model.addAttribute("pagination", map.get("pagination"));
-//		model.addAttribute("freeBoardList", map.get("freeBoardList"));
-//		
+		int boardCode = 1;
+		
+		Map<String, Object> map = null;
+		
+		if(paramMap.get("key") == null) {
+			// 검색창이 아닌 경우
+			map = service.getFreeBoardList(boardCode, cp);
+		} else {
+			
+		}
+		
+		model.addAttribute("pagination", map.get("pagination"));
+		model.addAttribute("freeBoardList", map.get("freeBoardList"));
+		model.addAttribute("boardCode", boardCode);
 		return "board/freeBoardList";
 	}
 }
