@@ -22,6 +22,7 @@
         -->
         <button id="write-btn">글작성</button>
       </div>
+      <!-- 게시글이 없을 때 -->
       <div id="content">
         <table id="free-board-table">
           <thead id="free-board-head">
@@ -33,33 +34,44 @@
             <th>좋아요</th>
           </thead>
           <tbody id="free-board-body">
-            <tr>
-              <td>5</td>
-              <td id="board-title"><a href="#">동근동근 내일 뭐먹을까요</a></td>
-              <td>동근천근만근</td>
-              <td>2025-12-09</td>
-              <td>343</td>
-              <td>200</td>
-            </tr>
+            <th:block
+              th:each="freeBoard : ${freeBoardList}"
+              th:object="${freeBoard}"
+            >
+              <tr>
+                <td th:text="*{boardNo}">게시판번호</td>
+                <td id="board-title">
+                  <a
+                    th:unless="${param.key}"
+                    th:href="@{/board/{boardCode}/{boardNo} (boardCode = ${boardCode}, boardNo=*{boardNo}, cp=${pagination.currentPage})}"
+                    th:text="*{boardTitle}"
+                    >게시판 제목</a
+                  >
+                </td>
+                <td th:text="*{memberNickname}">작성자 닉네임</td>
+                <td th:text="*{boardWriteDate}">작성일</td>
+                <td th:text="*{readCount}">조회수</td>
+                <td th:text="*{likeCount}">좋아요수</td>
+              </tr>
+            </th:block>
           </tbody>
         </table>
       </div>
       <div id="page">
-        <ul>
-          <li><a href="#"><<</a></li>
-          <li><a href="#"><</a></li>
-          <li id="curr-page">1</li>
-          <li><a href="#">2</a></li>
-          <li><a href="#">3</a></li>
-          <li><a href="#">4</a></li>
-          <li><a href="#">5</a></li>
-          <li><a href="#">6</a></li>
-          <li><a href="#">7</a></li>
-          <li><a href="#">8</a></li>
-          <li><a href="#">9</a></li>
-          <li><a href="#">10</a></li>
-          <li><a href="#">></a></li>
-          <li><a href="#">>></a></li>
+        <ul th:object="${pagination}">
+          <li>
+            <a href="/board/{boardCode}(boardCode=${boardCode}, cp=1)"
+              >&lt;&lt;</a
+            >
+          </li>
+          <li><a href="#">&lt;</a></li>
+          <!-- <li id="curr-page">1</li> -->
+          <th:block th:each="i : *{#numbers.sequence(startPage, endPage)}">
+            <li th:if="${i} == *{currentPage}" class="curr-page"></li>
+            <li th:unless="${i} == *{currentPage}"></li>
+          </th:block>
+          <li><a href="#">&gt;</a></li>
+          <li><a href="#">&gt;&gt;</a></li>
         </ul>
       </div>
       <div id="search">
@@ -79,8 +91,9 @@
       </div>
     </div>
     <th:block th:replace="~{common/footer}"></th:block>
-    <script th:inline="javascript">
+
+    <!-- <script th:inline="javascript">
       const boardCode = /*[[${boardCode}]]*/ "게시판 코드 번호";
-    </script>
+    </script> -->
   </body>
 </html>
