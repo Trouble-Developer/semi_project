@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -31,22 +32,40 @@ public class BoardController {
 	 * @return
 	 */
 	@GetMapping("1")
-	public String getFreeBoardList(@RequestParam(value = "cp", required = false, defaultValue = "1") int cp, Model model,
-			Map<String, Object> paramMap) {
+	public String getFreeBoardList(@RequestParam(value = "cp", required = false, defaultValue = "1") int cp,
+			Model model, @RequestParam Map<String, Object> paramMap) {
 		int boardCode = 1;
-		
+
 		Map<String, Object> map = null;
-		
-		if(paramMap.get("key") == null) {
+
+		if (paramMap.get("key") == null) {
 			// 검색창이 아닌 경우
 			map = service.getFreeBoardList(boardCode, cp);
 		} else {
-			
+			// 검색창으로 검색한 경우
+			paramMap.put("boardCode", boardCode);
+
+			map = service.searchFreeBoardList(paramMap, cp);
 		}
-		
+
 		model.addAttribute("pagination", map.get("pagination"));
 		model.addAttribute("freeBoardList", map.get("freeBoardList"));
 		model.addAttribute("boardCode", boardCode);
+
 		return "board/freeBoardList";
+	}
+
+	/**
+	 * dev. 안재훈 1. 자유 게시판 detail
+	 * 
+	 * @param boardNo
+	 * @param cp
+	 * @return
+	 */
+	@GetMapping("1/{boardNo}")
+	public String freeBoardDetil(@PathVariable("boardNo") int boardNo,
+			@RequestParam(value = "cp", required = false, defaultValue = "1") int cp) {
+
+		return "";
 	}
 }

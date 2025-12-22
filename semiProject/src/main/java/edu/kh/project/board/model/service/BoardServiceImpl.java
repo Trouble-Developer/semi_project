@@ -51,5 +51,24 @@ public class BoardServiceImpl implements BoardService{
 		map.put("freeBoardList", boardList);
 		return map;
 	}
-	
+
+	@Override
+	public Map<String, Object> searchFreeBoardList(Map<String, Object> paramMap, int cp) {
+		int listCount = mapper.getSearchCount(paramMap);
+		
+		Pagination pagination = new Pagination(cp, listCount);
+		
+		int limit = pagination.getLimit();
+		int offset = (cp - 1) * limit;
+		
+		RowBounds rowBounds = new RowBounds(offset, limit);
+		
+		List<Board> freeBoardList = mapper.getFreeList(paramMap, rowBounds);
+		
+		Map<String, Object> map = new HashMap<>();
+		map.put("pagination", pagination);
+		map.put("freeBoardList", freeBoardList);
+		
+		return map;
+	}
 }
