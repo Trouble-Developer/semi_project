@@ -21,12 +21,22 @@ public class EmailController {
     @ResponseBody
     @PostMapping("signup")
     public int signup(@RequestBody String email) {
-        return service.sendEmail("signup", email);
+        // 서비스는 인증키(String)를 돌려줌
+        String authKey = service.sendEmail("signup", email);
+        
+        // 인증키가 null이 아니면 성공(1), null이면 실패(0) 반환
+        
+        if(authKey != null) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 
     @ResponseBody
     @PostMapping("checkAuthKey")
-    public int checkAuthKey(@RequestBody Map<String, Object> paramMap) {
+    public int checkAuthKey(@RequestBody Map<String, String> paramMap) {
+        // 여기도 Service에 맞춰서 <String, Object> -> <String, String>으로 변경
         return service.checkAuthKey(paramMap);
     }
 }
