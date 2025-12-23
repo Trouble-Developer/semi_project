@@ -57,7 +57,7 @@
             <p>이전글</p>
             <p>
               <a
-                th:href="@{/board/1/{boardNo}(boardNo=${prevBoard.boardNo}, cp=${cp})}"
+                th:href="@{/board/{boardCode}/{boardNo}(boardCode=${boardCode}, boardNo=${prevBoard.boardNo}, cp=${cp})}"
                 th:text="${prevBoard.boardTitle}"
                 >이전글</a
               >
@@ -69,7 +69,7 @@
             <p>다음글</p>
             <p>
               <a
-                th:href="@{/board/1/{boardNo}(boardNo=${nextBoard.boardNo}, cp=${cp})}"
+                th:href="@{/board/{boardCode}/{boardNo}(boardCode=${boardCode}, boardNo=${nextBoard.boardNo}, cp=${cp})}"
                 th:text="${nextBoard.boardTitle}"
                 >다음글</a
               >
