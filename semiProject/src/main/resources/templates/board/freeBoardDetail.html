@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/common/common.css" />
+    <link rel="stylesheet" href="/css/board/freeBoardDetail.css" />
+  </head>
+  <body>
+    <th:block th:replace="~{common/header}"></th:block>
+    <div id="container">
+      <div id="board-title">
+        <p id="board-title-text">이레네공동생활가정 플로깅 봉사활동</p>
+        <button id="scrab-btn">
+          <img src="" alt="스크랩" />
+        </button>
+      </div>
+      <div id="board-user-info">
+        <div id="user-info">
+          <p>등록자</p>
+          <p>홍윤기짱짱</p>
+        </div>
+        <div id="board-info">
+          <div>
+            <p>작성일</p>
+            <p>2025-12-14</p>
+          </div>
+          <div>
+            <p>조회수</p>
+            <p>103</p>
+          </div>
+        </div>
+      </div>
+      <div id="content">
+        <img src="/images/mainLogo.jpg" alt="" />
+      </div>
+      <div id="btn">
+        <!-- 로그인 했을 때만 활성화 -->
+        <button id="like-btn">좋아요</button>
+        <!-- 본인 글일 때, 즉 로그인한 회원과 게시글의 회원이 같을 때 활성화 -->
+        <button id="update-btn">수정</button>
+        <button id="delete-btn">삭제</button>
+      </div>
+      <div id="page">
+        <div id="before-board">
+          <p>이전글</p>
+          <p><a href="#">플로깅 봉사활동</a></p>
+        </div>
+        <div id="after-board">
+          <p>다음글</p>
+          <p><a href="#">요셉의집 10월 11일 이웃나눔선교회 자장면봉사</a></p>
+        </div>
+      </div>
+      <div id="list-btn">
+        <a href="#" id="list-btn">목록</a>
+      </div>
+    </div>
+    <th:block th:replace="~{common/footer}"></th:block>
+  </body>
+</html>

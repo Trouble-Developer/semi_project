@@ -65,7 +65,11 @@ public class BoardController {
 	@GetMapping("1/{boardNo}")
 	public String freeBoardDetil(@PathVariable("boardNo") int boardNo,
 			@RequestParam(value = "cp", required = false, defaultValue = "1") int cp) {
+		return "board/freeBoardDetail";
+	}
 
-		return "";
+	@GetMapping("3")
+	public String getVolunteerBoardList() {
+		return "board/volunteerReviewList";
 	}
 }
