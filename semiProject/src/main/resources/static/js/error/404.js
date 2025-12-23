@@ -1,6 +1,7 @@
 const errorBtn = document.querySelector("#error-btn");
 const modal = document.querySelector("#modal");
 const closeBtn = document.querySelector("#close-btn");
+const mainBtn = document.querySelector("#main-btn");
 
 errorBtn.addEventListener("click", () => {
 	console.log("click");
@@ -15,3 +16,4 @@ closeBtn.addEventListener("click", () => {
 mainBtn.addEventListener("click", () => {
 	location.href = "/";
 });
+
