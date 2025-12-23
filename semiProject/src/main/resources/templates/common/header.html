@@ -35,7 +35,9 @@
             <th:block th:each="boardType : ${application.boardTypeList}">
               <li class="navList">
                 <a
-                  th:href="@{/board/{boardCode}(boardCode=${boardType.boardCode})}"
+                  th:href="${boardType.boardCode == 6}
+                           ? @{/admin/member}
+                           : @{/board/{boardCode}(boardCode=${boardType.boardCode})}"
                   th:text="${boardType.boardName}"
                   id="freeBoard"
                   >게시판 글 타입</a
