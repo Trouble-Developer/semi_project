@@ -15,7 +15,8 @@ public class ExceptionController {
 	 */
 	@ExceptionHandler(NoResourceFoundException.class)
 	// 404 오류
-	public String notFound() { 
+	public String notFound(Model model, Exception e) {
+		model.addAttribute("e", e);
 		return "error/404";
 	}
 
