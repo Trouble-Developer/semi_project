@@ -16,9 +16,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import edu.kh.project.board.model.dto.Board;
 import edu.kh.project.board.model.service.BoardService;
 import edu.kh.project.member.model.dto.Member;
+import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @RequestMapping("board")
+@Slf4j
 public class BoardController {
 
 	// 정보게시판 아예 별개 컨트롤러로
@@ -36,28 +38,42 @@ public class BoardController {
 	 * 
 	 * @return
 	 */
-	@GetMapping("1")
-	public String getFreeBoardList(@RequestParam(value = "cp", required = false, defaultValue = "1") int cp,
-			Model model, @RequestParam Map<String, Object> paramMap) {
-		int boardCode = 1;
+	@GetMapping("{boardCode}")
+	public String getBoardList(@PathVariable("boardCode") int boardCode,
+			@RequestParam(value = "cp", required = false, defaultValue = "1") int cp, Model model,
+			@RequestParam Map<String, Object> paramMap) {
+
+		// 정보게시판일 경우
+		if(boardCode == 2) {
+			
+		}
+		// 정보게시판은??
+		// 1. 따로 둘지 -> board/info 경로를 나눌지
+		// 2. 아님 여기서 forward 할지
+		// -> return board/infoBoard
 
 		Map<String, Object> map = null;
 
 		if (paramMap.get("key") == null) {
 			// 검색창이 아닌 경우
-			map = service.getFreeBoardList(boardCode, cp);
+			map = service.getBoardList(boardCode, cp);
 		} else {
 			// 검색창으로 검색한 경우
 			paramMap.put("boardCode", boardCode);
 
-			map = service.searchFreeBoardList(paramMap, cp);
+			map = service.searchBoardList(paramMap, cp);
 		}
 
 		model.addAttribute("pagination", map.get("pagination"));
 		model.addAttribute("freeBoardList", map.get("freeBoardList"));
-		model.addAttribute("boardCode", boardCode);
 
-		return "board/freeBoardList";
+		// 봉사 후기일 경우
+		if (boardCode == 3) {
+			log.debug("봉사후기 : " + map);
+			return "board/volunteerReviewList";
+		}
+
+		return "board/boardList";
 	}
 
 	/**
@@ -67,12 +83,12 @@ public class BoardController {
 	 * @param cp
 	 * @return
 	 */
-	@GetMapping("1/{boardNo}")
-	public String freeBoardDetil(@PathVariable("boardNo") int boardNo,
+	@GetMapping("{boardCode}/{boardNo}")
+	public String freeBoardDetil(@PathVariable("boardCode") int boardCode, @PathVariable("boardNo") int boardNo,
 			@RequestParam(value = "cp", required = false, defaultValue = "1") int cp, Model model,
 			RedirectAttributes ra) {
 		// 제목, 작성자, 작성일, 조회수, 콘텐츠, 좋아요
-		int boardCode = 1;
+		
 
 		// 로그인 멤버에 대한 것은 추후 로그인 기능 완료되면 구현
 		Map<String, Integer> map = new HashMap<>();
@@ -90,13 +106,6 @@ public class BoardController {
 			path = "redirect:/board/1?" + "cp=" + cp;
 			ra.addFlashAttribute("message", message);
 		} else {
-			// 이전글, 다음글 가져오기
-			// 만약 게시글이 500번째 중 500번 글, 즉 마지막 글이라면
-			// 다음 글이 존재하지 않는다
-
-			// 만약 게시글이 500번 째중 1번 글, 즉 첫번 째 글이라면
-			// 이전글이 존재하지 않는다
-
 			Board prevBoard = service.getPrevBoard(map);
 			Board nextBoard = service.getNextBoard(map);
 
@@ -105,15 +114,10 @@ public class BoardController {
 			model.addAttribute("boardInfo", selectedBoard);
 			model.addAttribute("boardCode", boardCode);
 			model.addAttribute("cp", cp);
-			path = "board/freeBoardDetail";
+			path = "board/boardDetail";
 		}
 
 		return path;
 	}
 	
-	
-	@GetMapping("3")
-	public String getVolunteerBoardList() {
-		return "board/volunteerReviewList";
-	}
 }
