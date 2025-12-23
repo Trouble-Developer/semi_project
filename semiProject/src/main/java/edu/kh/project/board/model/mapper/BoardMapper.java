@@ -13,9 +13,9 @@ public interface BoardMapper {
 
 	List<Map<String, Object>> selectBoardTypeList();
 
-	int getFreeBoardListCount(int boardCode);
+	int getBoardListCount(int boardCode);
 
-	List<Board> getFreeBoardList(int boardCode, RowBounds rowBounds);
+	List<Board> getBoardList(int boardCode, RowBounds rowBounds);
 
 	int getSearchCount(Map<String, Object> paramMap);
 

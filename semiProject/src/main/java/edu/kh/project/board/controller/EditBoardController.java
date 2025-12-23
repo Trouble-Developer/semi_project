@@ -21,13 +21,12 @@ public class EditBoardController {
 	 * 
 	 * @return
 	 */
-	@RequestMapping("1/{boardNo}/delete")
-	public String boardDelete(@PathVariable("boardNo") int boardNo, RedirectAttributes ra,
+	@RequestMapping("{boardCode}/{boardNo}/delete")
+	public String boardDelete(@PathVariable("boardCode") int boardCode,@PathVariable("boardNo") int boardNo, RedirectAttributes ra,
 			@RequestParam(value = "cp", required = false, defaultValue = "1") int cp) {
 		// 추후 로그인한 회원이 맞는지 로직 짜기
 		// "삭제는 로그인한 회원만 가능합니다."
 		int result = service.boardDelete(boardNo);
-		int boardCode = 1;
 		
 		String message = null;
 		String path = null;

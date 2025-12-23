@@ -9,9 +9,9 @@ public interface BoardService {
 
 	List<Map<String, Object>> selectBoardTypeList();
 
-	Map<String, Object> getFreeBoardList(int boardCode, int cp);
+	Map<String, Object> getBoardList(int boardCode, int cp);
 
-	Map<String, Object> searchFreeBoardList(Map<String, Object> paramMap, int cp);
+	Map<String, Object> searchBoardList(Map<String, Object> paramMap, int cp);
 
 	Board freeBoardDetil(Map<String, Integer> map);
 
