@@ -71,4 +71,23 @@ public class BoardServiceImpl implements BoardService{
 		
 		return map;
 	}
+
+	/**
+	 * map : boardNo, boardCode 존재
+	 */
+	@Override
+	public Board freeBoardDetil(Map<String, Integer> map) {
+		
+		return mapper.freeBoardDetil(map);
+	}
+
+	@Override
+	public Board getPrevBoard(Map<String, Integer> map) {
+		return mapper.getPrevBoard(map);
+	}
+
+	@Override
+	public Board getNextBoard(Map<String, Integer> map) {
+		return mapper.getNextBoard(map);
+	}
 }
