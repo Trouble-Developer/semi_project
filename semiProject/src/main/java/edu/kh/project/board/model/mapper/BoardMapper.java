@@ -21,4 +21,10 @@ public interface BoardMapper {
 
 	List<Board> getFreeList(Map<String, Object> paramMap, RowBounds rowBounds);
 
+	Board freeBoardDetil(Map<String, Integer> map);
+
+	Board getPrevBoard(Map<String, Integer> map);
+
+	Board getNextBoard(Map<String, Integer> map);
+
 }
