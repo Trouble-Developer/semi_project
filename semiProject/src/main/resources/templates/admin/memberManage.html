@@ -41,28 +41,18 @@
         <!-- 회원 상태 표시 -->
         <td th:text="${m.memberDelFl == 'Y'} ? '탈퇴' : '정상'">정상</td>
 
-        <!-- 회원 상태 변경 (논리 삭제: UPDATE) -->
-        <td>    
-          <!--
-            실제 DELETE가 아닌
-            MEMBER_DEL_FL 값을 'N' -> 'Y'로 변경하는 UPDATE 요청
-          -->
-          <form action="/admin/member/updateStatus" method="POST">
+        <!-- 상태 변경 (논리 삭제: UPDATE) -->
+        <td>
+          <form action="/admin/member/updateStatus"
+                method="post"
+                onsubmit="return confirm('정말 이 회원을 탈퇴 처리하시겠습니까?');">
 
-            <!-- 어떤 회원의 상태를 바꿀지 식별 (PK) -->
-            <input type="hidden"
-                   name="memberNo"
-                   th:value="${m.memberNo}">
+            <input type="hidden" name="memberNo" th:value="${m.memberNo}">
+            <input type="hidden" name="memberDelFl" value="Y">
 
-            <!-- 변경할 상태 값 -->
-            <input type="hidden"
-                   name="memberDelFl"
-                   value="Y">
-
-            <!-- 탈퇴 버튼 -->
             <button type="submit"
                     class="btn-outline"
-                    th:disabled="${m.memberDelFl == 'Y'}"> <!-- 이미 탈퇴한 회원은 버튼 비활성화 -->
+                    th:disabled="${m.memberDelFl == 'Y'}">
               탈퇴
             </button>
           </form>
@@ -77,7 +67,7 @@
   </table>
 
   <!-- 페이지네이션 (검색 X) -->
-  <div id="page" th:unless="${param.type}">
+  <div id="page" th:unless="${param.key}">
     <ul>
       <!-- 맨 처음 -->
       <li>
@@ -181,14 +171,14 @@
   <!-- 검색 영역 -->
   <div class="search-area">
     <form action="/admin/member" method="get">
-      <select name="type">
+      <select name="key">
         <option value="memberNo">회원번호</option>
         <option value="email">이메일</option>
         <option value="nickname">닉네임</option>
       </select>
 
       <input type="text"
-             name="keyword"
+             name="query"
              placeholder="검색어를 입력해주세요">
 
       <button type="submit" class="btn-fill">검색</button>
