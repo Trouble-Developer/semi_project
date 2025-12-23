@@ -17,7 +17,7 @@ public class MainController {
 	
 	@GetMapping("/")
 	public String mainPage() {
-//		throw new RuntimeException("강제 500 에러");
-		return "common/main";
+		throw new RuntimeException("강제 500 에러");
+//		return "common/main";
 	}
 }
