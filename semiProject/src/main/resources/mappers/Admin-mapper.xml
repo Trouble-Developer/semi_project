@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="edu.kh.project.admin.model.mapper.AdminMapper">
+
+  <!-- 회원 수 조회 - 회원이 총 몇 명인지 알아야 페이지 수를 계산 가능 -->
+  <select id="getMemberCount" resultType="int">
+    SELECT COUNT(*)
+    FROM MEMBER
+    <where>
+      <if test="key != null and query != null">
+        <choose>
+          <when test="key == 'memberNo'">
+            MEMBER_NO = #{query}
+          </when>
+          <when test="key == 'email'">
+            MEMBER_EMAIL LIKE '%' || #{query} || '%'
+          </when>
+          <when test="key == 'nickname'">
+            MEMBER_NICKNAME LIKE '%' || #{query} || '%'
+          </when>
+        </choose>
+      </if>
+    </where>
+  </select>
+
+  <!-- 회원 목록 조회 -->
+  <select id="selectMemberList"
+          resultType="edu.kh.project.admin.dto.AdminMember">
+    SELECT
+      MEMBER_NO AS memberNo,
+      MEMBER_EMAIL AS memberEmail,
+      MEMBER_NICKNAME AS memberNickname,
+      MEMBER_DEL_FL AS memberDelFl,
+      ENROLL_DATE AS enrollDate
+    FROM MEMBER
+    <where>
+      <if test="key != null and query != null">
+        <choose>
+          <when test="key == 'memberNo'">
+            MEMBER_NO = #{query}
+          </when>
+          <when test="key == 'email'">
+            MEMBER_EMAIL LIKE '%' || #{query} || '%'
+          </when>
+          <when test="key == 'nickname'">
+            MEMBER_NICKNAME LIKE '%' || #{query} || '%'
+          </when>
+        </choose>
+      </if>
+    </where>
+    ORDER BY MEMBER_NO DESC
+    OFFSET #{offset} ROWS FETCH NEXT #{limit} ROWS ONLY
+  </select>
+
+</mapper>
