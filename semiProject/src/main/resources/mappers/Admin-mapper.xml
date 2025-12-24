@@ -52,4 +52,18 @@
     OFFSET #{offset} ROWS FETCH NEXT #{limit} ROWS ONLY
   </select>
 
+  <!-- 회원 강제 탈퇴 -->
+  <update id="updateMemberStatus">
+    UPDATE MEMBER
+    SET MEMBER_DEL_FL = #{memberDelFl}
+    WHERE MEMBER_NO = #{memberNo}
+  </update>
+
+
+
+
+
+
+
+
 </mapper>

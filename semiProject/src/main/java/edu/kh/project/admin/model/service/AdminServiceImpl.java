@@ -28,6 +28,13 @@ public class AdminServiceImpl implements AdminService{
 		return mapper.selectMemberList(paramMap);
 	}
 	
+	// 회원 관리 - 강제 탈퇴
+	@Override
+	public int updateMemberStatus(Map<String, Object> paramMap) {
+		return mapper.updateMemberStatus(paramMap);
+	}
+	
+	
 	// 공지사항 (앞으로 만들어야 함)...
 	
 	

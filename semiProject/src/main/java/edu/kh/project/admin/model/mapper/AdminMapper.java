@@ -17,4 +17,7 @@ public interface AdminMapper {
 
 	List<AdminMember> selectMemberList(Map<String, Object> paramMap);
 
+	// 회원 관리 - 강제 탈퇴
+	int updateMemberStatus(Map<String, Object> paramMap);
+
 }

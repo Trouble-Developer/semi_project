@@ -8,9 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import edu.kh.project.admin.dto.AdminMember;
 import edu.kh.project.admin.model.service.AdminService;
@@ -19,14 +21,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
-@RequestMapping("/admin")
+@RequestMapping("admin")
 @RequiredArgsConstructor
 public class AdminController {
 
     private final AdminService adminService;
 
     // 회원 관리 페이지
-    @GetMapping({"/member"})
+    @GetMapping("member")
     public String memberManage(
             @RequestParam(value = "cp", defaultValue = "1") int cp,
             @RequestParam(value = "key", required = false) String key,
@@ -61,4 +63,41 @@ public class AdminController {
 
         return "admin/adminLayout";
     }
+    
+    @PostMapping("member/updateStatus")
+    public String updateMemberStatus(
+    		@RequestParam("memberNo") int memberNo,
+    		@RequestParam("memberDelFl") String memberDelfl,
+    		RedirectAttributes ra) {
+    	
+    	Map<String, Object> paramMap = new HashMap<>();
+    	paramMap.put("memberNo", memberNo);
+    	paramMap.put("memberDelFl", memberDelfl);
+    	
+    	// 강제 탈퇴 서비스 호출
+    	int result = adminService.updateMemberStatus(paramMap);
+    	
+    	String message = null;
+    	
+    	if(result > 0) {
+    		message = "해당 회원이 탈퇴 처리되었습니다.";
+    	} else {
+    		message = "회원 탈퇴 실패";
+    	}
+    	
+    	ra.addFlashAttribute("message", message);
+    	
+    	return "redirect:/admin/member";
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 }
