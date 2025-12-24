@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/common/header.css" />
+  </head>
+  <body>
+    <header>
+      <section id="header-content-1">
+        <ul id="user">
+          <!-- 로그인 안했을 때 -->
+          <li><a href="#" id="loginText">로그인</a></li> 
+          <li><a th:href="@{/member/signup}" id="signInText">회원가입</a></li>
+				<!-- 로그인 했을 때 (일반 유저) -->
+				<!-- <li><b>동근동근</b>님 환영합니다.</li> -->
+          <!-- <li><a href="#" id="loginText">로그아웃</a></li> -->
+          <!-- <li><a href="#" id="signInText">마이페이지</a></li> -->
+          <!-- 로그인 했을 때 (관리자) -->
+          <!-- <li><b>관리자님</b> 환영합니다.</li>
+          <li><a href="#" id="loginText">로그아웃</a></li> -->
+        </ul>
+      </section>
+      <div id="header">
+        <!-- home으로 -> "/" -->
+        <a href="/">
+          <img src="/images/logo.jpg" alt="logo" id="logo" />
+        </a>
+        <nav id="nav">
+          <ul id="navigation">
+            <!-- <th:block th:each="boardType : ${application.boardTypeList}" -->
+            <!-- <a th:href="@{/board/{boardCode}(boardCode=${boardType.boardCode})}"
+          th:text="${boardType.boardName}"> 게시판이름</a>-->
+            <th:block th:each="boardType : ${application.boardTypeList}">
+              <li class="navList">
+                <a
+                  th:href="${boardType.boardCode == 6}
+                           ? @{/admin/member}
+                           : @{/board/{boardCode}(boardCode=${boardType.boardCode})}"
+                  th:text="${boardType.boardName}"
+                  id="freeBoard"
+                  >게시판 글 타입</a
+                >
+              </li>
+              <!-- 관리자는 추후 회원관리 기능 구현되면 추가할 것 -->
+            </th:block>
+          </ul>
+        </nav>
+        <div></div>
+      </div>
+    </header>
+  </body>
+</html>
