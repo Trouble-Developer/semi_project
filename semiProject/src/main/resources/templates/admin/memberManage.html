@@ -1,18 +1,5 @@
-<!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{admin/adminLayout(
-        pageTitle='관리자 - 회원 관리',
-        menu='member',
-        content=~{::section}
-      )}">
-<!-- 간략 설명
-  adminLayout.html을 사용하기 위한 th:replace. <이 html태그를 admin/adminLayout 템플릿으로 통째로 교체(replace). header, footer처럼 fragment 형식으로.>
-  pageTitle : 브라우저 탭 제목용. adminLayout의 title에서 사용
-  menu      : 사이드바 active 처리용
-  content   : 이 페이지의 section을 adminLayout 본문에 삽입. 이 content에 section을 담아 adminLayout에 넘김.
-  ~{::section} == 현재 템플릿에서 section을 찾아라
--->
 <section>
+
   <!-- 페이지 제목 -->
   <h1 class="admin-page-title">회원 관리</h1>
   <hr>
@@ -31,17 +18,17 @@
     </thead>
 
     <tbody>
-      <!-- 컨트롤러에서 전달된 회원 목록 반복 출력 -->
+      <!-- 회원 목록 -->
       <tr th:each="m : ${memberList}">
         <td th:text="${m.memberNo}">1</td>
         <td th:text="${m.memberEmail}">user@example.com</td>
         <td th:text="${m.memberNickname}">닉네임</td>
         <td th:text="${m.enrollDate}">2025-12-07</td>
 
-        <!-- 회원 상태 표시 -->
+        <!-- 회원 상태 -->
         <td th:text="${m.memberDelFl == 'Y'} ? '탈퇴' : '정상'">정상</td>
 
-        <!-- 상태 변경 (논리 삭제: UPDATE) -->
+        <!-- 강제 탈퇴 -->
         <td>
           <form action="/admin/member/updateStatus"
                 method="post"
@@ -59,52 +46,41 @@
         </td>
       </tr>
 
-      <!-- 회원 목록이 비어 있을 경우 -->
+      <!-- 회원이 없을 때 -->
       <tr th:if="${#lists.isEmpty(memberList)}">
         <td colspan="6">회원이 없습니다.</td>
       </tr>
     </tbody>
   </table>
 
-  <!-- 페이지네이션 (검색 X) -->
+  <!-- ================= 페이지네이션 (검색 X) ================= -->
   <div id="page" th:unless="${param.key}">
     <ul>
-      <!-- 맨 처음 -->
       <li>
-        <a th:href="@{/admin/member(cp=1)}"
-           class="page-btn"
-           >&lt;&lt;</a> <!-- << 버튼 -->
+        <a th:href="@{/admin/member(cp=1)}" class="page-btn">&lt;&lt;</a>
       </li>
 
-      <!-- 이전 -->
       <li>
         <a th:href="@{/admin/member(cp=${pagination.prevPage})}"
-           class="page-btn"
-           >&lt;</a>
+           class="page-btn">&lt;</a>
       </li>
 
-      <!-- 페이지 번호 -->
       <th:block
         th:each="i : ${#numbers.sequence(pagination.startPage, pagination.endPage)}">
         <li>
-          <a 
-            th:href="@{/admin/member(cp=${i})}"
-            th:text="${i}"
-            class="page-btn"
-            th:classappend="${i == pagination.currentPage} ? ' curr-page' : ''">
+          <a th:href="@{/admin/member(cp=${i})}"
+             th:text="${i}"
+             class="page-btn"
+             th:classappend="${i == pagination.currentPage} ? ' curr-page' : ''">
           </a>
         </li>
       </th:block>
 
-      <!-- 다음 -->
       <li>
-        <a 
-          th:href="@{/admin/member(cp=${pagination.nextPage})}"
-          class="page-btn"
-          >&gt;</a> <!-- > 버튼 -->
+        <a th:href="@{/admin/member(cp=${pagination.nextPage})}"
+           class="page-btn">&gt;</a>
       </li>
 
-      <!-- 맨 끝 -->
       <li>
         <a th:href="@{/admin/member(cp=${pagination.maxPage})}"
            class="page-btn">&gt;&gt;</a>
@@ -112,78 +88,77 @@
     </ul>
   </div>
 
-  <!-- 페이지네이션 (검색 O) -->
-<div id="page" th:if="${param.key}" th:object="${pagination}">
-  <ul>
-    <!-- 맨 처음 -->
-    <li>
-      <a th:href="@{/admin/member(
-                    cp=1,
-                    key=${param.key},
-                    query=${param.query})}"
-         class="page-btn">&lt;&lt;</a>
-    </li>
-
-    <!-- 이전 -->
-    <li>
-      <a th:href="@{/admin/member(
-                    cp=*{prevPage},
-                    key=${param.key},
-                    query=${param.query})}"
-         class="page-btn">&lt;</a>
-    </li>
-
-    <!-- 페이지 번호 -->
-    <th:block
-      th:each="i : ${#numbers.sequence(pagination.startPage, pagination.endPage)}">
+  <!-- ================= 페이지네이션 (검색 O) ================= -->
+  <div id="page" th:if="${param.key}" th:object="${pagination}">
+    <ul>
       <li>
         <a th:href="@{/admin/member(
-                      cp=${i},
+                      cp=1,
                       key=${param.key},
                       query=${param.query})}"
-           th:text="${i}"
-           class="page-btn"
-           th:classappend="${i == pagination.currentPage} ? ' curr-page' : ''">
-        </a>
+           class="page-btn">&lt;&lt;</a>
       </li>
-    </th:block>
 
-    <!-- 다음 -->
-    <li>
-      <a th:href="@{/admin/member(
-                    cp=*{nextPage},
-                    key=${param.key},
-                    query=${param.query})}"
-         class="page-btn">&gt;</a>
-    </li>
+      <li>
+        <a th:href="@{/admin/member(
+                      cp=*{prevPage},
+                      key=${param.key},
+                      query=${param.query})}"
+           class="page-btn">&lt;</a>
+      </li>
 
-    <!-- 맨 끝 -->
-    <li>
-      <a th:href="@{/admin/member(
-                    cp=*{maxPage},
-                    key=${param.key},
-                    query=${param.query})}"
-         class="page-btn">&gt;&gt;</a>
-    </li>
-  </ul>
-</div>
+      <th:block
+        th:each="i : ${#numbers.sequence(startPage, endPage)}">
+        <li>
+          <a th:href="@{/admin/member(
+                        cp=${i},
+                        key=${param.key},
+                        query=${param.query})}"
+             th:text="${i}"
+             class="page-btn"
+             th:classappend="${i == currentPage} ? ' curr-page' : ''">
+          </a>
+        </li>
+      </th:block>
 
-  <!-- 검색 영역 -->
+      <li>
+        <a th:href="@{/admin/member(
+                      cp=*{nextPage},
+                      key=${param.key},
+                      query=${param.query})}"
+           class="page-btn">&gt;</a>
+      </li>
+
+      <li>
+        <a th:href="@{/admin/member(
+                      cp=*{maxPage},
+                      key=${param.key},
+                      query=${param.query})}"
+           class="page-btn">&gt;&gt;</a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- ================= 검색 영역 ================= -->
   <div class="search-area">
     <form action="/admin/member" method="get">
-      <select name="key">
-        <option value="memberNo">회원번호</option>
-        <option value="email">이메일</option>
-        <option value="nickname">닉네임</option>
+      <select name="key" id="search-box">
+        <option value="memberNo"
+                th:selected="${param.key == 'memberNo'}">회원번호</option>
+        <option value="email"
+                th:selected="${param.key == 'email'}">이메일</option>
+        <option value="nickname"
+                th:selected="${param.key == 'nickname'}">닉네임</option>
       </select>
 
       <input type="text"
              name="query"
+             id="search-input"
+             th:value="${param.query}"
              placeholder="검색어를 입력해주세요">
 
-      <button type="submit" class="btn-fill">검색</button>
+      <button type="submit" id="search-btn">검색</button>
     </form>
   </div>
 
 </section>
-</html>
