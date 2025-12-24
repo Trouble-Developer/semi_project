@@ -7,12 +7,12 @@
 		ORDER BY BOARD_CODE
 	</select>
 
-	<select id="getFreeBoardListCount">
+	<select id="getBoardListCount">
 		SELECT COUNT(*)
 		FROM BOARD
 		WHERE BOARD_CODE = 1
 	</select>
-	<select id="getFreeBoardList">
+	<select id="getBoardList">
 		SELECT BOARD_NO, BOARD_TITLE, MEMBER_NICKNAME,
 		READ_COUNT,
 		(SELECT
@@ -144,6 +144,7 @@
 		<![CDATA[
 		AND BOARD_NO < #{boardNo}
 		]]>
+		AND BOARD_DEL_FL = 'N'
 		ORDER BY BOARD_NO DESC
 		FETCH FIRST 1 ROW ONLY
 
@@ -156,6 +157,7 @@
 		<![CDATA[
 		AND BOARD_NO > #{boardNo}
 		]]>
+		AND BOARD_DEL_FL = 'N'
 		ORDER BY BOARD_NO
 		ASC
 		FETCH FIRST 1 ROW ONLY

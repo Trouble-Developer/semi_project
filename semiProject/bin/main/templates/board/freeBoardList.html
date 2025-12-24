@@ -14,7 +14,15 @@
     <!-- th:replace="common/header" -->
     <div id="container">
       <div id="title">
-        <p id="title-text">자유게시판</p>
+        <th:block th:each="board : ${application.boardTypeList}">
+          <p
+            id="title-text"
+            th:if="${board.boardCode == boardCode}"
+            th:text="${board.boardName}"
+          >
+            게시판 유형
+          </p>
+        </th:block>
       </div>
       <div id="write">
         <!-- 로그인한 회원만 가능 
@@ -31,7 +39,8 @@
             <th>닉네임</th>
             <th>작성일</th>
             <th>조회수</th>
-            <th>좋아요</th>
+
+            <th th:if="${boardCode != 4 && boardCode != 5}">좋아요</th>
           </thead>
           <tbody id="free-board-body">
             <th:block
@@ -50,7 +59,12 @@
                 <td th:text="*{memberNickname}">작성자 닉네임</td>
                 <td th:text="*{boardWriteDate}">작성일</td>
                 <td th:text="*{readCount}">조회수</td>
-                <td th:text="*{likeCount}">좋아요수</td>
+                <td
+                  th:if="${boardCode != 4 && boardCode != 5}"
+                  th:text="*{likeCount}"
+                >
+                  좋아요수
+                </td>
               </tr>
             </th:block>
           </tbody>
@@ -155,7 +169,10 @@
         </ul>
       </div>
 
-      <form th:action="@{/board/1}" id="search">
+      <form
+        th:action="@{/board/{boardCode}(boardCode=${boardCode})}"
+        id="search"
+      >
         <select name="key" id="search-box">
           <option value="t">제목</option>
           <option value="c">내용</option>
