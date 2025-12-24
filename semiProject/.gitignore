@@ -1,4 +1,18 @@
-/.metadata/
+
 
 config.properties
+
+
+# ===== IDE (Eclipse / STS) =====
+.classpath
+.project
+.settings/
+.metadata/
+
+# ===== Gradle =====
+.gradle/
+build/
+bin/
+
+# ===== macOS =====
 .DS_Store

@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="edu.kh.project.member.model.mapper.MemberMapper">
+
+	<select id="login">
+		SELECT MEMBER_NO, MEMBER_ID, MEMBER_PW, MEMBER_NICKNAME, 
+		       MEMBER_EMAIL, MEMBER_ADDRESS, PROFILE_IMG, AUTHORITY,ENROLL_DATE
+		FROM "MEMBER"
+		WHERE MEMBER_ID = #{memberId}
+		AND MEMBER_DEL_FL = 'N'
+	</select>
 	
 	<select id="checkId" resultType="_int">
 		SELECT COUNT(*) 
