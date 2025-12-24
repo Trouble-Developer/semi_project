@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>아이디 찾기</title>
+  
+  <link rel="stylesheet" href="/css/member/findId.css">
+</head>
+<body>
+
+  <main>
+    <th:block th:replace="~{common/header}"></th:block>
+
+    <section class="findId-content">
+      <h1>아이디 찾기</h1>
+
+      <div class="find-form">
+        
+        <!-- 이메일 입력 -->
+        <div class="input-group">
+          <label for="memberEmail">이메일</label>
+          <div class="flex-row">
+            <input type="text" name="memberEmail" id="memberEmail" 
+                   placeholder="가입 시 등록한 이메일 입력" maxlength="30" autocomplete="off">
+            <button type="button" class="btn-orange-solid" id="sendAuthKeyBtn">인증번호 발송</button>
+          </div>
+          <span class="error-msg" id="emailMessage"></span>
+        </div>
+
+        <!-- 인증번호 입력 -->
+        <div class="input-group">
+          <label for="authKey">인증번호</label>
+          <div class="flex-row">
+            <input type="text" name="authKey" id="authKey" 
+                   placeholder="인증번호 6자리 입력" maxlength="6" autocomplete="off">
+            <button type="button" class="btn-sub" id="checkAuthKeyBtn">확인</button>
+          </div>
+          <span class="error-msg" id="authKeyMessage"></span>
+        </div>
+
+        <!-- 결과 표시 영역 -->
+        <div class="result-area" id="resultArea" style="display: none;">
+          <div class="result-box">
+            <p class="result-title">회원님의 아이디는</p>
+            <p class="result-id" id="resultId"></p>
+            <p class="result-subtitle">입니다.</p>
+          </div>
+          <div class="btn-area">
+            <button type="button" class="btn-submit" onclick="location.href='/'">로그인하러 가기</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <th:block th:replace="~{common/footer}"></th:block>
+
+  </main>
+  
+  <script src="/js/member/findId.js"></script>
+
+</body>
+</html>
