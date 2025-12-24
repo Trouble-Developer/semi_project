@@ -74,6 +74,33 @@
   border-top: 1px solid #000;
 }   
 
+/* 탈퇴 버튼 */
+.btn-outline {
+  padding: 6px 14px;
+  border: 1px solid #ff5900;
+  background-color: white;
+  color: #ff5900;
+  font-size: 13px;
+  font-weight: bold;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+/* hover 효과 */
+.btn-outline:hover {
+  background-color: #ff5900;
+  color: white;
+}
+
+/* 이미 탈퇴한 회원 버튼 비활성화 */
+.btn-outline:disabled {
+  border-color: #ccc;
+  color: #aaa;
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
 .admin-table th {
   background-color: #ffd879;
 }

@@ -20,6 +20,12 @@ public interface AdminService {
 	 */
 	List<AdminMember> selectMemberList(Map<String, Object> paramMap);
 
+	/** 회원 강제 탈퇴
+	 * @param paramMap
+	 * @return
+	 */
+	int updateMemberStatus(Map<String, Object> paramMap);
+
 	
 
 }
