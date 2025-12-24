@@ -22,10 +22,12 @@
       </div>
       <div id="content">
         <!-- <th:block th:each="info : ${infomation}"></th:block> -->
-        <th:block th:each="board : ${freeBoardList}">
+        <th:block th:each="board : ${freeBoardList}" th:object="${board}">
           <div id="content-1">
             <div id="content-img">
-              <a href="#">
+              <a
+                th:href="@{/board/{boardCode}/{boardNo} (boardCode = ${boardCode}, boardNo=*{boardNo}, cp=${pagination.currentPage})}"
+              >
                 <img
                   src="/images/volunteer.jpeg"
                   alt=""
@@ -34,7 +36,10 @@
               </a>
             </div>
             <div id="content-info">
-              <a href="#" id="content-title" th:text="${board.boardTitle}"
+              <a
+                th:href="@{/board/{boardCode}/{boardNo} (boardCode = ${boardCode}, boardNo=*{boardNo}, cp=${pagination.currentPage})}"
+                id="content-title"
+                th:text="${board.boardTitle}"
                 >제목</a
               >
               <div>

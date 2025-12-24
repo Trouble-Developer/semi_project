@@ -1,0 +1,223 @@
+.admin-container {
+  display: flex;              /* 사이드바 + 본문을 가로 배치 */
+  min-height: 100vh;          /* 화면 높이만큼은 최소로 유지 */
+}
+
+/* 사이드바 */
+.admin-side {
+  width: 220px;               /* 사이드바 고정 너비 */
+  background-color: #fff;  /* 흰 배경 */
+  padding: 20px;
+  flex-shrink: 0;
+}
+
+.admin-side-title {
+  margin-bottom: 16px;
+  font-size: 23px;
+  font-weight: bold;
+  color: #697077;
+  text-align: center;
+}
+
+/* 메뉴 리스트 */
+.admin-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* 메뉴 한 줄 - 버튼 */
+.admin-menu li {
+  margin-bottom: 8px;
+  border-radius: 8px;
+}
+
+/* 링크 전체를 버튼처럼 */
+.admin-menu li a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 12px 14px;
+  text-decoration: none; /* 링크 밑줄 제거 */
+  color: #000;
+  border-radius: 8px;
+}
+
+/* hover 효과 */
+.admin-menu li:hover {
+  background-color: #fff2d4;
+}
+
+/* active 메뉴 */
+.admin-menu li.active {
+  background-color: #ffd879;
+  font-weight: bold;
+}
+
+/* 아이콘 */
+.menu-icon {
+  font-size: 18px;
+}
+
+/* 본문 영역 */
+.admin-main {
+  flex: 1; /* 사이드바 제외 나머지 공간 */
+  padding: 40px;
+}
+
+/* 테이블 */
+.admin-table {
+  width: 100%;
+  max-width: 900px;           /* 테이블 너무 커지지 않게 */
+  border-collapse: collapse;  /* 테두리 겹치기 제거 */
+  border-top: 1px solid #000;
+}   
+
+/* 탈퇴 버튼 */
+.btn-outline {
+  padding: 6px 14px;
+  border: 1px solid #ff5900;
+  background-color: white;
+  color: #ff5900;
+  font-size: 13px;
+  font-weight: bold;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+/* hover 효과 */
+.btn-outline:hover {
+  background-color: #ff5900;
+  color: white;
+}
+
+/* 이미 탈퇴한 회원 버튼 비활성화 */
+.btn-outline:disabled {
+  border-color: #ccc;
+  color: #aaa;
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.admin-table th {
+  background-color: #ffd879;
+}
+
+.admin-table th,
+.admin-table td {
+  text-align: center;
+  padding: 16px 0;
+  border-bottom: 1px solid #000;
+}
+
+/* 페이지네이션 */
+#page {
+  margin-top: 31px;
+  display: flex;
+  justify-content: center;
+}
+
+#page > ul {
+  display: flex;
+  gap: 12px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#page > ul > li {
+  width: 32px;
+  height: 32px;
+}
+
+.page-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 100%;
+  height: 100%;
+
+  font-size: 15px;
+  font-weight: bold;
+  text-decoration: none;
+  color: black;
+
+  border-radius: 50%;
+}
+
+.page-btn:hover {
+  background-color: #ffd879;
+  color: #ff5900;
+}
+
+.page-btn.curr-page {
+  background-color: #ff5900;
+  color: white;
+  pointer-events: none;
+}
+
+/* 검색창 */
+.search-area {
+  display: flex;
+  justify-content: center;
+  gap: 17px;
+  margin-top: 31px;
+}
+#search-box {
+  width: 103px;
+  height: 40px;
+  border-radius: 3px;
+  border: 1px solid #697077;
+}
+#search-input {
+  width: 185px;
+  height: 40px;
+  border-radius: 3px;
+  border: 1px solid #697077;
+}
+#search-btn {
+  width: 80px;
+  height: 40px;
+  border: none;
+  background-color: #ffd879;
+  font-size: 14px;
+}
+#search-btn:hover {
+  cursor: pointer;
+}
+
+/* 화면 비율에 맞게 보이도록 추가 수정*/
+.admin-wrapper {
+  max-width: 1200px;     /* 관리자 페이지 최대 폭 */
+  width: 100%;
+  margin: 0 auto;        /* 중앙 정렬 */
+}
+
+/* 기존 admin-container 보완 */
+.admin-container {
+  display: flex;
+  min-height: calc(100vh - 120px); /*전체 화면 높이에서 120px을 뺀 값만큼은 최소 높이로 유지 - gpt도움*/
+}
+
+/* 사이드바 고정 폭 유지 */
+.admin-side {
+  width: 220px;
+  flex-shrink: 0;        /* 화면 줄어들어도 폭 유지 */
+  background-color: #f4f6f8;
+  padding: 20px;
+}
+
+/* 본문 영역 여백 보정 */
+.admin-main {
+  flex: 1;
+  padding: 40px;
+}
+
+/* 테이블 최대 폭 제한 (추가)*/
+.admin-table {
+  max-width: 900px;      /* 콘텐츠 폭 안정화 */
+  width: 100%;
+}

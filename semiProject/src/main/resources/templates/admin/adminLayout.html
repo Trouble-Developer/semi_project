@@ -8,62 +8,67 @@
     <!-- 프로젝트 공통 css -->
     <link rel="stylesheet" href="/css/common/common.css">
 
-    <!-- 관리자 전용 css (아직 미제작) -->
+    <!-- 관리자 전용 css -->
     <link rel="stylesheet" href="/css/admin/admin.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
     <!-- 공통 헤더 -->
     <th:block th:replace="~{common/header}"></th:block>
 
-    <!-- 관리자 페이지 전체 영역 -->
-    <div class="admin-container">
+    <!-- 관리자 페이지 전체 영역 (폭 제한 wrapper 추가) -->
+    <div class="admin-wrapper">
+        <!-- 관리자 페이지 전체 영역 -->
+        <div class="admin-container">
 
-        <!-- 좌측 사이드 바(관리자) -->
-        <aside class="admin-side">
-            <h2 class="admin-side-title">관리자</h2>
+            <!-- 사이드 바(관리자) -->
+            <aside class="admin-side">
+                <h2 class="admin-side-title">관리자</h2>
 
-            <!-- 
-                사이드바 메뉴 클릭 시 각 페이지로 이동 
-                active 표시를 위해 controller에서 menu로 내려받는 형식으로
-            -->
+                <!-- 
+                    사이드바 메뉴 클릭 시 각 페이지로 이동 
+                    active 표시를 위해 controller에서 menu로 내려받는 형식으로
+                -->
 
-            <ul class="admin-menu">
-                <li> <!-- 회원 관리 == member로 식별--> <!-- th:classappend="조건 ? '추가할 클래스' : '아무것도 안 함'" -->
-                    <a th:href="@{/admin/member}"
-                       th:classappend="${menu == 'member'} ? 'active' : ''">
-                    회원 관리
-                    </a>
-                </li>
+                <ul class="admin-menu">
+                    <li th:classappend="${menu == 'member'} ? 'active'"> <!-- 회원 관리 == member로 식별--> <!-- th:classappend="조건 ? '추가할 클래스' : '아무것도 안 함'" -->
+                        <a th:href="@{/admin/member}">
+                            <span class="menu-icon"><i class="fa-regular fa-folder"></i></span>
+                            <span class="menu-text">회원 관리</span>
+                        </a>
+                    </li>
 
-                <li> <!-- 공지사항 == notice로 식별-->
-                    <a th:href="@{/admin/notice}"
-                       th:classappend="${menu == 'notice'} ? 'active' : ''">
-                    공지사항
-                    </a>
-                </li>
+                    <li th:classappend="${menu == 'notice'} ? 'active'"> <!-- 공지사항 == notice로 식별-->
+                        <a th:href="@{/admin/notice}">
+                            <span class="menu-icon"><i class="fa-solid fa-tags"></i></span>
+                            <span class="menu-text">공지사항</span>
+                        </a>
+                    </li>
 
-                <li> <!-- 고객지원 == support로 식별-->
-                    <a th:href="@{/admin/support}"
-                       th:classappend="${menu == 'support'} ? 'active' : ''">
-                    고객지원
-                    </a>
-                </li>
+                    <li th:classappend="${menu == 'support'} ? 'active'"> <!-- 고객지원 == support로 식별-->
+                        <a th:href="@{/admin/support}">
+                            <span class="menu-icon"><i class="fa-regular fa-user"></i></span>
+                            <span class="menu-text">고객지원</span>
+                        </a>
+                    </li>
 
-                <li> <!-- 신고글 관리 == report로 식별-->
-                    <a th:href="@{/admin/report}"
-                       th:classappend="${menu == 'report'} ? 'active' : ''">
-                    신고글 목록
-                    </a>
-                </li>
-            </ul>
-        </aside>
+                    <li th:classappend="${menu == 'report'} ? 'active'"> <!-- 신고글 관리 == report로 식별-->
+                        <a th:href="@{/admin/report}">
+                            <span class="menu-icon"><i class="fa-regular fa-images"></i></span>
+                            <span class="menu-text">신고글 목록</span>
+                        </a>
+                    </li>
+                </ul>
+            </aside>
 
-        <!-- 본문 (우측. 좌측 사이드바 옆.) -->
-        <main class="admin-main">
-            <!-- 각 페이지 본문(section)이 들어갈 자리(회원 관리, 공지사항, 고객지원, 신고글 목록) -->
-            <th:block th:replace="${content}"></th:block>
-        </main>
+            <!-- 본문 (우측. 좌측 사이드바 옆.) -->
+            <main class="admin-main">
+                <!-- 각 페이지 본문(section)이 들어갈 자리(회원 관리, 공지사항, 고객지원, 신고글 목록) -->
+                <th:block th:replace="${content}"></th:block>
+            </main>
 
+        </div>
     </div>
 
     <!-- 공통 푸터 -->
