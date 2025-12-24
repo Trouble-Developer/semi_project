@@ -1,0 +1,124 @@
+#container {
+  width: 1168px;
+  margin-bottom: 0px;
+}
+#content {
+  margin-bottom: 76px;
+}
+#content img {
+  max-width: 100%;
+}
+
+#board-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #000;
+  border-top: 1px solid #000;
+}
+#board-title-text {
+  font-size: 32px;
+  margin: 12px 0px;
+}
+#scrab-btn {
+  border: none;
+  background-color: white;
+}
+#scrab-btn:hover {
+  cursor: pointer;
+}
+#board-user-info {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #000;
+  margin-bottom: 49.5px;
+}
+
+#board-user-info > #user-info {
+  display: flex;
+  gap: 35.94px;
+}
+#board-user-info > #user-info > p:nth-child(1),
+#board-info > div:nth-child(1) > p:nth-child(1),
+#board-info > div:last-child > p:nth-child(1) {
+  font-weight: bold;
+  font-size: 20px;
+}
+#board-user-info > #user-info > p:last-child,
+#board-info > div:nth-child(1) > p:last-child,
+#board-info > div:last-child > p:last-child {
+  font-size: 20px;
+}
+#board-info {
+  display: flex;
+  gap: 26px;
+}
+#board-info > div:nth-child(1),
+#board-info > div:last-child {
+  display: flex;
+  gap: 26px;
+}
+#btn {
+  display: flex;
+  justify-content: flex-end;
+  gap: 34px;
+  margin-bottom: 12px;
+}
+
+#like-btn,
+#update-btn,
+#delete-btn {
+  width: 111px;
+  height: 62px;
+  border: none;
+  background-color: #fff2d4;
+  border-radius: 20px;
+  border: 1px solid #ff5900;
+  color: #ff0000;
+  font-size: 25px;
+}
+
+#like-btn,
+#update-btn,
+#delete-btn:hover {
+  cursor: pointer;
+}
+#before-board,
+#after-board {
+  display: flex;
+  justify-content: flex-start;
+  gap: 43px;
+}
+#before-board > p:last-child:hover,
+#after-board > p:last-child:hover {
+  text-decoration: underline;
+}
+#page {
+  border-top: 1px solid #000;
+  border-bottom: 1px solid #000;
+  margin-bottom: 52px;
+}
+#before-board > p:nth-child(1),
+#after-board > p:nth-child(1) {
+  font-weight: bold;
+}
+#list-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#list-btn > a {
+  width: 111px;
+  height: 62px;
+  border: none;
+  background-color: #fff2d4;
+  border-radius: 20px;
+  font-size: 25px;
+  color: #ff5900;
+  border: 1px solid #ff5900;
+  margin-bottom: 32px;
+}
+
+#list-btn > button:hover {
+  cursor: pointer;
+}

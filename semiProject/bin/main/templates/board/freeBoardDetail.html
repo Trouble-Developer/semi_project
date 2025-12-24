@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/common/common.css" />
+    <link rel="stylesheet" href="/css/board/freeBoardDetail.css" />
+  </head>
+  <body>
+    <th:block th:replace="~{common/header}"></th:block>
+    <div id="container" th:object="${boardInfo}">
+      <div id="board-title">
+        <p id="board-title-text" th:text="*{boardTitle}"></p>
+        <!-- 스크랩 기능 -->
+        <button id="scrab-btn">
+          <!-- 빈별 -->
+          <i class="fa-regular fa-star"></i>
+          <!-- 꽉찬별 -->
+          <!-- <i class="fa-solid fa-star"></i> -->
+        </button>
+      </div>
+      <div id="board-user-info">
+        <div id="user-info">
+          <p>등록자</p>
+          <p th:text="*{memberNickname}">유저닉네임</p>
+        </div>
+        <div id="board-info">
+          <div>
+            <p>작성일</p>
+            <p th:text="*{boardWriteDate}">작성일</p>
+          </div>
+          <div>
+            <p>조회수</p>
+            <p th:text="*{readCount}">조회수</p>
+          </div>
+        </div>
+      </div>
+      <div id="content">
+        <p th:text="*{boardContent}">컨텐츠</p>
+      </div>
+      <div id="btn">
+        <!-- 로그인 했을 때만 활성화 -->
+        <button id="like-btn">
+          <!-- 빈 하트 -->
+          <i class="fa-regular fa-heart"></i
+          ><span th:text="*{readCount}">좋아요수</span>
+          <!-- <i class="fa-solid fa-heart"></i> 꽉찬 하트 -->
+        </button>
+        <!-- 본인 글일 때, 즉 로그인한 회원과 게시글의 회원이 같을 때 활성화 -->
+        <button id="update-btn">수정</button>
+        <button id="delete-btn">삭제</button>
+      </div>
+      <div id="page">
+        <div id="before-board">
+          <th:block th:if="${prevBoard}">
+            <p>이전글</p>
+            <p>
+              <a
+                th:href="@{/board/1/{boardNo}(boardNo=${prevBoard.boardNo}, cp=${cp})}"
+                th:text="${prevBoard.boardTitle}"
+                >이전글</a
+              >
+            </p>
+          </th:block>
+        </div>
+        <div id="after-board">
+          <th:block th:if="${nextBoard}">
+            <p>다음글</p>
+            <p>
+              <a
+                th:href="@{/board/1/{boardNo}(boardNo=${nextBoard.boardNo}, cp=${cp})}"
+                th:text="${nextBoard.boardTitle}"
+                >다음글</a
+              >
+            </p>
+          </th:block>
+        </div>
+      </div>
+      <div id="list-btn">
+        <a th:href="@{/board/1(cp=${cp})}" id="list-btn">목록</a>
+      </div>
+    </div>
+    <th:block th:replace="~{common/footer}"></th:block>
+    <script th:inline="javascript">
+      const boardNo = /*[[${boardNo}]]*/ "게시판 번호";
+    </script>
+    <script
+      src="https://kit.fontawesome.com/c0777c617e.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="/js/board/freeBoardDetail.js"></script>
+  </body>
+</html>
