@@ -1,8 +1,5 @@
 @charset "UTF-8";
 
-/* login.css */
-
-/* 기본 초기화 */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -30,16 +27,19 @@ main {
 /* 로그인 박스 */
 .login-container {
   width: 100%;
-  max-width: 480px;
+  max-width: 700px;
+	min-width: 560px;
   padding: 0 20px;
 }
 
 /* 제목 */
 .login-title {
-  font-size: 32px;
-  font-weight: bold;
-  text-align: left;
-  margin-bottom: 20px;
+    font-size: 32px;
+    font-weight: bold;
+    text-align: left;
+    margin-bottom: 40px;
+		border-bottom: 2px solid #ddd;
+    padding-bottom: 20px;
 }
 
 /* 구분선 */
