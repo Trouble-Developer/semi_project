@@ -37,7 +37,7 @@
         </div>
       </div>
       <div id="content">
-        <p th:text="*{boardContent}">컨텐츠</p>
+        <p th:utext="*{boardContent}">컨텐츠</p>
       </div>
       <div id="btn">
         <!-- 로그인 했을 때만 활성화 -->
@@ -91,7 +91,11 @@
         </div>
       </div>
       <div id="list-btn">
-        <a th:href="@{/board/1(cp=${cp})}" id="list-btn">목록</a>
+        <a
+          th:href="@{/board/{boardCode}(boardCode = ${boardCode}, cp=${cp})}"
+          id="list-btn"
+          >목록</a
+        >
       </div>
     </div>
     <th:block th:replace="~{common/footer}"></th:block>

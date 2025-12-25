@@ -84,16 +84,21 @@ public class EditBoardController {
 	}
 
 	@GetMapping("{boardCode:[0-9]+}/insert")
-	public String boardInsert(@PathVariable("boardCode") int boardCode, Model model) {
+	public String boardInsert(@PathVariable("boardCode") int boardCode, Model model,
+			@SessionAttribute(value = "loginMember", required = false) Member loginMember, RedirectAttributes ra) {
+		if (loginMember == null) {
+			ra.addFlashAttribute("message", "로그인 후 이용해주세요!");
+			return "redirect:/member/login";
+		}
 		model.addAttribute("boardCode", boardCode);
 		return "board/boardWrite";
 	}
 
 	@PostMapping("{boardCode:[0-9]+}/insert")
-	public String boardInsert(@PathVariable("boardCode") int boardCode, @RequestParam Map<String, Object> map,
+	public String boardInsert(@PathVariable("boardCode") int boardCode, @RequestParam Map<String, Object> writeMap,
 			RedirectAttributes ra, @RequestParam(value = "cp", required = false, defaultValue = "1") int cp,
-			@SessionAttribute("loginMember") Member loginMember) {
-		log.info("섬머노트 데이터 : {}", map);
+			@SessionAttribute(value = "loginMember", required = false) Member loginMember) {
+		log.info("섬머노트 데이터 : {}", writeMap);
 
 		// 비밀글 체크 했을 때 : 섬머노트 데이터 : {boardType=3, title=안녕하심꽈 테스트 글임돠!, checkbox=on,
 		// editordata=<p>테스트1</p>, files=}
@@ -102,24 +107,43 @@ public class EditBoardController {
 		// boardType
 		String message = null;
 		String path = null;
-		String content = (String) map.get("editordata");
 
-		if (content.indexOf("<img") == -1) {
-			log.debug("img 없음");
-			// int result = service.boardInsert(boardCode, content, loginMember.getMemberNo());
-
-			// if (result > 0) {
-			// 	message = "게시글이 등록되었습니다.";
-			// 	path = "redirect:/board/" + boardCode + "?cp=" + cp;
-			// } else {
-			// 	message = "게시글이 등록되었습니다.";
-			// 	path = "redirect:/" + boardCode + "/insert";
-			// }
-
-		} else {
-			log.debug("img 존재함");
+		if (loginMember == null) {
+			message = "로그인 후 이용해주세요!";
+			ra.addFlashAttribute("message", message);
+			return "redirect:/";
 		}
-		return "redirect:/";
+
+		String boardLock = "N";
+
+		// if (((String) writeMap.get("editordata")).indexOf("img") == -1) {
+		log.debug("img 없이 텍스트만 존재");
+		Map<String, Object> map = new HashMap<>();
+		if (writeMap.get("checkbox") != null) {
+			boardLock = "Y";
+		}
+		map.put("boardCode", boardCode);
+		map.put("memberNo", loginMember.getMemberNo());
+		map.put("title", writeMap.get("title"));
+		map.put("content", writeMap.get("editordata"));
+		map.put("boardLock", boardLock);
+
+		int result = service.boardInsert(map);
+
+		if (result > 0) {
+			message = "게시글이 등록되었습니다.";
+			path = "redirect:/board/" + boardCode + "?cp=" + cp;
+			ra.addFlashAttribute("message", message);
+		} else {
+			message = "게시글이 등록 실패...";
+			path = "redirect:/" + boardCode + "/insert";
+			ra.addFlashAttribute("message", message);
+		}
+
+		// } else {
+		// log.debug("img 존재함");
+		// }
+		return path;
 	}
 
 }

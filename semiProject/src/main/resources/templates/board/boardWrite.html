@@ -40,8 +40,37 @@
         <div id="board-write">
           <div id="board-info">
             <select name="boardType" id="board-type">
-              <option value="1">자유 게시판</option>
-              <option value="3">봉사후기</option>
+              <option
+                value="1"
+                th:text="'자유 게시판'"
+                th:selected="${boardCode == 1}"
+              >
+                자유 게시판
+              </option>
+              <!-- 정보 게시판 -->
+              <option
+                value="3"
+                th:text="'봉사후기'"
+                th:selected="${boardCode == 3}"
+              >
+                봉사후기
+              </option>
+              <option
+                value="4"
+                th:if="${session.loginMember?.authority == 2}"
+                th:text="'공지사항'"
+                th:selected="${boardCode == 4}"
+              >
+                공지사항
+              </option>
+              <option
+                value="5"
+                th:if="${session.loginMember?.authority == 2}"
+                th:text="'고객지원'"
+                th:selected="${boardCode == 5}"
+              >
+                고객지원
+              </option>
             </select>
             <div id="board-info-text">
               <input
