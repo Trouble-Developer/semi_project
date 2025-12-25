@@ -13,12 +13,18 @@ public interface BoardMapper {
 
 	List<Map<String, Object>> selectBoardTypeList();
 
-	int getFreeBoardListCount(int boardCode);
+	int getBoardListCount(int boardCode);
 
-	List<Board> getFreeBoardList(int boardCode, RowBounds rowBounds);
+	List<Board> getBoardList(int boardCode, RowBounds rowBounds);
 
 	int getSearchCount(Map<String, Object> paramMap);
 
 	List<Board> getFreeList(Map<String, Object> paramMap, RowBounds rowBounds);
+
+	Board freeBoardDetil(Map<String, Integer> map);
+
+	Board getPrevBoard(Map<String, Integer> map);
+
+	Board getNextBoard(Map<String, Integer> map);
 
 }

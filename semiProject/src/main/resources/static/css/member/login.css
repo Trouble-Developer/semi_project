@@ -1,0 +1,143 @@
+@charset "UTF-8";
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background-color: #fff;
+  color: #333;
+}
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* 메인 컨테이너 */
+main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 70vh;
+  padding: 50px 0;
+}
+
+/* 로그인 박스 */
+.login-container {
+  width: 100%;
+  max-width: 700px;
+	min-width: 560px;
+  padding: 0 20px;
+}
+
+/* 제목 */
+.login-title {
+    font-size: 32px;
+    font-weight: bold;
+    text-align: left;
+    margin-bottom: 40px;
+		border-bottom: 2px solid #ddd;
+    padding-bottom: 20px;
+}
+
+/* 구분선 */
+.divider {
+  height: 2px;
+  background-color: #ddd;
+  margin-bottom: 30px;
+  border: none;
+}
+
+/* 입력 폼 그룹 */
+.input-group {
+  margin-bottom: 20px;
+}
+
+.input-label {
+  display: block;
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.input-field {
+  width: 100%;
+  padding: 15px;
+  background-color: #F0F2F5;
+  border: none;
+  border-radius: 4px;
+  font-size: 15px;
+  outline: none;
+}
+
+.input-field:focus {
+  outline: 2px solid #FF8C00; /* 주황색 포커스 */
+}
+
+/* 옵션 (아이디 저장 / 찾기) */
+.options-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 30px;
+}
+
+.save-id-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.save-id-label input {
+  margin-right: 5px;
+  width: 16px; 
+  height: 16px;
+  accent-color: #FF8C00;
+}
+
+.find-links a {
+  margin-left: 10px;
+  color: #555;
+}
+
+.find-links a:hover {
+  text-decoration: underline;
+}
+
+/* 버튼 공통 */
+.btn {
+  width: 100%;
+  padding: 15px;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 30px;
+  cursor: pointer;
+  margin-bottom: 15px;
+  transition: 0.2s;
+}
+
+/* 로그인 버튼 */
+.btn-login {
+  background-color: #FFF5E6;
+  color: #FF8C00;
+  border: 1px solid #FF8C00;
+}
+
+.btn-login:hover {
+  background-color: #FFE0B2;
+}
+
+/* 회원가입 버튼 */
+.btn-signup {
+  background-color: #FF4500;
+  color: white;
+  border: none;
+}
+
+.btn-signup:hover {
+  background-color: #E63900;
+}

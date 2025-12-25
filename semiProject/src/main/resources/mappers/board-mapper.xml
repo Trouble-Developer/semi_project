@@ -7,12 +7,12 @@
 		ORDER BY BOARD_CODE
 	</select>
 
-	<select id="getFreeBoardListCount">
+	<select id="getBoardListCount">
 		SELECT COUNT(*)
 		FROM BOARD
 		WHERE BOARD_CODE = 1
 	</select>
-	<select id="getFreeBoardList">
+	<select id="getBoardList">
 		SELECT BOARD_NO, BOARD_TITLE, MEMBER_NICKNAME,
 		READ_COUNT,
 		(SELECT
@@ -83,7 +83,8 @@
 		(SELECT COUNT(*)
 		FROM "BOARD_LIKE" L
 		WHERE L.BOARD_NO =
-		B.BOARD_NO) LIKE_COUNT,
+		B.BOARD_NO)
+		LIKE_COUNT,
 		<![CDATA[
 		CASE
 		WHEN SYSDATE - BOARD_WRITE_DATE < 1 / 24 / 60
@@ -124,5 +125,41 @@
 			</otherwise>
 		</choose>
 		ORDER BY BOARD_NO DESC
+	</select>
+	<select id="freeBoardDetil">
+		SELECT BOARD_NO, BOARD_TITLE, BOARD_CONTENT,
+		TO_CHAR(BOARD_WRITE_DATE, 'YYYY-MM-DD') BOARD_WRITE_DATE,
+		READ_COUNT,
+		MEMBER_NICKNAME, B.MEMBER_NO
+		FROM "BOARD" B
+		JOIN "MEMBER" M
+		ON B.MEMBER_NO =
+		M.MEMBER_NO
+		WHERE BOARD_NO = ${boardNo} AND BOARD_CODE = #{boardCode}
+	</select>
+	<select id="getPrevBoard">
+		SELECT BOARD_NO, BOARD_TITLE
+		FROM "BOARD"
+		WHERE BOARD_CODE = #{boardCode}
+		<![CDATA[
+		AND BOARD_NO < #{boardNo}
+		]]>
+		AND BOARD_DEL_FL = 'N'
+		ORDER BY BOARD_NO DESC
+		FETCH FIRST 1 ROW ONLY
+
+	</select>
+	<select id="getNextBoard">
+		SELECT BOARD_NO, BOARD_TITLE
+		FROM "BOARD"
+		WHERE
+		BOARD_CODE = #{boardCode}
+		<![CDATA[
+		AND BOARD_NO > #{boardNo}
+		]]>
+		AND BOARD_DEL_FL = 'N'
+		ORDER BY BOARD_NO
+		ASC
+		FETCH FIRST 1 ROW ONLY
 	</select>
 </mapper>

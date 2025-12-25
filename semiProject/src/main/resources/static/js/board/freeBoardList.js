@@ -1,5 +1,6 @@
 const searchBtn = document.querySelector("#search-btn");
-const searchInput = document.querySelector("search-input");
+const searchInput = document.querySelector("#search-input");
+const writeBtn = document.querySelector(".write-btn");
 
 searchBtn.addEventListener("click", () => {
   if (searchInput.value.trim() == "") {
@@ -7,3 +8,11 @@ searchBtn.addEventListener("click", () => {
     return;
   }
 });
+
+if (writeBtn !== null) {
+  writeBtn.addEventListener("click", () => {
+    console.log("클릭됌");
+    const url = location.pathname.replace("board", "editBoard") + "/insert";
+    location.href = url;
+  });
+}

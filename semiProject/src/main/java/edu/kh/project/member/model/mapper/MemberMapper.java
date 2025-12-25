@@ -3,7 +3,7 @@ package edu.kh.project.member.model.mapper;
 import org.apache.ibatis.annotations.Mapper;
 import edu.kh.project.member.model.dto.Member;
 
-@Mapper // 이거 없으면 스프링이 못 찾는다 (MyBatis 빈 등록)
+@Mapper
 public interface MemberMapper {
 
 	/** 회원가입
@@ -29,5 +29,11 @@ public interface MemberMapper {
 	 * @return count
 	 */
 	int checkEmail(String memberEmail);
+
+	/** 로그인
+	 * @param memberId
+	 * @return
+	 */
+	Member login(String memberId);
 
 }

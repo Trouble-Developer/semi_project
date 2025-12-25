@@ -1,60 +1,68 @@
 <!DOCTYPE html>
-
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <link rel="stylesheet" href="/css/common/common.css" />
-    <link rel="stylesheet" href="/css/board/freeBoardList.css" />
+    <link rel="stylesheet" href="/css/board/volunteerReviewList.css" />
   </head>
   <body>
-    <div id="header"></div>
+    <!-- header 들어갈 자리 -->
+    <!-- th:replace="~{common/header}" -->
     <th:block th:replace="~{common/header}"></th:block>
-    <!-- th:replace="common/header" -->
     <div id="container">
       <div id="title">
-        <p id="title-text">자유게시판</p>
+        <p id="titleText">봉사후기</p>
       </div>
       <div id="write">
-        <!-- 로그인한 회원만 가능 
-        + js만들어서 null 처리 필요 
-        -->
-        <button id="write-btn">글작성</button>
+        <!-- 로그인한 회원만 가능 -->
+        <button
+          class="write-btn"
+          th:if="${(boardCode == 4 or boardCode == 5) and session.loginMember != null and session.loginMember.authority == 2}"
+        >
+          글작성
+        </button>
+        <!-- 일반 회원 -->
+        <button
+          class="write-btn"
+          th:if="${(boardCode == 1 or boardCode == 3) and session.loginMember != null}"
+        >
+          글작성
+        </button>
       </div>
-      <!-- 게시글이 없을 때 -->
       <div id="content">
-        <table id="free-board-table">
-          <thead id="free-board-head">
-            <th>번호</th>
-            <th>제목</th>
-            <th>닉네임</th>
-            <th>작성일</th>
-            <th>조회수</th>
-            <th>좋아요</th>
-          </thead>
-          <tbody id="free-board-body">
-            <th:block
-              th:each="freeBoard : ${freeBoardList}"
-              th:object="${freeBoard}"
-            >
-              <tr>
-                <td th:text="*{boardNo}">게시판번호</td>
-                <td id="board-title">
-                  <a
-                    th:href="@{/board/{boardCode}/{boardNo} (boardCode = ${boardCode}, boardNo=*{boardNo}, cp=${pagination.currentPage})}"
-                    th:text="*{boardTitle}"
-                    >게시판 제목</a
-                  >
-                </td>
-                <td th:text="*{memberNickname}">작성자 닉네임</td>
-                <td th:text="*{boardWriteDate}">작성일</td>
-                <td th:text="*{readCount}">조회수</td>
-                <td th:text="*{likeCount}">좋아요수</td>
-              </tr>
-            </th:block>
-          </tbody>
-        </table>
+        <!-- <th:block th:each="info : ${infomation}"></th:block> -->
+        <th:block th:each="board : ${freeBoardList}" th:object="${board}">
+          <div id="content-1">
+            <div id="content-img">
+              <a
+                th:href="@{/board/{boardCode}/{boardNo} (boardCode = ${boardCode}, boardNo=*{boardNo}, cp=${pagination.currentPage})}"
+              >
+                <img
+                  src="/images/volunteer.jpeg"
+                  alt=""
+                  id="content-img-info"
+                />
+              </a>
+            </div>
+            <div id="content-info">
+              <a
+                th:href="@{/board/{boardCode}/{boardNo} (boardCode = ${boardCode}, boardNo=*{boardNo}, cp=${pagination.currentPage})}"
+                id="content-title"
+                th:text="${board.boardTitle}"
+                >제목</a
+              >
+              <div>
+                <p id="day-info-text" th:text="${board.boardWriteDate}">
+                  작성일
+                </p>
+                <p id="view-info-text" th:text="${board.readCount}">조회수</p>
+              </div>
+            </div>
+          </div>
+        </th:block>
+        <!-- asd -->
       </div>
       <!-- 페이지 네이션 -> 검색이 아닌 경우 -->
       <div id="page" th:unless="${param.key}">
@@ -154,8 +162,10 @@
           </li>
         </ul>
       </div>
-
-      <form th:action="@{/board/1}" id="search">
+      <form
+        th:action="@{/board/{boardCode}(boardCode=${boardCode})}"
+        id="search"
+      >
         <select name="key" id="search-box">
           <option value="t">제목</option>
           <option value="c">내용</option>
@@ -171,7 +181,10 @@
         <button id="search-btn">검색</button>
       </form>
     </div>
+    <!-- footer 들어갈 자리 -->
     <th:block th:replace="~{common/footer}"></th:block>
+    <!-- th:replace="~{common/footer}" -->
+    <script src="/js/board/freeBoardList.js"></script>
 
     <script th:inline="javascript">
       const boardCode = /*[[${boardCode}]]*/ "게시판 코드 번호";

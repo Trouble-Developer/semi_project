@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="edu.kh.project.board.model.mapper.EditBoardMapper">
+
+	<!-- 자유게시판 삭제 -->
+	<update id="boardDelete">
+		UPDATE "BOARD"
+		SET BOARD_DEL_FL = 'Y'
+		WHERE BOARD_NO =
+		#{boardNo}
+	</update>
+	<insert id="boardInsert" parameterType="map">
+    INSERT INTO BOARD
+    VALUES (
+        SEQ_BOARD_NO.NEXTVAL,
+        #{title},
+        #{content},
+        SYSDATE,
+        NULL,
+        0,
+        'N',
+        #{boardPw},
+        #{boardLock},
+        #{boardCode},
+        #{memberNo}
+    )
+</insert>
+</mapper>

@@ -10,7 +10,7 @@
   justify-content: flex-end;
   margin: 20px 0px;
 }
-#write-btn {
+.write-btn {
   border: none;
   width: 165px;
   height: 63px;
@@ -20,7 +20,7 @@
   background-color: #ff5900;
   color: white;
 }
-#write-btn:hover {
+.write-btn:hover {
   background-color: #ffd879;
   color: #ff5900;
 }
@@ -122,4 +122,8 @@
 }
 #board-title:hover {
   text-decoration: underline;
+}
+a {
+  text-decoration: none;
+  color: inherit;
 }

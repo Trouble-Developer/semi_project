@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-@Transactional // 트랜잭션 처리 (예외 발생 시 롤백)
+@Transactional(rollbackFor = Exception.class)
 public class MemberServiceImpl implements MemberService {
 
     private final MemberMapper mapper;
@@ -36,6 +36,36 @@ public class MemberServiceImpl implements MemberService {
         
         // 3. DAO(Mapper) 호출해서 DB에 저장
         return mapper.signup(inputMember);
+    }
+    
+    // ----------------------------------------------------------------
+    // [로그인 서비스 구현]
+    // ----------------------------------------------------------------
+    @Override
+    public Member login(Member inputMember) {
+        
+        // 1. 아이디를 이용해서 DB에서 회원 정보 조회
+        // (비밀번호 비교를 위해 DB에 저장된 암호화된 비밀번호가 필요함)
+        Member loginMember = mapper.login(inputMember.getMemberId());
+
+        // 2. 일치하는 아이디가 없으면 null 리턴
+        if (loginMember == null) {
+            return null;
+        }
+
+        // 3. 비밀번호 비교
+        // DB에 저장된 비번(암호화O) vs 입력된 비번(암호화X)
+        // bcrypt.matches(평문, 암호문) -> 일치하면 true
+        if (!bcrypt.matches(inputMember.getMemberPw(), loginMember.getMemberPw())) {
+            return null; // 비밀번호 틀림
+        }
+
+        // 4. 로그인 성공 시, 보안을 위해 비밀번호 제거
+        // (세션에 비밀번호까지 둥둥 떠다니면 위험하니까)
+        loginMember.setMemberPw(null);
+
+        // 5. 최종 로그인 정보 리턴
+        return loginMember;
     }
 
     // 아이디 중복 검사

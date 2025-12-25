@@ -1,0 +1,164 @@
+<section>
+
+  <!-- 페이지 제목 -->
+  <h1 class="admin-page-title">회원 관리</h1>
+  <hr>
+
+  <!-- 회원 목록 테이블 -->
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>번호</th>
+        <th>이메일</th>
+        <th>닉네임</th>
+        <th>가입일</th>
+        <th>회원 상태</th>
+        <th>강제 탈퇴</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <!-- 회원 목록 -->
+      <tr th:each="m : ${memberList}">
+        <td th:text="${m.memberNo}">1</td>
+        <td th:text="${m.memberEmail}">user@example.com</td>
+        <td th:text="${m.memberNickname}">닉네임</td>
+        <td th:text="${m.enrollDate}">2025-12-07</td>
+
+        <!-- 회원 상태 -->
+        <td th:text="${m.memberDelFl == 'Y'} ? '탈퇴' : '정상'">정상</td>
+
+        <!-- 강제 탈퇴 -->
+        <td>
+          <form action="/admin/member/updateStatus"
+                method="post"
+                onsubmit="return confirm('정말 이 회원을 탈퇴 처리하시겠습니까?');">
+
+            <input type="hidden" name="memberNo" th:value="${m.memberNo}">
+            <input type="hidden" name="memberDelFl" value="Y">
+
+            <button type="submit"
+                    class="btn-outline"
+                    th:disabled="${m.memberDelFl == 'Y'}">
+              탈퇴
+            </button>
+          </form>
+        </td>
+      </tr>
+
+      <!-- 회원이 없을 때 -->
+      <tr th:if="${#lists.isEmpty(memberList)}">
+        <td colspan="6">회원이 없습니다.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ================= 페이지네이션 (검색 X) ================= -->
+  <div id="page" th:unless="${param.key}">
+    <ul>
+      <li>
+        <a th:href="@{/admin/member(cp=1)}" class="page-btn">&lt;&lt;</a>
+      </li>
+
+      <li>
+        <a th:href="@{/admin/member(cp=${pagination.prevPage})}"
+           class="page-btn">&lt;</a>
+      </li>
+
+      <th:block
+        th:each="i : ${#numbers.sequence(pagination.startPage, pagination.endPage)}">
+        <li>
+          <a th:href="@{/admin/member(cp=${i})}"
+             th:text="${i}"
+             class="page-btn"
+             th:classappend="${i == pagination.currentPage} ? ' curr-page' : ''">
+          </a>
+        </li>
+      </th:block>
+
+      <li>
+        <a th:href="@{/admin/member(cp=${pagination.nextPage})}"
+           class="page-btn">&gt;</a>
+      </li>
+
+      <li>
+        <a th:href="@{/admin/member(cp=${pagination.maxPage})}"
+           class="page-btn">&gt;&gt;</a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- ================= 페이지네이션 (검색 O) ================= -->
+  <div id="page" th:if="${param.key}" th:object="${pagination}">
+    <ul>
+      <li>
+        <a th:href="@{/admin/member(
+                      cp=1,
+                      key=${param.key},
+                      query=${param.query})}"
+           class="page-btn">&lt;&lt;</a>
+      </li>
+
+      <li>
+        <a th:href="@{/admin/member(
+                      cp=*{prevPage},
+                      key=${param.key},
+                      query=${param.query})}"
+           class="page-btn">&lt;</a>
+      </li>
+
+      <th:block
+        th:each="i : ${#numbers.sequence(startPage, endPage)}">
+        <li>
+          <a th:href="@{/admin/member(
+                        cp=${i},
+                        key=${param.key},
+                        query=${param.query})}"
+             th:text="${i}"
+             class="page-btn"
+             th:classappend="${i == currentPage} ? ' curr-page' : ''">
+          </a>
+        </li>
+      </th:block>
+
+      <li>
+        <a th:href="@{/admin/member(
+                      cp=*{nextPage},
+                      key=${param.key},
+                      query=${param.query})}"
+           class="page-btn">&gt;</a>
+      </li>
+
+      <li>
+        <a th:href="@{/admin/member(
+                      cp=*{maxPage},
+                      key=${param.key},
+                      query=${param.query})}"
+           class="page-btn">&gt;&gt;</a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- ================= 검색 영역 ================= -->
+  <div class="search-area">
+    <form action="/admin/member" method="get">
+      <select name="key" id="search-box">
+        <option value="memberNo"
+                th:selected="${param.key == 'memberNo'}">회원번호</option>
+        <option value="email"
+                th:selected="${param.key == 'email'}">이메일</option>
+        <option value="nickname"
+                th:selected="${param.key == 'nickname'}">닉네임</option>
+      </select>
+
+      <input type="text"
+             name="query"
+             id="search-input"
+             th:value="${param.query}"
+             placeholder="검색어를 입력해주세요">
+
+      <button type="submit" id="search-btn">검색</button>
+    </form>
+  </div>
+
+</section>
