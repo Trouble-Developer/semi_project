@@ -1,5 +1,7 @@
 package edu.kh.project.board.model.service;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,5 +19,12 @@ public class EditBoardServiceImpl implements EditBoardService{
 		
 		return mapper.boardDelete(boardNo);
 	}
+
+	@Override
+	public int boardInsert(Map<String, Object> map) {
+		return mapper.boardInsert(map);
+	}
+
+
 
 }
