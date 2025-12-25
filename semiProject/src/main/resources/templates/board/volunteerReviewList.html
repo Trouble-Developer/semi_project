@@ -18,7 +18,9 @@
       </div>
       <div id="write">
         <!-- 로그인한 회원만 가능 -->
-        <button id="write-btn">글작성</button>
+        <button id="write-btn" th:if="${session.loginMember != null}">
+          글작성
+        </button>
       </div>
       <div id="content">
         <!-- <th:block th:each="info : ${infomation}"></th:block> -->
