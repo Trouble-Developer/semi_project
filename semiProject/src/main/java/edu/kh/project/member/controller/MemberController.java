@@ -102,7 +102,16 @@ public class MemberController {
         
         return "member/signup";
     }
-
+	 
+	/** 아이디 찾기 페이지 이동
+	 * @return "member/findId"
+	 */
+	@GetMapping("findId")
+	public String findIdPage() {
+		return "member/findId";
+	}
+	
+	
 	/**
 	 * 회원가입 진행 (POST)
 	 * 
