@@ -1,168 +1,270 @@
-/* 전체 컨테이너 잡기 (중앙 정렬) */
+/* ========================================
+   아이디 찾기 페이지 CSS
+   ========================================
+   기능: 아이디 찾기 페이지 스타일링
+   작성자: 조창래
+   작성일: 2024-12-26
+   ======================================== */
+
+/* ===== 1. 전체 레이아웃 (중앙 정렬) ===== */
+
 .findId-content {
-    width: 600px;
-    margin: 50px auto;
-    padding: 30px;
+    width: 600px;           /* 고정 너비 */
+    margin: 50px auto;      /* 위아래 50px, 좌우 자동(중앙 정렬) */
+    padding: 30px;          /* 내부 여백 */
 }
 
 .findId-content h1 {
-    font-size: 32px;
-    font-weight: bold;
-    text-align: left;
-    margin-bottom: 40px;
-    border-bottom: 2px solid #ddd;
-    padding-bottom: 20px;
+    font-size: 32px;                /* 글자 크기 */
+    font-weight: bold;              /* 굵게 */
+    text-align: left;               /* 왼쪽 정렬 */
+    margin-bottom: 40px;            /* 아래 여백 */
+    border-bottom: 2px solid #ddd;  /* 아래쪽 회색 선 */
+    padding-bottom: 20px;           /* 선과 텍스트 사이 여백 */
 }
 
-/* 각 입력 덩어리 */
+
+/* ===== 2. 입력 그룹 (각 입력 필드 묶음) ===== */
+
 .input-group {
-    margin-bottom: 25px;
-    display: flex;
-    flex-direction: column;
+    margin-bottom: 25px;        /* 각 그룹 사이 간격 */
+    display: flex;              /* flexbox 사용 */
+    flex-direction: column;     /* 세로 방향 정렬 (label이 위, input이 아래) */
 }
 
-/* 라벨 스타일 (작고 진하게) */
+/* 라벨 스타일 (이름, 주민번호, 이메일 등 레이블) */
 .input-group label {
-    font-size: 14px;
-    font-weight: bold;
-    margin-bottom: 8px;
-    color: #333;
+    font-size: 14px;        /* 작은 글씨 */
+    font-weight: bold;      /* 굵게 */
+    margin-bottom: 8px;     /* 라벨과 입력칸 사이 간격 */
+    color: #333;            /* 진한 회색 */
 }
 
-/* 공통 인풋 박스 스타일 (회색 배경, 테두리 없음) */
+
+/* ===== 3. 공통 인풋 박스 스타일 ===== */
+
+/* 모든 텍스트 입력칸에 적용 */
 input[type="text"],
 input[type="password"] {
-    width: 100%;
-    height: 50px;
-    background-color: #F4F5F9;
-    border: none;
-    border-radius: 4px;
-    padding: 0 15px;
-    font-size: 15px;
-    box-sizing: border-box;
-    outline: none;
+    width: 100%;                    /* 가로 너비 100% */
+    height: 50px;                   /* 높이 50px */
+    background-color: #F4F5F9;      /* 회색 배경 */
+    border: none;                   /* 테두리 없음 */
+    border-radius: 4px;             /* 모서리 둥글게 */
+    padding: 0 15px;                /* 좌우 안쪽 여백 */
+    font-size: 15px;                /* 글자 크기 */
+    box-sizing: border-box;         /* 패딩 포함해서 너비 계산 */
+    outline: none;                  /* 클릭 시 파란 테두리 제거 */
 }
 
+/* 입력칸에 포커스(클릭)했을 때 */
 input:focus {
-    background-color: #e9ecef;
+    background-color: #e9ecef;      /* 조금 더 진한 회색 */
 }
 
-/* 버튼 옆에 붙을 때 레이아웃 (이메일, 인증번호 등) */
+
+/* ===== 4. 버튼 옆에 붙는 레이아웃 ===== */
+
+/* 이메일, 인증번호처럼 입력칸과 버튼이 나란히 있는 경우 */
 .flex-row {
-    display: flex;
-    gap: 10px;
-    width: 100%;
+    display: flex;      /* flexbox 사용 */
+    gap: 10px;          /* 입력칸과 버튼 사이 간격 */
+    width: 100%;        /* 가로 너비 100% */
 }
 
+/* flex-row 안의 input은 남은 공간 모두 차지 */
 .flex-row input {
-    flex: 1;
+    flex: 1;    /* 비율 1 (버튼 빼고 나머지 공간 다 차지) */
 }
 
-/* [버튼 스타일 1] 오렌지색 솔리드 (인증번호 발송) */
+
+/* ===== 5. 주민번호 입력 레이아웃 ===== */
+
+/* 주민번호는 앞자리 - 뒷자리 구조 */
+.rrn-box {
+    display: flex;          /* flexbox 사용 */
+    align-items: center;    /* 세로 가운데 정렬 */
+    gap: 10px;              /* 각 요소 사이 간격 */
+}
+
+/* 주민번호 입력칸은 가운데 정렬 */
+.rrn-box input {
+    flex: 1;            /* 비율 1 */
+    text-align: center; /* 텍스트 가운데 정렬 */
+}
+
+/* 주민번호 뒷자리는 좁게 (1자리만 입력하니까) */
+.rrn-box input:last-of-type {
+    flex: 0.2;  /* 비율 0.2 (앞자리보다 훨씬 좁음) */
+}
+
+/* 대시(-) 기호 */
+.dash {
+    font-weight: bold;  /* 굵게 */
+    font-size: 20px;    /* 크게 */
+}
+
+/* 성별 기호 (⚥) */
+.gender-symbol {
+    font-size: 20px;    /* 크게 */
+    color: #999;        /* 연한 회색 */
+    margin-left: 5px;   /* 왼쪽 여백 */
+}
+
+
+/* ===== 6. 버튼 스타일 ===== */
+
+/* [버튼 스타일 1] 오렌지색 버튼 (인증번호 발송) */
 .btn-orange-solid {
-    background-color: #FF6B00;
-    color: white;
-    border: none;
-    border-radius: 25px;
-    padding: 0 20px;
-    height: 50px;
-    font-weight: bold;
-    cursor: pointer;
-    white-space: nowrap;
+    background-color: #FF6B00;  /* 오렌지색 배경 */
+    color: white;               /* 흰색 글자 */
+    border: none;               /* 테두리 없음 */
+    border-radius: 25px;        /* 완전 둥글게 */
+    padding: 0 20px;            /* 좌우 여백 */
+    height: 50px;               /* 높이 */
+    font-weight: bold;          /* 굵게 */
+    cursor: pointer;            /* 마우스 올리면 손가락 모양 */
+    white-space: nowrap;        /* 줄바꿈 방지 */
 }
 
+/* 마우스 올렸을 때 (hover) */
 .btn-orange-solid:hover {
-    background-color: #e66000;
+    background-color: #e66000;  /* 조금 더 진한 오렌지 */
 }
 
-/* [버튼 스타일 2] 서브 버튼 (확인) */
+/* [버튼 스타일 2] 검은색 서브 버튼 (확인) */
 .btn-sub {
-    background-color: #333;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 0 20px;
-    height: 50px;
-    cursor: pointer;
+    background-color: #333;     /* 검은색 배경 */
+    color: white;               /* 흰색 글자 */
+    border: none;               /* 테두리 없음 */
+    border-radius: 4px;         /* 살짝 둥글게 */
+    padding: 0 20px;            /* 좌우 여백 */
+    height: 50px;               /* 높이 */
+    cursor: pointer;            /* 손가락 모양 */
 }
 
+/* 마우스 올렸을 때 */
 .btn-sub:hover {
-    background-color: #555;
+    background-color: #555;     /* 조금 밝은 회색 */
 }
 
-/* 유효성 검사 메시지 */
+
+/* ===== 7. 유효성 검사 메시지 ===== */
+
+/* 에러 메시지 (처음엔 숨김) */
 .error-msg {
-    color: red;
-    font-size: 12px;
-    margin-top: 5px;
-    display: none;
+    color: red;             /* 빨간색 글자 */
+    font-size: 12px;        /* 작은 글씨 */
+    margin-top: 5px;        /* 위 여백 */
+    display: none;          /* 처음엔 숨김 */
 }
 
+/* 성공 메시지 (초록색) */
 .confirm {
-    color: green;
-    font-size: 12px;
-    display: block !important;
+    color: green;               /* 초록색 글자 */
+    font-size: 12px;            /* 작은 글씨 */
+    display: block !important;  /* 무조건 보이기 */
 }
 
+/* 에러 메시지 (빨간색) */
 .error {
-    color: red;
-    font-size: 12px;
-    display: block !important;
+    color: red;                 /* 빨간색 글자 */
+    font-size: 12px;            /* 작은 글씨 */
+    display: block !important;  /* 무조건 보이기 */
 }
 
-/* ===== 결과 표시 영역 ===== */
+
+/* ===== 8. 결과 표시 영역 ===== */
+
 .result-area {
-    margin-top: 50px;
-    padding-top: 30px;
-    border-top: 2px solid #ddd;
+    margin-top: 50px;               /* 위 여백 크게 */
+    padding-top: 30px;              /* 위쪽 안쪽 여백 */
+    border-top: 2px solid #ddd;     /* 위쪽 회색 선 (구분선) */
 }
 
+/* 결과 박스 (회색 배경) */
 .result-box {
-    background-color: #f8f9fa;
-    padding: 30px;
-    border-radius: 8px;
-    text-align: center;
-    margin-bottom: 30px;
+    background-color: #f8f9fa;  /* 연한 회색 배경 */
+    padding: 30px;              /* 안쪽 여백 */
+    border-radius: 8px;         /* 둥근 모서리 */
+    text-align: center;         /* 텍스트 가운데 정렬 */
+    margin-bottom: 30px;        /* 아래 여백 */
 }
 
+/* "회원님의 아이디는" 텍스트 */
 .result-title {
-    font-size: 18px;
-    color: #666;
-    margin-bottom: 15px;
+    font-size: 18px;        /* 글자 크기 */
+    color: #666;            /* 회색 */
+    margin-bottom: 15px;    /* 아래 여백 */
 }
 
+/* 찾은 아이디 (abc***) */
 .result-id {
-    font-size: 28px;
-    font-weight: bold;
-    color: #FF6B00;
-    margin: 20px 0;
-    letter-spacing: 2px;
+    font-size: 28px;            /* 크게 */
+    font-weight: bold;          /* 굵게 */
+    color: #FF6B00;             /* 오렌지색 (포인트 색) */
+    margin: 20px 0;             /* 위아래 여백 */
+    letter-spacing: 2px;        /* 글자 간격 */
 }
 
+/* "입니다" 텍스트 */
 .result-subtitle {
-    font-size: 18px;
-    color: #666;
+    font-size: 18px;        /* 글자 크기 */
+    color: #666;            /* 회색 */
+    margin-bottom: 20px;    /* 아래 여백 */
 }
 
-/* 로그인 버튼 */
+/* 가입일자 표시 */
+.result-date {
+    font-size: 16px;                /* 글자 크기 */
+    color: #333;                    /* 진한 회색 */
+    margin-top: 15px;               /* 위 여백 */
+    padding-top: 15px;              /* 위쪽 안쪽 여백 */
+    border-top: 1px solid #ddd;     /* 위쪽 회색 선 (구분선) */
+}
+
+/* 가입일자 숫자 부분 (강조) */
+.result-date span {
+    font-weight: bold;  /* 굵게 */
+    color: #FF6B00;     /* 오렌지색 (포인트 색) */
+}
+
+
+/* ===== 9. 하단 버튼 영역 ===== */
+
+/* 버튼 2개를 나란히 배치 */
 .btn-area {
-    text-align: center;
+    display: flex;  /* flexbox 사용 */
+    gap: 10px;      /* 버튼 사이 간격 */
 }
 
+/* [버튼 스타일 3] 메인 버튼 (로그인하러 가기, 비밀번호 찾기) */
 .btn-submit {
-    width: 100%;
-    height: 60px;
-    background-color: white;
-    border: 1px solid #FF6B00;
-    color: #FF6B00;
-    font-size: 18px;
-    font-weight: bold;
-    border-radius: 30px;
-    cursor: pointer;
-    transition: 0.2s;
+    flex: 1;                        /* 비율 1 (균등 분할) */
+    height: 60px;                   /* 높이 크게 */
+    background-color: white;        /* 흰색 배경 */
+    border: 1px solid #FF6B00;      /* 오렌지색 테두리 */
+    color: #FF6B00;                 /* 오렌지색 글자 */
+    font-size: 18px;                /* 글자 크기 */
+    font-weight: bold;              /* 굵게 */
+    border-radius: 30px;            /* 완전 둥글게 */
+    cursor: pointer;                /* 손가락 모양 */
+    transition: 0.2s;               /* 0.2초 동안 부드럽게 변화 */
 }
 
+/* 마우스 올렸을 때 */
 .btn-submit:hover {
-    background-color: #FF6B00;
-    color: white;
+    background-color: #FF6B00;  /* 오렌지색 배경 */
+    color: white;               /* 흰색 글자 */
+}
+
+/* 비밀번호 찾기 버튼 (처음부터 오렌지색) */
+.btn-find-pw {
+    background-color: #FF6B00;  /* 오렌지색 배경 */
+    color: white;               /* 흰색 글자 */
+}
+
+/* 비밀번호 찾기 버튼 마우스 올렸을 때 */
+.btn-find-pw:hover {
+    background-color: #e66000;  /* 진한 오렌지 */
 }
