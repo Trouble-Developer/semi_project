@@ -133,13 +133,11 @@ public class EditBoardController {
 		if (result > 0) {
 			message = "게시글이 등록되었습니다.";
 			path = "redirect:/board/" + boardCode + "?cp=" + cp;
-			ra.addFlashAttribute("message", message);
 		} else {
 			message = "게시글이 등록 실패...";
 			path = "redirect:/" + boardCode + "/insert";
-			ra.addFlashAttribute("message", message);
 		}
-
+		ra.addFlashAttribute("message", message);
 		// } else {
 		// log.debug("img 존재함");
 		// }
