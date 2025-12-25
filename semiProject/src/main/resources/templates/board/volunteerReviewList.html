@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="UTF-8" />
@@ -18,7 +17,17 @@
       </div>
       <div id="write">
         <!-- 로그인한 회원만 가능 -->
-        <button id="write-btn" th:if="${session.loginMember != null}">
+        <button
+          class="write-btn"
+          th:if="${(boardCode == 4 or boardCode == 5) and session.loginMember != null and session.loginMember.authority == 2}"
+        >
+          글작성
+        </button>
+        <!-- 일반 회원 -->
+        <button
+          class="write-btn"
+          th:if="${(boardCode == 1 or boardCode == 3) and session.loginMember != null}"
+        >
           글작성
         </button>
       </div>
@@ -153,10 +162,29 @@
           </li>
         </ul>
       </div>
+      <form
+        th:action="@{/board/{boardCode}(boardCode=${boardCode})}"
+        id="search"
+      >
+        <select name="key" id="search-box">
+          <option value="t">제목</option>
+          <option value="c">내용</option>
+          <option value="tc">제목 + 내용</option>
+          <option value="w">작성자</option>
+        </select>
+        <input
+          type="text"
+          name="query"
+          id="search-input"
+          placeholder="검색어를 입력해주세요"
+        />
+        <button id="search-btn">검색</button>
+      </form>
     </div>
     <!-- footer 들어갈 자리 -->
     <th:block th:replace="~{common/footer}"></th:block>
     <!-- th:replace="~{common/footer}" -->
+    <script src="/js/board/freeBoardList.js"></script>
 
     <script th:inline="javascript">
       const boardCode = /*[[${boardCode}]]*/ "게시판 코드 번호";

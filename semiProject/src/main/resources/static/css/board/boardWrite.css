@@ -1,0 +1,113 @@
+#container {
+  display: flex;
+  flex-direction: column;
+}
+
+#board-write {
+  height: 164px;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  padding: 20px;
+  margin: 0 auto;
+}
+#title {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+#board-info-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+#board-info-text > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 70px;
+}
+#checkbox,
+#secret-check {
+  margin: 0;
+}
+#board-info-text > div > label {
+  font-size: 14px;
+  width: 100%;
+}
+#board-info {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+#board-type {
+  width: 500px;
+  padding: 10px 20px;
+  border: none;
+  border-bottom: 1px solid #ddd;
+}
+#board-title {
+  width: 1000px;
+  height: 52px;
+  border-radius: 19px;
+  background-color: #dddddd;
+  border-color: #ddd;
+  font-size: 17px;
+  padding: 10px;
+}
+#title-text {
+  font-size: 32px;
+}
+
+#title {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+}
+#write {
+  display: flex;
+  justify-content: flex-end;
+  margin: 20px 0px;
+}
+#write-btn {
+  border: none;
+  width: 165px;
+  height: 63px;
+  font-size: 24px;
+  border-radius: 20px;
+  cursor: pointer;
+  background-color: #ff5900;
+  color: white;
+}
+#write-btn:hover {
+  background-color: #ffd879;
+  color: #ff5900;
+}
+#summernote {
+  height: 500px;
+  width: 1130px;
+}
+#summernote-write {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+#summernote-write > div:last-child {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+}
+
+#board-write-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}

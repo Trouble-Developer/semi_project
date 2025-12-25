@@ -30,14 +30,14 @@
         -->
         <!-- 관리자 - 공지사항, 고객지원 -->
         <button
-          id="write-btn"
+          class="write-btn"
           th:if="${(boardCode == 4 or boardCode == 5) and session.loginMember != null and session.loginMember.authority == 2}"
         >
           글작성
         </button>
         <!-- 일반 회원 -->
         <button
-          id="write-btn"
+          class="write-btn"
           th:if="${(boardCode == 1 or boardCode == 3) and session.loginMember != null}"
         >
           글작성
@@ -203,7 +203,7 @@
       </th:block>
     </div>
     <th:block th:replace="~{common/footer}"></th:block>
-
+    <script src="/js/board/freeBoardList.js"></script>
     <script th:inline="javascript">
       const boardCode = /*[[${boardCode}]]*/ "게시판 코드 번호";
     </script>
