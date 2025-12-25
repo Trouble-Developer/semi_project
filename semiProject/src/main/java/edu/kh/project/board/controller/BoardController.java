@@ -114,6 +114,8 @@ public class BoardController {
 			model.addAttribute("boardInfo", selectedBoard);
 			model.addAttribute("boardCode", boardCode);
 			model.addAttribute("cp", cp);
+			log.debug("memberNo = " + selectedBoard.getMemberNo());
+			log.debug("board = " + selectedBoard);
 			path = "board/boardDetail";
 		}
 

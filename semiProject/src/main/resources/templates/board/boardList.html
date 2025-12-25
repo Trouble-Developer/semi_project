@@ -28,7 +28,20 @@
         <!-- 로그인한 회원만 가능 
         + js만들어서 null 처리 필요 
         -->
-        <button id="write-btn">글작성</button>
+        <!-- 관리자 - 공지사항, 고객지원 -->
+        <button
+          id="write-btn"
+          th:if="${(boardCode == 4 or boardCode == 5) and session.loginMember != null and session.loginMember.authority == 2}"
+        >
+          글작성
+        </button>
+        <!-- 일반 회원 -->
+        <button
+          id="write-btn"
+          th:if="${(boardCode == 1 or boardCode == 3) and session.loginMember != null}"
+        >
+          글작성
+        </button>
       </div>
       <!-- 게시글이 없을 때 -->
       <th:block>
@@ -40,7 +53,6 @@
               <th>닉네임</th>
               <th>작성일</th>
               <th>조회수</th>
-
               <th th:if="${boardCode != 4 && boardCode != 5}">좋아요</th>
             </thead>
             <tbody id="free-board-body">

@@ -41,15 +41,28 @@
       </div>
       <div id="btn">
         <!-- 로그인 했을 때만 활성화 -->
-        <button id="like-btn">
+        <button
+          id="like-btn"
+          th:if="${session.loginMember != null and (boardCode == 1 or boardCode == 3)}"
+        >
           <!-- 빈 하트 -->
           <i class="fa-regular fa-heart"></i
           ><span th:text="*{readCount}">좋아요수</span>
           <!-- <i class="fa-solid fa-heart"></i> 꽉찬 하트 -->
         </button>
         <!-- 본인 글일 때, 즉 로그인한 회원과 게시글의 회원이 같을 때 활성화 -->
-        <button id="update-btn">수정</button>
-        <button id="delete-btn">삭제</button>
+        <button
+          id="update-btn"
+          th:if="${session.loginMember != null and session.loginMember.memberNo == boardInfo.memberNo}"
+        >
+          수정
+        </button>
+        <button
+          id="delete-btn"
+          th:if="${session.loginMember != null and session.loginMember.memberNo == boardInfo.memberNo}"
+        >
+          삭제
+        </button>
       </div>
       <div id="page">
         <div id="before-board">

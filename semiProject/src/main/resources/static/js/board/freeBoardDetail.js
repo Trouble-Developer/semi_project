@@ -1,7 +1,9 @@
 const updateBtn = document.querySelector("#update-btn");
 const deleteBtn = document.querySelector("#delete-btn");
 
-updateBtn.addEventListener("click", () => {});
+if (updateBtn !== null) {
+  updateBtn.addEventListener("click", () => {});
+}
 
 if (deleteBtn !== null) {
   deleteBtn.addEventListener("click", () => {
@@ -13,6 +15,7 @@ if (deleteBtn !== null) {
     const url = location.pathname.replace("board", "editBoard") + "/delete";
     // /board/2/1997?cp=1
 
+    console.log("클릭됨");
     const queryString = location.search; // ? cp=1
     location.href = url + queryString;
     //   /editBoard/2/1997/delete?cp=1
