@@ -10,7 +10,8 @@
 	<select id="getBoardListCount">
 		SELECT COUNT(*)
 		FROM BOARD
-		WHERE BOARD_CODE = 1
+		WHERE BOARD_CODE =
+		#{boardCode}
 	</select>
 	<select id="getBoardList">
 		SELECT BOARD_NO, BOARD_TITLE, MEMBER_NICKNAME,
@@ -127,20 +128,47 @@
 		ORDER BY BOARD_NO DESC
 	</select>
 	<select id="freeBoardDetil">
-		SELECT BOARD_NO, BOARD_TITLE, BOARD_CONTENT,
-		TO_CHAR(BOARD_WRITE_DATE, 'YYYY-MM-DD') BOARD_WRITE_DATE,
-		READ_COUNT,
-		MEMBER_NICKNAME, B.MEMBER_NO
-		FROM "BOARD" B
-		JOIN "MEMBER" M
-		ON B.MEMBER_NO =
+		SELECT
+		B.BOARD_NO,
+		B.BOARD_TITLE,
+		B.BOARD_CONTENT,
+		TO_CHAR(B.BOARD_WRITE_DATE, 'YYYY-MM-DD') AS BOARD_WRITE_DATE,
+		B.READ_COUNT,
+		M.MEMBER_NICKNAME,
+		B.MEMBER_NO,
+
+		(SELECT COUNT(*)
+		FROM
+		BOARD_LIKE L
+		WHERE L.BOARD_NO = B.BOARD_NO) AS LIKE_COUNT,
+
+		(SELECT
+		COUNT(*)
+		FROM BOARD_LIKE L
+		WHERE L.BOARD_NO = B.BOARD_NO
+		AND L.MEMBER_NO
+		= #{memberNo}) AS LIKE_CHECK,
+
+		(SELECT COUNT(*)
+		FROM SCRAP S
+		WHERE S.BOARD_NO = B.BOARD_NO
+		AND S.MEMBER_NO =
+		#{memberNo}
+		) AS SCRAP_CHECK
+
+		FROM BOARD B
+		JOIN MEMBER M ON B.MEMBER_NO =
 		M.MEMBER_NO
-		WHERE BOARD_NO = ${boardNo} AND BOARD_CODE = #{boardCode}
+		WHERE B.BOARD_NO =
+		#{boardNo}
+		AND B.BOARD_CODE = #{boardCode}
 	</select>
+
 	<select id="getPrevBoard">
 		SELECT BOARD_NO, BOARD_TITLE
 		FROM "BOARD"
-		WHERE BOARD_CODE = #{boardCode}
+		WHERE BOARD_CODE =
+		#{boardCode}
 		<![CDATA[
 		AND BOARD_NO < #{boardNo}
 		]]>
@@ -162,4 +190,33 @@
 		ASC
 		FETCH FIRST 1 ROW ONLY
 	</select>
+	<!-- 좋아요 쿼리 -->
+	<delete id="deleteBoardLike">
+		DELETE FROM "BOARD_LIKE"
+		WHERE MEMBER_NO = #{memberNo}
+		AND BOARD_NO = #{boardNo}
+	</delete>
+	<insert id="insertBoardLike">
+		INSERT INTO "BOARD_LIKE"
+		VALUES(#{boardNo},
+		#{memberNo})
+	</insert>
+	<select id="selectLikeCount">
+		SELECT COUNT(*)
+		FROM "BOARD_LIKE"
+		WHERE BOARD_NO =
+		#{boardNo}
+	</select>
+
+	<insert id="insertScrap">
+		INSERT INTO SCRAP (BOARD_NO, MEMBER_NO)
+		VALUES (#{boardNo}, #{memberNo})
+	</insert>
+
+	<delete id="deleteScrap">
+		DELETE FROM SCRAP
+		WHERE BOARD_NO = #{boardNo}
+		AND MEMBER_NO = #{memberNo}
+	</delete>
+
 </mapper>

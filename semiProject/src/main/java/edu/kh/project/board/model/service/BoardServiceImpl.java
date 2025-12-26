@@ -82,22 +82,49 @@ public class BoardServiceImpl implements BoardService {
 		return map;
 	}
 
-	/**
-	 * map : boardNo, boardCode 존재
-	 */
 	@Override
-	public Board freeBoardDetil(Map<String, Integer> map) {
-
-		return mapper.freeBoardDetil(map);
+	public Board freeBoardDetil(Board board) {
+		// TODO Auto-generated method stub
+		return mapper.freeBoardDetil(board);
 	}
 
 	@Override
-	public Board getPrevBoard(Map<String, Integer> map) {
-		return mapper.getPrevBoard(map);
+	public Board getPrevBoard(Board board) {
+		// TODO Auto-generated method stub
+		return mapper.getPrevBoard(board);
 	}
 
 	@Override
-	public Board getNextBoard(Map<String, Integer> map) {
-		return mapper.getNextBoard(map);
+	public Board getNextBoard(Board board) {
+		// TODO Auto-generated method stub
+		return mapper.getNextBoard(board);
+	}
+
+	@Override
+	public int boardLike(Map<String, Integer> map) {
+		int result = 0;
+
+		if (map.get("likeCheck") == 1) {
+			result = mapper.deleteBoardLike(map);
+		} else {
+			result = mapper.insertBoardLike(map);
+		}
+		if (result > 0) {
+			return mapper.selectLikeCount(map.get("boardNo"));
+		}
+		return -1;
+	}
+
+	@Override
+	public int boardScrap(Map<String, Integer> map) {
+		int result;
+
+		if (map.get("scrapCheck") == 1) {
+			result = mapper.deleteScrap(map);
+		} else {
+			result = mapper.insertScrap(map);
+		}
+
+		return result > 0 ? 1 : -1;
 	}
 }

@@ -26,6 +26,8 @@ public class Board {
 	private int likeCount; // 좋아요 수
 	private int likeCheck; // 좋아요 여부
 	
+	private int scrapCheck; // 0: 스크랩 X, 1: 스크랩 O
+	
 	// 추후 이미지 리스트, 댓글 리스트 추가
 	// 우선은 글 가져오는 것 부터!
 	

@@ -18,3 +18,12 @@ summernoteWrite.addEventListener("submit", (e) => {
     return;
   }
 });
+
+const updateBtn = document.querySelector("#update-btn");
+
+if (updateBtn !== null) {
+  updateBtn.addEventListener("click", () => {
+    const url = location.pathname.replace("board", "editBoard") + "update";
+    location.href = url;
+  });
+}

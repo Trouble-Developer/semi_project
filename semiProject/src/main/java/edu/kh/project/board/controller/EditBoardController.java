@@ -38,15 +38,15 @@ public class EditBoardController {
 	 * @return
 	 */
 	@RequestMapping("{boardCode}/{boardNo}/delete")
-	public String boardDelete(@PathVariable("boardCode") int boardCode, @PathVariable("boardNo") int boardNo,
-			RedirectAttributes ra, @RequestParam(value = "cp", required = false, defaultValue = "1") int cp,
+	public String boardDelete(Board board, RedirectAttributes ra,
+			@RequestParam(value = "cp", required = false, defaultValue = "1") int cp,
 			@SessionAttribute(value = "loginMember", required = false) Member loginMember) {
 		// 추후 로그인한 회원이 맞는지 로직 짜기
 		// "삭제는 로그인한 회원만 가능합니다."
 		// 로그인 멤버에 대한 것은 추후 로그인 기능 완료되면 구현
 		Map<String, Integer> map = new HashMap<>();
-		map.put("boardNo", boardNo);
-		map.put("boardCode", boardCode);
+		map.put("boardNo", board.getBoardNo());
+		map.put("boardCode", board.getBoardCode());
 		String message = null;
 		String path = null;
 		// 로그인 안 한 경우
@@ -55,28 +55,28 @@ public class EditBoardController {
 			return "redirect:/member/login";
 		}
 		// 관리자만이 공지사항 및 고객지원 삭제 가능
-		if ((boardCode == 4 || boardCode == 5) && loginMember.getAuthority() == 1) {
+		if ((board.getBoardCode() == 4 || board.getBoardCode() == 5) && loginMember.getAuthority() == 1) {
 			message = "공지사항 및 고객지원 게시글은 관리자만 삭제할 수 있습니다.";
 			ra.addFlashAttribute("message", message);
-			return "redirect:/board/" + boardCode + "?cp=" + cp;
+			return "redirect:/board/" + board.getBoardCode() + "?cp=" + cp;
 		}
 
-		Board selectedBoard = boardService.freeBoardDetil(map);
+		Board selectedBoard = boardService.freeBoardDetil(board);
 
 		// 본인이 작성한 글만 삭제 가능
 		if (loginMember != null && (loginMember.getMemberNo() != selectedBoard.getMemberNo())) {
 			message = "본인이 작성한 글만 삭제할 수 있습니다.";
 			ra.addFlashAttribute("message", message);
-			return "redirect:/board/" + boardCode + "?cp=" + cp;
+			return "redirect:/board/" + board.getBoardCode() + "?cp=" + cp;
 		}
-		int result = service.boardDelete(boardNo);
+		int result = service.boardDelete(board.getBoardNo());
 
 		if (result > 0) {
 			message = "삭제를 성공했습니다!";
-			path = String.format("/board/%d?cp=%d", boardCode, cp);
+			path = String.format("/board/%d?cp=%d", board.getBoardCode(), cp);
 		} else {
 			message = "삭제 실패..";
-			path = String.format("/board/%d/%d?cp=%d", boardCode, boardNo, cp);
+			path = String.format("/board/%d/%d?cp=%d", board.getBoardCode(), board.getBoardNo(), cp);
 		}
 		ra.addFlashAttribute("message", message);
 
@@ -138,10 +138,17 @@ public class EditBoardController {
 			path = "redirect:/" + boardCode + "/insert";
 		}
 		ra.addFlashAttribute("message", message);
-		// } else {
-		// log.debug("img 존재함");
-		// }
 		return path;
 	}
 
+	@GetMapping("{boardCode:[0-9]+}/update")
+	public String boardUpdate(Board board, @RequestParam(value = "cp", required = false, defaultValue = "1") int cp) {
+
+		return null;
+	}
+
+//	@PostMapping("{boardCode:[0-9]+}/update")
+//	public String boardUpdate(@RequestParam(value = "cp", required = false, defaultValue = "1") int cp) {
+//		return null;
+//	}
 }
