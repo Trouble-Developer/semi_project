@@ -110,6 +110,58 @@ public class MemberController {
 	public String findIdPage() {
 		return "member/findId";
 	}
+	//=============================
+	// 아이디/ 비밀번호 찾기 관련 기능
+	// =============================
+	
+	/* 아이디 찾기 페이지로 이동
+	 * 
+	 * <p> 회원이 아이디를 잊어버렸을 때 접근하는 페이지</p>
+	 * <p> 이름, 주민번호 앞자리(생년월일), 이메일을 입력 받아 아이디를 찾아줌</p>
+	 * 
+	 * @return "member/findId" : 아이디 찾기 페이지로 이동
+	 * */
+	
+	/** 아이디 찾기 처리 (AJAX)
+	 * 
+	 * /** 아이디 찾기 처리 (비동기 요청)
+	 * 
+	 * <p>사용자가 입력한 이름, 주민번호 앞자리, 이메일 정보를 받아서
+	 * DB에서 일치하는 회원 정보를 조회한 후 아이디와 가입일자를 반환</p>
+	 * 
+	 * <p><strong>[처리 흐름]</strong></p>
+	 * <ol>
+	 *   <li>클라이언트에서 AJAX로 POST 요청 (이름, 주민번호 앞자리, 이메일)</li>
+	 *   <li>Controller가 파라미터를 받아서 Service로 전달</li>
+	 *   <li>Service/Mapper를 통해 DB에서 회원 조회</li>
+	 *   <li>조회된 Member 객체를 JSON 형태로 응답</li>
+	 *   <li>클라이언트에서 아이디와 가입일자를 화면에 표시</li>
+	 * </ol>
+	 * 
+	 * @param memberNickname : 이름
+	 * @param memberRrn1 : 주민번호 앞자리 (생년월일)
+	 * @param memberEmail : 이메일
+	 * @return Member 객체 (아이디, 가입일자) 또는 null
+	 */
+	 @ResponseBody  // 리턴값을 HTTP 응답 본문(JSON)으로 변환 (AJAX 요청이므로 필수!)
+	 @PostMapping("findId")  // /member/findId POST 요청 처리
+	 public Member findId(
+		    @RequestParam("memberNickname") String memberNickname,  // 이름 파라미터
+		    @RequestParam("memberRrn1") String memberRrn1,          // 주민번호 앞자리 파라미터
+		    @RequestParam("memberEmail") String memberEmail         // 이메일 파라미터
+		) {
+	    
+	    // Service의 findId 메서드 호출하여 DB 조회
+	    // - 3개 파라미터가 모두 일치하는 회원 찾기
+	    // - 조회 성공 시: Member 객체 리턴 (memberId, enrollDate 포함)
+	    // - 조회 실패 시: null 리턴
+	    Member findMember = service.findId(memberNickname, memberRrn1, memberEmail);
+	    
+	    // @ResponseBody 덕분에 Member 객체가 자동으로 JSON으로 변환되어 응답됨
+	    // 예시: { "memberId": "user123", "enrollDate": "2024년 01월 15일", ... }
+	    return findMember;
+	}
+	
 	
 	
 	/**

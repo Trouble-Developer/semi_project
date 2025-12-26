@@ -375,35 +375,76 @@ const validateEmail = () => {
     
     });
 
-    // ======== 6. 아이디 찾기 함수 ======
+ // ===== 6. 아이디 찾기 함수 =====
 
-    /** 아이디 찾기 실행 함수
-     * - 인증 완료 후 자동으로 실행됨
-     * - 이름 + 주민번호 + 이메일을 서버로 전송
-     * - 일치하는 회원의 아이디와 가입일자를 받아서 화면에 표시
-     * 
-     * 동작 흐름:
-     * 1. 주민번호 7자리 합치기 (앞 6자리 + 뒤 1자리)
-     * 2. 서버에 POST 요청으로 데이터 전송
-     * 3. 서버에서 DB 조회 후 결과 반환
-     * 4. 성공 시: 아이디 + 가입일자 화면에 표시
-     *    실패 시: 에러 메시지 표시
-     */
-    function findMemberId() {
+/** 아이디 찾기 실행 함수 (FormData 방식)
+ * - 인증 완료 후 자동으로 실행됨
+ * - 이름 + 주민번호 앞 6자리 + 이메일을 서버로 전송
+ * - 일치하는 회원의 아이디와 가입일자를 받아서 화면에 표시
+ * 
+ * [동작 흐름]
+ * 1. FormData 생성하여 Controller 파라미터 이름에 맞춤
+ *    - memberNickname (이름)
+ *    - memberRrn1 (주민번호 앞 6자리만)
+ *    - memberEmail (이메일)
+ * 2. 서버에 POST 요청으로 데이터 전송
+ * 3. 서버에서 DB 조회 후 결과 반환
+ * 4. 성공: 아이디 + 가입일자 화면에 표시
+ *    실패: 에러 메시지 표시
+ */
+function findMemberId() {
     
-         
-
-    // 서버로 보낼 데이터 객체 생성
-    // JavaScript 객체 형태로 먼저 만듦
-    const findData = {
-        memberName: memberName.value.trim(),   // 이름
-        memberRrn: fullRrn,                    // 주민번호 7자리
-        memberEmail: memberEmail.value.trim()  // 이메일
-    };
-
+    // ===== FormData 생성 =====
+    // FormData: HTML form 데이터를 쉽게 전송하기 위한 객체
+    const formData = new FormData();
+    
+    // ✅ Controller 파라미터 이름에 정확히 맞춰서 추가
+    formData.append("memberNickname", memberName.value.trim());  // 이름
+    formData.append("memberRrn1", memberRrn1.value.trim());      // 주민번호 앞 6자리만
+    formData.append("memberEmail", memberEmail.value.trim());    // 이메일
+    
     // 디버깅용 - 전송할 데이터 확인
-    console.log("아이디 찾기 요청 데이터:", findData);
-
+    console.log("=== 아이디 찾기 요청 데이터 ===");
+    console.log("이름:", memberName.value.trim());
+    console.log("주민번호 앞자리:", memberRrn1.value.trim());
+    console.log("이메일:", memberEmail.value.trim());
+    
+    // ===== AJAX: 아이디 찾기 요청 =====
+    
+    fetch("/member/findId", {
+        method: "POST",
+        body: formData  // ✅ FormData로 전송 (headers 불필요)
+    })
+    .then(response => {
+        if(response.ok) {
+            return response.json();
+        }
+        throw new Error("아이디 조회 실패");
+    })
+    .then(data => {
+        console.log("=== 서버 응답 데이터 ===");
+        console.log(data);
+        
+        // data가 null이 아니고 memberId가 있으면 성공
+        if(data != null && data.memberId) {
+            // ✅ 아이디 찾기 성공!
+            console.log("✅ 아이디 찾기 성공!");
+            
+            resultId.innerText = data.memberId;
+            enrollDate.innerText = data.enrollDate;
+            resultArea.style.display = "block";
+            
+        } else {
+            // ❌ 일치하는 회원 없음
+            console.log("❌ 일치하는 회원 없음");
+            alert("입력하신 정보와 일치하는 회원이 없습니다.");
+        }
+    })
+    .catch(err => {
+        console.error("❌ 아이디 찾기 에러:", err);
+        alert("아이디 찾기 중 문제가 발생했습니다.");
+    });
+}
     // ===== AJAX: 아이디 찾기 요청 =====
     
     fetch("/member/findId", {  // 요청 URL
