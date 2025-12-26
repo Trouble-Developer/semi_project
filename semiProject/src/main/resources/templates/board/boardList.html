@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <link rel="stylesheet" href="/css/common/common.css" />
-    <link rel="stylesheet" href="/css/board/freeBoardList.css" />
+    <link rel="stylesheet" href="/css/board/boardList.css" />
   </head>
   <body>
     <div id="header"></div>
@@ -28,61 +28,100 @@
         <!-- 로그인한 회원만 가능 
         + js만들어서 null 처리 필요 
         -->
-        <!-- 관리자 - 공지사항, 고객지원 -->
+        <!-- 관리자 - 공지사항 -->
         <button
           class="write-btn"
-          th:if="${(boardCode == 4 or boardCode == 5) and session.loginMember != null and session.loginMember.authority == 2}"
-        >
-          글작성
-        </button>
-        <!-- 일반 회원 -->
-        <button
-          class="write-btn"
-          th:if="${(boardCode == 1 or boardCode == 3) and session.loginMember != null}"
+          th:if="${session.loginMember != null 
+                and (
+                  session.loginMember.authority == 2
+                  or (
+                    session.loginMember.authority == 1
+                    and (boardCode == 1 or boardCode == 3 or boardCode == 5)
+                  )
+                )}"
         >
           글작성
         </button>
       </div>
-      <!-- 게시글이 없을 때 -->
+      <!-- 게시글이 없을 때 조건 추가 -->
       <th:block>
-        <div id="content">
-          <table id="free-board-table">
-            <thead id="free-board-head">
-              <th>번호</th>
-              <th>제목</th>
-              <th>닉네임</th>
-              <th>작성일</th>
-              <th>조회수</th>
-              <th th:if="${boardCode != 4 && boardCode != 5}">좋아요</th>
-            </thead>
-            <tbody id="free-board-body">
-              <th:block
-                th:each="freeBoard : ${freeBoardList}"
-                th:object="${freeBoard}"
-              >
-                <tr>
-                  <td th:text="*{boardNo}">게시판번호</td>
-                  <td id="board-title">
-                    <a
-                      th:href="@{/board/{boardCode}/{boardNo} (boardCode = ${boardCode}, boardNo=*{boardNo}, cp=${pagination.currentPage})}"
-                      th:text="*{boardTitle}"
-                      >게시판 제목</a
-                    >
-                  </td>
-                  <td th:text="*{memberNickname}">작성자 닉네임</td>
-                  <td th:text="*{boardWriteDate}">작성일</td>
-                  <td th:text="*{readCount}">조회수</td>
-                  <td
-                    th:if="${boardCode != 4 && boardCode != 5}"
-                    th:text="*{likeCount}"
+        <!-- 봉사 후기일 때 -->
+        <th:block th:if="${boardCode == 3}">
+          <div id="volunteerReviewListContent">
+            <th:block th:each="board : ${freeBoardList}" th:object="${board}">
+              <div id="content-1">
+                <div id="content-img">
+                  <a
+                    th:href="@{/board/{boardCode}/{boardNo} (boardCode = ${boardCode}, boardNo=*{boardNo}, cp=${pagination.currentPage})}"
                   >
-                    좋아요수
-                  </td>
-                </tr>
-              </th:block>
-            </tbody>
-          </table>
-        </div>
+                    <img
+                      src="/images/volunteer.jpeg"
+                      alt=""
+                      id="content-img-info"
+                    />
+                  </a>
+                </div>
+                <div id="content-info">
+                  <a
+                    th:href="@{/board/{boardCode}/{boardNo} (boardCode = ${boardCode}, boardNo=*{boardNo}, cp=${pagination.currentPage})}"
+                    id="content-title"
+                    th:text="${board.boardTitle}"
+                    >제목</a
+                  >
+                  <div>
+                    <p id="day-info-text" th:text="${board.boardWriteDate}">
+                      작성일
+                    </p>
+                    <p id="view-info-text" th:text="${board.readCount}">
+                      조회수
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </th:block>
+          </div>
+        </th:block>
+        <!-- 그 외 게시판 -->
+        <th:block th:if="${boardCode != 3}">
+          <div id="content">
+            <table id="free-board-table">
+              <thead id="free-board-head">
+                <th>번호</th>
+                <th>제목</th>
+                <th>닉네임</th>
+                <th>작성일</th>
+                <th>조회수</th>
+                <th th:if="${boardCode != 4 && boardCode != 5}">좋아요</th>
+              </thead>
+              <tbody id="free-board-body">
+                <th:block
+                  th:each="freeBoard : ${freeBoardList}"
+                  th:object="${freeBoard}"
+                >
+                  <tr>
+                    <td th:text="*{boardNo}">게시판번호</td>
+                    <td id="board-title">
+                      <a
+                        th:href="@{/board/{boardCode}/{boardNo} (boardCode = ${boardCode}, boardNo=*{boardNo}, cp=${pagination.currentPage})}"
+                        th:text="*{boardTitle}"
+                        >게시판 제목</a
+                      >
+                    </td>
+                    <td th:text="*{memberNickname}">작성자 닉네임</td>
+                    <td th:text="*{boardWriteDate}">작성일</td>
+                    <td th:text="*{readCount}">조회수</td>
+                    <td
+                      th:if="${boardCode != 4 && boardCode != 5}"
+                      th:text="*{likeCount}"
+                    >
+                      좋아요수
+                    </td>
+                  </tr>
+                </th:block>
+              </tbody>
+            </table>
+          </div>
+        </th:block>
         <!-- 페이지 네이션 -> 검색이 아닌 경우 -->
         <div id="page" th:unless="${param.key}">
           <ul>
@@ -203,7 +242,7 @@
       </th:block>
     </div>
     <th:block th:replace="~{common/footer}"></th:block>
-    <script src="/js/board/freeBoardList.js"></script>
+    <script src="/js/board/boardList.js"></script>
     <script th:inline="javascript">
       const boardCode = /*[[${boardCode}]]*/ "게시판 코드 번호";
     </script>

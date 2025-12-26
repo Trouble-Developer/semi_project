@@ -20,13 +20,25 @@
   font-size: 32px;
   margin: 12px 0px;
 }
-#scrab-btn {
+/* 스크랩 버튼 */
+#scrap-btn {
+  background: none;
   border: none;
-  background-color: white;
-}
-#scrab-btn:hover {
   cursor: pointer;
+  padding: 0;
 }
+
+#scrap-btn i {
+  font-size: 22px;
+  color: #bbb;
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+
+#scrap-btn.scrapped i {
+  color: #ffcc00;
+  font-size: 26px;
+}
+
 #board-user-info {
   display: flex;
   justify-content: space-between;

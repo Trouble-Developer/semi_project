@@ -8,8 +8,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -43,15 +46,6 @@ public class BoardController {
 			@RequestParam(value = "cp", required = false, defaultValue = "1") int cp, Model model,
 			@RequestParam Map<String, Object> paramMap) {
 
-		// 정보게시판일 경우
-		if(boardCode == 2) {
-			
-		}
-		// 정보게시판은??
-		// 1. 따로 둘지 -> board/info 경로를 나눌지
-		// 2. 아님 여기서 forward 할지
-		// -> return board/infoBoard
-
 		Map<String, Object> map = null;
 
 		if (paramMap.get("key") == null) {
@@ -67,12 +61,6 @@ public class BoardController {
 		model.addAttribute("pagination", map.get("pagination"));
 		model.addAttribute("freeBoardList", map.get("freeBoardList"));
 
-		// 봉사 후기일 경우
-		if (boardCode == 3) {
-			log.debug("봉사후기 : " + map);
-			return "board/volunteerReviewList";
-		}
-
 		return "board/boardList";
 	}
 
@@ -84,18 +72,17 @@ public class BoardController {
 	 * @return
 	 */
 	@GetMapping("{boardCode}/{boardNo}")
-	public String freeBoardDetil(@PathVariable("boardCode") int boardCode, @PathVariable("boardNo") int boardNo,
+	public String freeBoardDetil(Board board,
+			@SessionAttribute(value = "loginMember", required = false) Member loginMember,
 			@RequestParam(value = "cp", required = false, defaultValue = "1") int cp, Model model,
 			RedirectAttributes ra) {
 		// 제목, 작성자, 작성일, 조회수, 콘텐츠, 좋아요
-		
 
 		// 로그인 멤버에 대한 것은 추후 로그인 기능 완료되면 구현
-		Map<String, Integer> map = new HashMap<>();
-		map.put("boardNo", boardNo);
-		map.put("boardCode", boardCode);
-
-		Board selectedBoard = service.freeBoardDetil(map);
+		if (loginMember != null) {
+			board.setMemberNo(loginMember.getMemberNo());
+		}
+		Board selectedBoard = service.freeBoardDetil(board);
 
 		String path = null;
 		String message = null;
@@ -106,20 +93,34 @@ public class BoardController {
 			path = "redirect:/board/1?" + "cp=" + cp;
 			ra.addFlashAttribute("message", message);
 		} else {
-			Board prevBoard = service.getPrevBoard(map);
-			Board nextBoard = service.getNextBoard(map);
+			Board prevBoard = service.getPrevBoard(board);
+			Board nextBoard = service.getNextBoard(board);
 
 			model.addAttribute("prevBoard", prevBoard);
 			model.addAttribute("nextBoard", nextBoard);
 			model.addAttribute("boardInfo", selectedBoard);
-			model.addAttribute("boardCode", boardCode);
+			model.addAttribute("boardCode", board.getBoardCode());
 			model.addAttribute("cp", cp);
 			log.debug("memberNo = " + selectedBoard.getMemberNo());
+
 			log.debug("board = " + selectedBoard);
 			path = "board/boardDetail";
 		}
 
 		return path;
 	}
+
+	@ResponseBody
+	@PostMapping("like")
+	public int boardLike(@RequestBody Map<String, Integer> map) {
+		log.debug("board : " + map);
+		return service.boardLike(map);
+	}
 	
+	@ResponseBody
+	@PostMapping("scrap")
+	public int boardScrab(@RequestBody Map<String, Integer> map) {
+		return service.boardScrap(map);
+	}
+
 }

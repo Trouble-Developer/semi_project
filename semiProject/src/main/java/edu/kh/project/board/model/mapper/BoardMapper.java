@@ -21,10 +21,23 @@ public interface BoardMapper {
 
 	List<Board> getFreeList(Map<String, Object> paramMap, RowBounds rowBounds);
 
-	Board freeBoardDetil(Map<String, Integer> map);
 
-	Board getPrevBoard(Map<String, Integer> map);
 
-	Board getNextBoard(Map<String, Integer> map);
+
+	Board freeBoardDetil(Board board);
+
+	Board getPrevBoard(Board board);
+
+	Board getNextBoard(Board board);
+
+	int deleteBoardLike(Map<String, Integer> map);
+
+	int insertBoardLike(Map<String, Integer> map);
+
+	int selectLikeCount(int boardNo);
+
+	int deleteScrap(Map<String, Integer> map);
+
+	int insertScrap(Map<String, Integer> map);
 
 }

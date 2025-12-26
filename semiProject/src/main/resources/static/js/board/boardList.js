@@ -11,7 +11,6 @@ searchBtn.addEventListener("click", () => {
 
 if (writeBtn !== null) {
   writeBtn.addEventListener("click", () => {
-    console.log("클릭됌");
     const url = location.pathname.replace("board", "editBoard") + "/insert";
     location.href = url;
   });

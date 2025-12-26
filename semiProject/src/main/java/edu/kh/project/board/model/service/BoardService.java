@@ -13,9 +13,16 @@ public interface BoardService {
 
 	Map<String, Object> searchBoardList(Map<String, Object> paramMap, int cp);
 
-	Board freeBoardDetil(Map<String, Integer> map);
 
-	Board getPrevBoard(Map<String, Integer> map);
 
-	Board getNextBoard(Map<String, Integer> map);
+
+	Board freeBoardDetil(Board board);
+
+	Board getPrevBoard(Board board);
+
+	Board getNextBoard(Board board);
+
+	int boardLike(Map<String, Integer> map);
+
+	int boardScrap(Map<String, Integer> map);
 }

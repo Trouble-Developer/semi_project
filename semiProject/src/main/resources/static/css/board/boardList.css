@@ -127,3 +127,45 @@ a {
   text-decoration: none;
   color: inherit;
 }
+/* 봉사후기  */
+#volunteerReviewListContent {
+  display: flex;
+  gap: 61px;
+  flex-wrap: wrap;
+}
+#content-img {
+  width: 246px;
+  height: 243px;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  overflow: hidden;
+}
+#content-img-info {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+#volunteerReviewListContent {
+  display: flex;
+  gap: 61px;
+  flex-wrap: wrap;
+}
+#content-1 {
+  width: 246px;
+}
+#content-title {
+  font-size: 20px;
+  font-weight: bold;
+}
+#content-info > div {
+  display: flex;
+  justify-content: space-between;
+}
+#content-info > div > p {
+  margin: 0;
+  color: #697077;
+  font-size: 16px;
+}
+#content-title:hover {
+  text-decoration: underline;
+}

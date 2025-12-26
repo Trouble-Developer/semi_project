@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <link rel="stylesheet" href="/css/common/common.css" />
-    <link rel="stylesheet" href="/css/board/freeBoardDetail.css" />
+    <link rel="stylesheet" href="/css/board/boardDetail.css" />
   </head>
   <body>
     <th:block th:replace="~{common/header}"></th:block>
@@ -13,11 +13,16 @@
       <div id="board-title">
         <p id="board-title-text" th:text="*{boardTitle}"></p>
         <!-- 스크랩 기능 -->
-        <button id="scrab-btn">
-          <!-- 빈별 -->
-          <i class="fa-regular fa-star"></i>
-          <!-- 꽉찬별 -->
-          <!-- <i class="fa-solid fa-star"></i> -->
+        <button
+          id="scrap-btn"
+          th:if="${session.loginMember != null}"
+          th:classappend="${boardInfo.scrapCheck == 1} ? 'scrapped' : ''"
+        >
+          <i
+            th:class="${boardInfo.scrapCheck == 1}
+      ? 'fa-solid fa-star'
+      : 'fa-regular fa-star'"
+          ></i>
         </button>
       </div>
       <div id="board-user-info">
@@ -46,8 +51,12 @@
           th:if="${session.loginMember != null and (boardCode == 1 or boardCode == 3)}"
         >
           <!-- 빈 하트 -->
-          <i class="fa-regular fa-heart"></i
-          ><span th:text="*{readCount}">좋아요수</span>
+          <i
+            th:class="${boardInfo.likeCheck == 1}
+          ? 'fa-solid fa-heart'
+          : 'fa-regular fa-heart'"
+          ></i
+          ><span id="likeCount" th:text="${boardInfo.likeCount}">좋아요수</span>
           <!-- <i class="fa-solid fa-heart"></i> 꽉찬 하트 -->
         </button>
         <!-- 본인 글일 때, 즉 로그인한 회원과 게시글의 회원이 같을 때 활성화 -->
@@ -100,12 +109,16 @@
     </div>
     <th:block th:replace="~{common/footer}"></th:block>
     <script th:inline="javascript">
-      const boardNo = /*[[${boardNo}]]*/ "게시판 번호";
+      const boardNo = /*[[${boardInfo.boardNo}]]*/ "게시판 번호";
+      const memberNo =
+        /*[[${session.loginMember?.memberNo}]]*/ "로그인한 유저 번호";
+      let likeCheck = Number(/*[[${boardInfo.likeCheck}]]*/ 0);
+      let scrapCheck = Number(/*[[${boardInfo.scrapCheck}]]*/ 0);
     </script>
     <script
       src="https://kit.fontawesome.com/c0777c617e.js"
       crossorigin="anonymous"
     ></script>
-    <script src="/js/board/freeBoardDetail.js"></script>
+    <script src="/js/board/boardDetail.js"></script>
   </body>
 </html>
