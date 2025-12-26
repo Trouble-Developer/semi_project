@@ -34,12 +34,12 @@ let authSec = 59; // 남은 시간 (초)
 
 // ===== 3. 유효성 검사 함수 정의 =====
 
-/** 이름 유효성 검사 함수
- * - 한글 2글자 이상이어야 함
- * - 공백 제거 후 검사
- * @returns {boolean} true: 통과, false: 실패
- */
-const validateName = () => {
+    /** 이름 유효성 검사 함수
+     * - 한글 2글자 이상이어야 함
+     * - 공백 제거 후 검사
+     * @returns {boolean} true: 통과, false: 실패
+     */
+    const validateName = () => {
     
     // 입력값 가져오기 (앞뒤 공백 제거)
     const nameValue = memberName.value.trim();
@@ -71,12 +71,12 @@ const validateName = () => {
 };
 
 
-/** 주민번호 유효성 검사 함수
- * - 앞자리: 6자리 숫자 (생년월일)
- * - 뒷자리: 1자리 숫자 (성별)
- * @returns {boolean} true: 통과, false: 실패
- */
-const validateRrn = () => {
+    /** 주민번호 유효성 검사 함수
+     * - 앞자리: 6자리 숫자 (생년월일)
+     * - 뒷자리: 1자리 숫자 (성별)
+     * @returns {boolean} true: 통과, false: 실패
+     */
+    const validateRrn = () => {
     
     // 입력값 가져오기 (앞뒤 공백 제거)
     const rrn1 = memberRrn1.value.trim(); // 앞 6자리
@@ -155,12 +155,12 @@ const validateEmail = () => {
  * - 시간 종료 시 인증 불가능하게 처리
  */ 
 
-function checkTime() {
+    function checkTime() {
 
     // 1초 감소
     authSec--;
 
-    // 초가 0미만이 되면 (음수)
+    // 초가 0미만이 되면 
     if(authSec < 0) {
         authMin--; // 분을 -1 감소
         authSec = 59; // 초를 59부터 시작하는걸로 재설정
@@ -168,7 +168,7 @@ function checkTime() {
 
     }
          
-     // 시간이 모두 소진되면 (분이 음수)
+     // 시간이 모두 소진되면
      if(authMin < 0) {
 
         // clearInterval() : 타이머 중지
@@ -202,15 +202,15 @@ function checkTime() {
        // 결과 예: "04:59", "03:30", "00:05"
      }
 
-// ===== 5. 이벤트 리스너 등록 =====
+    // ===== 5. 이벤트 리스너 등록 =====
 
-/** 인증번호 발송 버튼 클릭 이벤트
- * 동작 순서:
- * 1. 이름, 주민번호, 이메일 유효성 검사
- * 2. 모두 통과하면 이메일로 인증번호 발송 (AJAX)
- * 3. 발송 성공 시 타이머 시작 (5분 카운트다운)
- */
-sendAuthKeyBtn.addEventListener("click", () => {
+    /** 인증번호 발송 버튼 클릭 이벤트
+     * 동작 순서:
+     * 1. 이름, 주민번호, 이메일 유효성 검사
+     * 2. 모두 통과하면 이메일로 인증번호 발송 (AJAX)
+     * 3. 발송 성공 시 타이머 시작 (5분 카운트다운)
+     */
+    sendAuthKeyBtn.addEventListener("click", () => {
     
     // 단계 1: 유효성 검사 (하나라도 실패하면 즉시 중단)
     // return: 함수 즉시 종료 (아래 코드 실행 안 됨)
@@ -284,14 +284,12 @@ sendAuthKeyBtn.addEventListener("click", () => {
         // 확인 버튼 활성화
         checkAuthKeyBtn.disabled = false;
     })
-    .catch(err => {
-        // 에러 발생 시 실행
+     .catch(err => {
         console.error("에러 발생:", err);
         alert("인증번호 발송 중 문제가 발생했습니다.");
     });
     
-  });
-
+});  
 
     /** 확인 버튼 클릭 이벤트 (인증 확인 + 아이디 찾기)
      * 동작 순서:
@@ -375,30 +373,174 @@ sendAuthKeyBtn.addEventListener("click", () => {
         alert("인증 확인 중 문제가 발생했습니다.");
     });
     
-});
+    });
 
-// ======== 6. 아이디 찾기 함수 ======
+    // ======== 6. 아이디 찾기 함수 ======
 
-/** 아이디 찾기 실행 함수
- * - 인증 완료 후 자동으로 실행됨
- * - 이름 + 주민번호 + 이메일을 서버로 전송
- * - 일치하는 회원의 아이디와 가입일자를 받아서 화면에 표시
- * 
- * 동작 흐름:
- * 1. 주민번호 7자리 합치기 (앞 6자리 + 뒤 1자리)
- * 2. 서버에 POST 요청으로 데이터 전송
- * 3. 서버에서 DB 조회 후 결과 반환
- * 4. 성공 시: 아이디 + 가입일자 화면에 표시
- *    실패 시: 에러 메시지 표시
- */
-function findMemberId() {
- 
-        // 주민번호 앞 6자리 + 뒤 1자리 합치기
-        // 예: memberRrn1 = "950315", memberRrn2 = "1"
-        //     → fullRrn = "9503151" (7자리)
-         const fullRrn = memberRrn1.value + memberRrn2.value;
+    /** 아이디 찾기 실행 함수
+     * - 인증 완료 후 자동으로 실행됨
+     * - 이름 + 주민번호 + 이메일을 서버로 전송
+     * - 일치하는 회원의 아이디와 가입일자를 받아서 화면에 표시
+     * 
+     * 동작 흐름:
+     * 1. 주민번호 7자리 합치기 (앞 6자리 + 뒤 1자리)
+     * 2. 서버에 POST 요청으로 데이터 전송
+     * 3. 서버에서 DB 조회 후 결과 반환
+     * 4. 성공 시: 아이디 + 가입일자 화면에 표시
+     *    실패 시: 에러 메시지 표시
+     */
+    function findMemberId() {
+    
+         
+
+    // 서버로 보낼 데이터 객체 생성
+    // JavaScript 객체 형태로 먼저 만듦
+    const findData = {
+        memberName: memberName.value.trim(),   // 이름
+        memberRrn: fullRrn,                    // 주민번호 7자리
+        memberEmail: memberEmail.value.trim()  // 이메일
+    };
+
+    // 디버깅용 - 전송할 데이터 확인
+    console.log("아이디 찾기 요청 데이터:", findData);
+
+    // ===== AJAX: 아이디 찾기 요청 =====
+    
+    fetch("/member/findId", {  // 요청 URL
+        
+        method: "POST",  // POST: 데이터 전송
+        
+        // 요청 헤더 설정
+        // JSON 형식으로 데이터를 보낸다고 서버에 알림
+        headers: {"Content-Type": "application/json"},
+        
+        // 요청 본문(body)
+        // JSON.stringify(): JavaScript 객체를 JSON 문자열로 변환
+        // 서버는 JSON 문자열만 이해할 수 있음
+        // 예: {memberName: "홍길동"} → '{"memberName":"홍길동"}'
+        body: JSON.stringify(findData)
+    })
+    .then(response => {
+        // 서버 응답 받기
+        if(response.ok) {  // HTTP 상태코드 200~299 (성공)
+            // response.json(): 응답 데이터를 JSON 객체로 변환
+            // JSON 문자열 → JavaScript 객체
+            return response.json();
+        }
+        // 에러 발생 시 catch로 이동
+        throw new Error("아이디 조회 실패");
+    })
+    .then(data => {
+        // 서버에서 받은 데이터 처리
+        // data: JavaScript 객체로 변환된 응답 데이터
+        console.log("서버 응답 데이터:", data);
+        
+        // 예상 응답 형태:
+        // 성공 시: 
+        //   { 
+        //     memberId: "user01", 
+        //     enrollDate: "2024년 12월 26일" 
+        //   }
+        // 실패 시: 
+        //   { 
+        //     message: "일치하는 회원이 없습니다" 
+        //   }
+        
+        // memberId 속성이 있으면 = 아이디 찾기 성공
+       
+        if(data.memberId) {
+            // 아이디 찾기 성공!
+            
+            // 찾은 아이디를 화면에 표시
+            // innerText: HTML 요소의 텍스트 내용 변경
+            resultId.innerText = data.memberId;
+            
+            // 가입일자를 화면에 표시
+            enrollDate.innerText = "가입일: " + data.enrollDate;
+            
+            // 결과 영역 보이기
+            // style.display: CSS display 속성 변경
+            // "none" → "block": 숨김 → 보임
+            resultArea.style.display = "block";
+            
+            // 선택사항: 입력 폼 숨기기 (깔끔한 UI를 위해)
+            // 필요하면 주석 해제
+            // document.querySelector("#findIdForm").style.display = "none";
+            
+        } else {
+            // 일치하는 회원 없음
+            // data.message가 있으면 그 메시지 표시, 없으면 기본 메시지
+            alert(data.message || "입력하신 정보와 일치하는 회원이 없습니다.");
+        }
+    })
+    .catch(err => {
+        // 에러 발생 시 실행
+        // 네트워크 오류, 서버 오류 등
+        console.error("아이디 찾기 에러:", err);
+        alert("아이디 찾기 중 문제가 발생했습니다.\n잠시 후 다시 시도해주세요.");
+    });
+    }
 
 
+    // ===== 7. 실시간 유효성 검사 이벤트 리스너 =====
+    // 사용자가 입력할 때마다 실시간으로 검사
+
+    /** 이름 입력 시 실시간 검사
+     * input 이벤트: 키보드로 입력값이 바뀔 때마다 발생
+     * 동작 예시:
+     *   사용자가 "홍" 입력 → validateName() 실행 → "한글 2글자 이상" 에러
+     *   사용자가 "홍길" 입력 → validateName() 실행 → 통과 
+     *   사용자가 "홍길동" 입력 → validateName() 실행 → 통과 
+     */
+    memberName.addEventListener("input", validateName);
+
+    /** 주민번호 입력 시 실시간 검사
+     * 앞자리, 뒷자리 둘 다 같은 검사 함수 사용
+     * 둘 중 하나라도 변경되면 validateRrn() 실행
+     */
+    memberRrn1.addEventListener("input", validateRrn);
+    memberRrn2.addEventListener("input", validateRrn);
+
+    /** 이메일 입력 시 실시간 검사
+     * 이메일 형식에 맞는지 입력할 때마다 확인
+     */
+    memberEmail.addEventListener("input", validateEmail);
 
 
+    // ===== 8. 페이지 이동 버튼 이벤트 =====
+
+    /** 로그인 페이지로 이동 버튼
+     * - 아이디를 찾았으니 로그인하러 가기
+     * - 클릭 시 /member/login 페이지로 이동
+     */
+    const goToLoginBtn = document.querySelector("#goToLoginBtn");
+
+    // 버튼이 HTML에 존재하는지 확인
+    // null이 아니면 = 버튼이 있으면
+    if(goToLoginBtn) {
+        goToLoginBtn.addEventListener("click", () => {
+            // location.href: 현재 페이지를 다른 페이지로 이동시킨
+            // 페이지 전체가 새로고침되면서 이동
+            location.href = "/member/login";
+        });
+    }
+
+
+    /** 비밀번호 찾기 페이지로 이동 버튼
+     * - 아이디는 찾았는데 비밀번호를 모를 때 사용
+     * - 찾은 아이디를 쿼리스트링으로 전달 (선택사항)
+     * - 예: /member/findPw?memberId=user01
+     */
+    const goToFindPwBtn = document.querySelector("#goToFindPwBtn");
+
+    if(goToFindPwBtn) {
+        goToFindPwBtn.addEventListener("click", () => {
+        
+        // 찾은 아이디를 가져오기
+        const memberId = resultId.innerText;
+        
+        // 쿼리스트링으로 아이디를 파라미터로 전달
+        // 비밀번호 찾기 페이지에서 이 아이디를 미리 입력해줄 수 있음
+        location.href = "/member/findPw?memberId=" + memberId;
+    });
 }
