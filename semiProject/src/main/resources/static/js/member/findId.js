@@ -25,8 +25,12 @@ const enrollDate = document.querySelector("#enrollDate");     // 가입일자 �
 
 // 인증번호 발송 여부를 체크하는 변수
 // true: 인증번호 발송됨, false: 발송 안 됨
-let authKeyCheck = false;
+let authKeyCheck = false; // 이메일 인증 완료 여부 (true : 완료, false : 미완료)
 
+// 인증번호 시간 제한 둬야지(5분으로 제한)
+let authTimer; // setInterval()이 반환하는 타이머 ID 저장
+let authMin = 4; // 남은 시간(분) , 4분59초 부터 시작하니깐
+let authSec = 59; // 남은 시간 (초)
 
 // ===== 3. 유효성 검사 함수 정의 =====
 
@@ -143,65 +147,164 @@ const validateEmail = () => {
     return true; // 성공
 };
 
+// ========= 4. 타이머 함수 =======
 
-// ===== 4. 이벤트 리스너 등록 =====
+/** 인증번호 시간 제한 카운트다운
+ * - 1초마다 자동 실행 (setInterval로 호출)
+ * - 화면에 남은 시간을 "MM:SS" 형식으로 표시
+ * - 시간 종료 시 인증 불가능하게 처리
+ */ 
+
+function checkTime() {
+
+    // 1초 감소
+    authSec--;
+
+    // 초가 0미만이 되면 (음수)
+    if(authSec < 0) {
+        authMin--; // 분을 -1 감소
+        authSec = 59; // 초를 59부터 시작하는걸로 재설정
+            // 예) 03:00 -> 02:59
+
+    }
+         
+     // 시간이 모두 소진되면 (분이 음수)
+     if(authMin < 0) {
+
+        // clearInterval() : 타이머 중지
+        clearInterval(authTimer);
+
+        // 만료 메시지 표시
+        authKeyMessage.innerText = "인증 시간이 만료되었습니다.";
+        authKeyMessage.classList.remove("confirm"); 
+        // 초록색 제거
+        // -> 여기서 초록색 제거란.. 시간이 흐를때를 말하는거
+
+        authKeyMessage.classList.add("error"); // 빨간색 적용
+
+        //  확인 버튼 비활성화
+        checkAuthKeyBtn.disabled = true;
+
+        // 인증 실패 처리
+        authKeyCheck = false;
+
+        return; // 함수 종료 (아래 코드 실행 안 됨)
+     }
+
+      // 남은 시간을 화면에 표시
+      // String(): 숫자를 문자열로 변환
+      // padStart(2, '0'): 2자리로 만들고, 부족하면 앞에 '0' 추가
+      // 원래 4:5 이런식으로 노출되는데 04:05 4분 5초를 이렇게 표시 해준다고 함
+      // 예: 5 → "05", 30 → "30"
+       authKeyMessage.innerText = 
+        String(authMin).padStart(2, '0') + ":" + 
+        String(authSec).padStart(2, '0');
+       // 결과 예: "04:59", "03:30", "00:05"
+     }
+
+// ===== 5. 이벤트 리스너 등록 =====
 
 /** 인증번호 발송 버튼 클릭 이벤트
  * 동작 순서:
  * 1. 이름, 주민번호, 이메일 유효성 검사
  * 2. 모두 통과하면 이메일로 인증번호 발송 (AJAX)
- * 3. 발송 성공 시 authKeyCheck = true
+ * 3. 발송 성공 시 타이머 시작 (5분 카운트다운)
  */
 sendAuthKeyBtn.addEventListener("click", () => {
     
-    // 단계 1: 유효성 검사 (하나라도 실패하면 중단)
+    // 단계 1: 유효성 검사 (하나라도 실패하면 즉시 중단)
     // return: 함수 즉시 종료 (아래 코드 실행 안 됨)
     if(!validateName()) return;    // 이름 검사 실패 시 중단
     if(!validateRrn()) return;     // 주민번호 검사 실패 시 중단
     if(!validateEmail()) return;   // 이메일 검사 실패 시 중단
     
-    // 모든 검사 통과 시 이 코드 실행
     
-    // TODO: AJAX로 이메일 인증번호 발송 요청
-    // 나중에 구현할 부분 (3단계 이후)
+    // ===== AJAX: 서버에 인증번호 발송 요청 =====
     
-    // 개발 중 확인용 콘솔 출력
-    console.log("===== 인증번호 발송 요청 =====");
-    console.log("이름:", memberName.value);
-    console.log("주민번호:", memberRrn1.value + "-" + memberRrn2.value);
-    console.log("이메일:", memberEmail.value);
-    console.log("=============================");
+    // fetch(): JavaScript의 비동기 통신 함수
+    // - 서버와 데이터를 주고받을 때 사용
+    // - Promise 기반으로 동작 (then, catch로 결과 처리)
     
-    /* 나중에 추가할 AJAX 코드 예시:
-    fetch("/email/sendAuthKey", {
-        method: "POST",
+    fetch("/email/sendAuthKey", { 
+
+        method: "POST", // HTTP 메서드 (POST: 데이터 전송)
+
+        // 요청 헤더 설정
+        // Content-Type: 전송하는 데이터 형식 지정
         headers: {"Content-Type": "application/json"},
+
+        // 요청 본문(body): 서버로 보낼 데이터
+        // JSON.stringify(): JavaScript 객체 → JSON 문자열 변환
+        // 예: {email: "test@test.com"} → '{"email":"test@test.com"}'
         body: JSON.stringify({
             email: memberEmail.value
         })
     })
-    .then(response => response.text())
-    .then(authKey => {
-        if(authKey != null) {
-            alert("인증번호가 발송되었습니다.");
-            authKeyCheck = true; // 발송 성공
+    .then(response => { 
+        // 서버 응답 받기
+        // response.ok: HTTP 상태코드가 200~299이면 true
+        if(response.ok) {
+            return response.text();  // 응답 본문을 텍스트로 변환
         }
+        // 에러 발생 시 catch로 이동
+        throw new Error("인증번호 발송 실패");
+    })
+    .then(result => {
+        // 발송 성공 시 실행
+        console.log("인증번호 발송 결과:", result);
+        
+        alert("인증번호가 발송되었습니다.\n이메일을 확인해주세요.");
+        
+        // 인증번호 입력칸에 포커스 (커서 이동)
+        authKey.focus();
+        
+        
+        // ===== 타이머 시작 =====
+        
+        // 초기 시간 표시 (05:00)
+        authKeyMessage.innerText = "05:00";
+        authKeyMessage.classList.add("confirm");    // 초록색
+        authKeyMessage.classList.remove("error");   // 빨간색 제거
+        
+        // 기존 타이머가 실행 중이면 중지
+        // undefined가 아니면 = 이미 타이머가 있으면
+        if(authTimer != undefined) {
+            clearInterval(authTimer);
+        }
+        
+        // 타이머 변수 초기화
+        authMin = 4;   // 4분
+        authSec = 59;  // 59초
+        
+        // setInterval(함수, 시간): 일정 시간마다 함수 반복 실행
+        // 1000 = 1000밀리초 = 1초
+        // checkTime 함수를 1초마다 실행
+        authTimer = setInterval(checkTime, 1000);
+        
+        // 확인 버튼 활성화
+        checkAuthKeyBtn.disabled = false;
+    })
+    .catch(err => {
+        // 에러 발생 시 실행
+        console.error("에러 발생:", err);
+        alert("인증번호 발송 중 문제가 발생했습니다.");
     });
-    */
     
-});
+  });
 
 
-    /** 확인 버튼 클릭 이벤트 (아이디 찾기 실행)
+    /** 확인 버튼 클릭 이벤트 (인증 확인 + 아이디 찾기)
      * 동작 순서:
      * 1. 인증번호 입력 확인
      * 2. 이름, 주민번호, 이메일 재확인
-     * 3. 서버에 아이디 찾기 요청 (AJAX)
-     * 4. 결과 화면 표시
+     * 3. 서버에 인증번호 확인 요청 (AJAX)
+     * 4. 인증 성공 시 아이디 찾기 자동 실행
+     * 5. 결과 화면 표시
      */
     checkAuthKeyBtn.addEventListener("click", () => {
-    
+        
     // 단계 1: 인증번호 입력했는지 확인
+    // trim(): 공백 제거 후 길이가 0이면 = 입력 안 한 것
     if(authKey.value.trim().length == 0) {
         authKeyMessage.innerText = "인증번호를 입력해주세요.";
         authKeyMessage.classList.add("error");
@@ -209,77 +312,93 @@ sendAuthKeyBtn.addEventListener("click", () => {
         return; // 중단
     }
     
-    // 단계 2: 유효성 검사 재확인 (사용자가 값을 바꿨을 수도 있음)
+    // 단계 2: 유효성 검사 재확인
+    // 사용자가 인증번호 발송 후 이름, 주민번호, 이메일을 바꿨을 수도 있음
     if(!validateName()) return;
     if(!validateRrn()) return;
     if(!validateEmail()) return;
     
-    // 단계 3: 모든 검사 통과 시
     
-    // TODO: AJAX로 인증번호 확인 + 아이디 찾기 요청
-    // 나중에 구현할 부분 (4단계 이후)
+    // ===== AJAX: 인증번호 확인 요청 =====
     
-    // 개발 중 확인용 콘솔 출력
-    console.log("===== 아이디 찾기 요청 =====");
-    console.log("이름:", memberName.value);
-    console.log("주민번호:", memberRrn1.value + "-" + memberRrn2.value);
-    console.log("이메일:", memberEmail.value);
-    console.log("인증번호:", authKey.value);
-    console.log("===========================");
-    
-    /* 나중에 추가할 AJAX 코드 예시:
-    fetch("/member/findId", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({
-            memberName: memberName.value,
-            memberRrn: memberRrn1.value + "-" + memberRrn2.value,
-            memberEmail: memberEmail.value,
-            authKey: authKey.value
-        })
-    })
-    .then(response => response.json())
-    .then(result => {
-        if(result.memberId != null) {
-            // 아이디 찾기 성공
-            resultId.innerText = result.memberId;     // abc***
-            enrollDate.innerText = result.enrollDate;  // 2024-01-15
-            resultArea.style.display = "block";        // 결과 영역 보이기
-        } else {
-            // 실패 (일치하는 회원 없음)
-            alert("일치하는 회원 정보가 없습니다.");
-        }
+    // URLSearchParams: 쿼리스트링을 쉽게 만들어주는 객체
+    // 결과: ?email=test@test.com&authKey=123456 형식으로 변환됨
+    const params = new URLSearchParams({
+        email: memberEmail.value,
+        authKey: authKey.value
     });
-    */
-    
-    // 임시 테스트용 - 결과 화면 표시 (실제 개발 시 삭제)
-    // resultArea.style.display = "block";
-    // resultId.innerText = "abc***";
-    // enrollDate.innerText = "2024-01-15";
+
+    // GET 방식으로 인증번호 확인 요청
+    fetch("/email/checkAuthKey?" + params, {
+        method: "GET"  // GET: 데이터 조회
+    })
+    .then(response => response.text())  // 응답을 텍스트로 변환
+    .then(result => {
+        
+        // 서버에서 받은 결과 확인
+        console.log("인증 확인 결과:", result);
+        
+        // 서버 응답 값:
+        // - 1 이상: 인증 성공 (DB에서 일치하는 인증번호 찾음)
+        // - 0: 인증 실패 (인증번호 불일치 또는 만료됨)
+        
+        if(result > 0) {
+            // 인증 성공!
+            
+            // 타이머 중지 (더 이상 시간 카운트다운 필요 없음)
+            clearInterval(authTimer);
+            
+            // 성공 메시지 표시
+            authKeyMessage.innerText = "✓ 인증되었습니다.";
+            authKeyMessage.classList.add("confirm");    // 초록색
+            authKeyMessage.classList.remove("error");   // 빨간색 제거
+            
+            // 인증 완료 플래그 설정 (전역변수)
+            authKeyCheck = true;
+            
+            // 확인 버튼 비활성화 (중복 클릭 방지)
+            checkAuthKeyBtn.disabled = true;
+            
+            
+            // ===== 인증 성공 시 아이디 찾기 자동 실행 =====
+            findMemberId();  // 아이디 찾기 함수 호출
+            
+        } else {
+            //  인증 실패
+            alert("인증번호가 일치하지 않습니다.");
+            authKeyCheck = false;
+        }
+    })
+    .catch(err => {
+        // 에러 발생 시 (네트워크 오류 등)
+        console.error("인증 확인 에러:", err);
+        alert("인증 확인 중 문제가 발생했습니다.");
+    });
     
 });
 
+// ======== 6. 아이디 찾기 함수 ======
 
-// ===== 5. 실시간 유효성 검사 이벤트 리스너 =====
-// 사용자가 입력할 때마다 실시간으로 검사
-
-/** 이름 입력 시 실시간 검사
- * input 이벤트: 입력값이 바뀔 때마다 발생
- * 예: 사용자가 "홍" 입력 → validateName() 실행
- *     사용자가 "홍길" 입력 → validateName() 실행
- *     사용자가 "홍길동" 입력 → validateName() 실행
+/** 아이디 찾기 실행 함수
+ * - 인증 완료 후 자동으로 실행됨
+ * - 이름 + 주민번호 + 이메일을 서버로 전송
+ * - 일치하는 회원의 아이디와 가입일자를 받아서 화면에 표시
+ * 
+ * 동작 흐름:
+ * 1. 주민번호 7자리 합치기 (앞 6자리 + 뒤 1자리)
+ * 2. 서버에 POST 요청으로 데이터 전송
+ * 3. 서버에서 DB 조회 후 결과 반환
+ * 4. 성공 시: 아이디 + 가입일자 화면에 표시
+ *    실패 시: 에러 메시지 표시
  */
-memberName.addEventListener("input", validateName);
-
-/** 주민번호 입력 시 실시간 검사
- * 앞자리, 뒷자리 둘 다 같은 검사 함수 사용
- */
-memberRrn1.addEventListener("input", validateRrn);
-memberRrn2.addEventListener("input", validateRrn);
-
-/** 이메일 입력 시 실시간 검사 */
-memberEmail.addEventListener("input", validateEmail);
+function findMemberId() {
+ 
+        // 주민번호 앞 6자리 + 뒤 1자리 합치기
+        // 예: memberRrn1 = "950315", memberRrn2 = "1"
+        //     → fullRrn = "9503151" (7자리)
+         const fullRrn = memberRrn1.value + memberRrn2.value;
 
 
-// ===== 코드 끝 =====
-// 다음 단계에서 AJAX 코드 추가 예정
+
+
+}
