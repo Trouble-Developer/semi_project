@@ -16,5 +16,9 @@ public interface MemberService {
 
 	Member findId(String memberName, String memberRrn1, String memberEmail);
 
+	Member findPw(String memberId, String memberName, String memberRrn1, String memberEmail);
+
+	int resetPw(String memberId, String newPw);
+
 	
 }

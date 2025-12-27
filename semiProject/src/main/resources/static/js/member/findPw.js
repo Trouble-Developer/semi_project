@@ -1,17 +1,21 @@
 /**
- * 아이디 찾기 페이지 JavaScript
+ * 비밀번호 찾기 페이지 JavaScript
  * 
  * [기능 설명]
- * - 이름, 주민번호, 이메일 유효성 검사
+ * - 아이디, 이름, 주민번호, 이메일 유효성 검사
  * - 이메일 인증번호 발송 및 확인
- * - 인증 완료 시 아이디 찾기 자동 실행
+ * - 인증 완료 시 회원 정보 확인
+ * - 새 비밀번호 입력 및 유효성 검사
+ * - 비밀번호 변경 처리
  * 
  * [동작 흐름]
- * 1. 사용자가 이름, 주민번호, 이메일 입력
+ * 1. 사용자가 아이디, 이름, 주민번호, 이메일 입력
  * 2. "인증번호 발송" 버튼 클릭 → 이메일로 인증번호 발송
  * 3. 5분 타이머 시작
  * 4. 사용자가 인증번호 입력 후 "확인" 버튼 클릭
- * 5. 인증 성공 시 → 아이디 찾기 자동 실행 → 결과 화면 표시
+ * 5. 인증 성공 시 → 회원 정보 확인 → 비밀번호 재설정 영역 표시
+ * 6. 새 비밀번호 입력 후 "비밀번호 변경" 버튼 클릭
+ * 7. 서버에서 비밀번호 변경 처리 → 로그인 페이지로 이동
  * 
  */
 
@@ -20,26 +24,34 @@
 // ===========================================================================================
 
 // ----- 입력 필드 -----
+// [아이디 찾기와의 차이점 1] 아이디 입력 필드 추가!
+const memberId = document.querySelector("#memberId");           // 아이디 입력칸
 const memberName = document.querySelector("#memberName");       // 이름 입력칸
 const memberRrn1 = document.querySelector("#memberRrn1");       // 주민번호 앞 6자리
 const memberRrn2 = document.querySelector("#memberRrn2");       // 주민번호 뒤 1자리
 const memberEmail = document.querySelector("#memberEmail");     // 이메일 입력칸
 const authKey = document.querySelector("#authKey");             // 인증번호 입력칸
 
+// [아이디 찾기와의 차이점 2] 새 비밀번호 입력 필드 추가!
+const newPw = document.querySelector("#newPw");                 // 새 비밀번호 입력칸
+const newPwConfirm = document.querySelector("#newPwConfirm");   // 새 비밀번호 확인 입력칸
+
 // ----- 버튼 -----
 const sendAuthKeyBtn = document.querySelector("#sendAuthKeyBtn");   // 인증번호 발송 버튼
 const checkAuthKeyBtn = document.querySelector("#checkAuthKeyBtn"); // 인증번호 확인 버튼
+const resetPwBtn = document.querySelector("#resetPwBtn");           // 비밀번호 변경 버튼
 
 // ----- 메시지 영역 (에러/성공 메시지 표시) -----
+const idMessage = document.querySelector("#idMessage");             // 아이디 메시지
 const nameMessage = document.querySelector("#nameMessage");         // 이름 메시지
 const rrnMessage = document.querySelector("#rrnMessage");           // 주민번호 메시지
 const emailMessage = document.querySelector("#emailMessage");       // 이메일 메시지
 const authKeyMessage = document.querySelector("#authKeyMessage");   // 인증번호 메시지
+const newPwMessage = document.querySelector("#newPwMessage");       // 새 비밀번호 메시지
+const newPwConfirmMessage = document.querySelector("#newPwConfirmMessage"); // 비밀번호 확인 메시지
 
 // ----- 결과 표시 영역 -----
-const resultArea = document.querySelector("#resultArea");       // 결과 전체 영역
-const resultId = document.querySelector("#resultId");           // 찾은 아이디 표시
-const enrollDate = document.querySelector("#enrollDate");       // 가입일자 표시
+const resultArea = document.querySelector("#resultArea");       // 결과 전체 영역 (비밀번호 재설정 폼)
 
 
 // ===========================================================================================
@@ -52,10 +64,52 @@ let authTimer;              // setInterval()이 반환하는 타이머 ID
 let authMin = 4;            // 남은 시간(분) - 4분 59초부터 시작
 let authSec = 59;           // 남은 시간(초)
 
+// 비밀번호 유효성 검사 상태 플래그
+let pwValidCheck = false;           // 비밀번호 유효성 검사 통과 여부
+let pwConfirmCheck = false;         // 비밀번호 일치 확인 통과 여부
+
 
 // ===========================================================================================
 // 3. 유효성 검사 함수
 // ===========================================================================================
+
+/**
+ * [새로 추가!] 아이디 유효성 검사
+ * - 조건: 영문 소문자로 시작, 영문 소문자+숫자 조합, 6~20자
+ * @returns {boolean} true: 통과, false: 실패
+ */
+const validateId = () => {
+    
+    // 입력값 가져오기 (앞뒤 공백 제거)
+    const idValue = memberId.value.trim();
+    
+    // 정규표현식: 영문 소문자로 시작, 영문 소문자+숫자 6~20자
+    // ^[a-z] : 소문자로 시작
+    // [a-z0-9]{5,19} : 그 다음부터 소문자+숫자 5~19자 (총 6~20자)
+    const regExp = /^[a-z][a-z0-9]{5,19}$/;
+    
+    // 검사 1: 빈 값 체크
+    if(idValue.length === 0) {
+        idMessage.innerText = "아이디를 입력해주세요.";
+        idMessage.classList.add("error");
+        idMessage.classList.remove("confirm");
+        return false;
+    }
+    
+    // 검사 2: 정규표현식 체크
+    if(!regExp.test(idValue)) {
+        idMessage.innerText = "영문 소문자로 시작, 영문 소문자+숫자 6~20자";
+        idMessage.classList.add("error");
+        idMessage.classList.remove("confirm");
+        return false;
+    }
+    
+    // 통과
+    idMessage.innerText = "";
+    idMessage.classList.remove("error");
+    return true;
+};
+
 
 /**
  * 이름 유효성 검사
@@ -161,6 +215,101 @@ const validateEmail = () => {
 };
 
 
+/**
+ * [새로 추가!] 새 비밀번호 유효성 검사
+ * - 조건: 영문 대/소문자, 숫자, 특수문자 포함 8~20자
+ * @returns {boolean} true: 통과, false: 실패
+ */
+const validateNewPw = () => {
+    
+    const pwValue = newPw.value.trim();
+    
+    // 검사 1: 빈 값 체크
+    if(pwValue.length === 0) {
+        newPwMessage.innerText = "새 비밀번호를 입력해주세요.";
+        newPwMessage.classList.add("error");
+        newPwMessage.classList.remove("confirm");
+        pwValidCheck = false;
+        return false;
+    }
+    
+    // 검사 2: 길이 체크 (8~20자)
+    if(pwValue.length < 8 || pwValue.length > 20) {
+        newPwMessage.innerText = "비밀번호는 8~20자로 입력해주세요.";
+        newPwMessage.classList.add("error");
+        newPwMessage.classList.remove("confirm");
+        pwValidCheck = false;
+        return false;
+    }
+    
+    // 정규표현식: 영문 대/소문자, 숫자, 특수문자 각각 1개 이상 포함
+    // (?=.*[A-Z]) : 대문자 최소 1개
+    // (?=.*[a-z]) : 소문자 최소 1개
+    // (?=.*[0-9]) : 숫자 최소 1개
+    // (?=.*[!@#$%^&*]) : 특수문자 최소 1개
+    const regExp = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,20}$/;
+    
+    // 검사 3: 정규표현식 체크
+    if(!regExp.test(pwValue)) {
+        newPwMessage.innerText = "영문 대/소문자, 숫자, 특수문자(!@#$%^&*) 각 1개 이상 포함";
+        newPwMessage.classList.add("error");
+        newPwMessage.classList.remove("confirm");
+        pwValidCheck = false;
+        return false;
+    }
+    
+    // 통과
+    newPwMessage.innerText = "✓ 사용 가능한 비밀번호입니다.";
+    newPwMessage.classList.add("confirm");
+    newPwMessage.classList.remove("error");
+    pwValidCheck = true;
+    
+    // 비밀번호 확인란이 이미 입력되어 있으면 일치 여부 다시 확인
+    if(newPwConfirm.value.trim().length > 0) {
+        validateNewPwConfirm();
+    }
+    
+    return true;
+};
+
+
+/**
+ * [새로 추가!] 새 비밀번호 확인 유효성 검사
+ * - 조건: 위에서 입력한 비밀번호와 일치
+ * @returns {boolean} true: 통과, false: 실패
+ */
+const validateNewPwConfirm = () => {
+    
+    const pwValue = newPw.value.trim();
+    const pwConfirmValue = newPwConfirm.value.trim();
+    
+    // 검사 1: 빈 값 체크
+    if(pwConfirmValue.length === 0) {
+        newPwConfirmMessage.innerText = "비밀번호 확인을 입력해주세요.";
+        newPwConfirmMessage.classList.add("error");
+        newPwConfirmMessage.classList.remove("confirm");
+        pwConfirmCheck = false;
+        return false;
+    }
+    
+    // 검사 2: 비밀번호 일치 여부 체크
+    if(pwValue !== pwConfirmValue) {
+        newPwConfirmMessage.innerText = "✗ 비밀번호가 일치하지 않습니다.";
+        newPwConfirmMessage.classList.add("error");
+        newPwConfirmMessage.classList.remove("confirm");
+        pwConfirmCheck = false;
+        return false;
+    }
+    
+    // 통과
+    newPwConfirmMessage.innerText = "✓ 비밀번호가 일치합니다.";
+    newPwConfirmMessage.classList.add("confirm");
+    newPwConfirmMessage.classList.remove("error");
+    pwConfirmCheck = true;
+    return true;
+};
+
+
 // ===========================================================================================
 // 4. 타이머 함수
 // ===========================================================================================
@@ -205,31 +354,35 @@ function checkTime() {
 
 
 // ===========================================================================================
-// 5. 아이디 찾기 함수
+// 5. 회원 정보 확인 함수
 // ===========================================================================================
 
 /**
- * 아이디 찾기 실행 함수
+ * [아이디 찾기와의 차이점 3] findMemberId() 대신 verifyMember() 함수 사용
+ * 
+ * 회원 정보 확인 함수
  * - 인증 완료 후 자동으로 호출됨
- * - 이름 + 주민번호 앞자리 + 이메일을 서버로 전송
- * - 일치하는 회원의 아이디와 가입일자를 받아서 화면에 표시
+ * - 아이디 + 이름 + 주민번호 앞자리 + 이메일을 서버로 전송
+ * - 4가지 정보가 모두 일치하는 회원이 있으면 비밀번호 재설정 영역 표시
  */
-function findMemberId() {
+function verifyMember() {
     
     // URLSearchParams로 파라미터 생성
     const params = new URLSearchParams();
+    params.append("memberId", memberId.value.trim());
     params.append("memberName", memberName.value.trim());
     params.append("memberRrn1", memberRrn1.value.trim());
     params.append("memberEmail", memberEmail.value.trim());
     
     // 디버깅용 로그
-    console.log("=== 아이디 찾기 요청 데이터 ===");
+    console.log("=== 회원 정보 확인 요청 데이터 ===");
+    console.log("아이디:", memberId.value.trim());
     console.log("이름:", memberName.value.trim());
     console.log("주민번호 앞자리:", memberRrn1.value.trim());
     console.log("이메일:", memberEmail.value.trim());
     
     // AJAX 요청
-    fetch("/member/findId", {
+    fetch("/member/findPw", {
         method: "POST",
         headers: {
             "Content-Type": "application/x-www-form-urlencoded"
@@ -240,7 +393,7 @@ function findMemberId() {
         if(response.ok) {
             return response.text();  // 먼저 text로 받기 (null 응답 대비)
         }
-        throw new Error("아이디 조회 실패");
+        throw new Error("회원 정보 조회 실패");
     })
     .then(text => {
         console.log("=== 서버 응답 원본 ===");
@@ -258,13 +411,15 @@ function findMemberId() {
         console.log("=== 파싱된 데이터 ===");
         console.log(data);
         
-        // 아이디 찾기 성공
-        if(data != null && data.memberId) {
-            console.log("✓ 아이디 찾기 성공!");
+        // 회원 정보 확인 성공
+        if(data != null && data.memberNo) {
+            console.log("✓ 회원 정보 확인 성공!");
             
-            resultId.innerText = data.memberId;
-            enrollDate.innerText = data.enrollDate;
+            // 비밀번호 재설정 영역 표시
             resultArea.style.display = "block";
+            
+            // 새 비밀번호 입력란으로 포커스 이동
+            newPw.focus();
             
         } else {
             // 일치하는 회원 없음
@@ -273,28 +428,125 @@ function findMemberId() {
         }
     })
     .catch(err => {
-        console.error("✗ 아이디 찾기 에러:", err);
-        alert("아이디 찾기 중 문제가 발생했습니다.");
+        console.error("✗ 회원 정보 확인 에러:", err);
+        alert("회원 정보 확인 중 문제가 발생했습니다.");
     });
     
-}   // findMemberId() 함수 끝
+}   // verifyMember() 함수 끝
 
 
 // ===========================================================================================
-// 6. 이벤트 리스너 - 인증번호 발송 버튼
+// 6. 비밀번호 변경 함수
+// ===========================================================================================
+
+/**
+ * [새로 추가!] 비밀번호 변경 함수
+ * - 새 비밀번호를 서버로 전송하여 DB 업데이트
+ * - 성공 시 로그인 페이지로 이동
+ */
+function resetPassword() {
+    
+    // 비밀번호 유효성 검사
+    if(!validateNewPw()) {
+        alert("비밀번호 형식을 확인해주세요.");
+        newPw.focus();
+        return;
+    }
+    
+    // 비밀번호 확인 검사
+    if(!validateNewPwConfirm()) {
+        alert("비밀번호 확인을 입력해주세요.");
+        newPwConfirm.focus();
+        return;
+    }
+    
+    // 비밀번호 일치 여부 최종 확인
+    if(!pwValidCheck || !pwConfirmCheck) {
+        alert("비밀번호를 다시 확인해주세요.");
+        return;
+    }
+    
+    // 확인 메시지
+    if(!confirm("비밀번호를 변경하시겠습니까?")) {
+        return;
+    }
+    
+    // URLSearchParams로 파라미터 생성
+    const params = new URLSearchParams();
+    params.append("memberId", memberId.value.trim());
+    params.append("newPw", newPw.value.trim());
+    
+    // 디버깅용 로그
+    console.log("=== 비밀번호 변경 요청 ===");
+    console.log("아이디:", memberId.value.trim());
+    console.log("새 비밀번호 길이:", newPw.value.trim().length);
+    
+    // 비밀번호 변경 버튼 비활성화 (중복 클릭 방지)
+    resetPwBtn.disabled = true;
+    resetPwBtn.innerText = "변경 중...";
+    
+    // AJAX 요청
+    fetch("/member/resetPw", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: params
+    })
+    .then(response => {
+        if(response.ok) {
+            return response.text();
+        }
+        throw new Error("비밀번호 변경 실패");
+    })
+    .then(result => {
+        console.log("=== 비밀번호 변경 결과 ===");
+        console.log(result);
+        
+        // 문자열을 숫자로 변환
+        const resultNum = parseInt(result);
+        
+        if(resultNum > 0) {
+            // 변경 성공
+            alert("비밀번호가 변경되었습니다.\n로그인 페이지로 이동합니다.");
+            location.href = "/member/login";
+        } else {
+            // 변경 실패
+            alert("비밀번호 변경에 실패했습니다.\n다시 시도해주세요.");
+            
+            // 버튼 다시 활성화
+            resetPwBtn.disabled = false;
+            resetPwBtn.innerText = "비밀번호 변경";
+        }
+    })
+    .catch(err => {
+        console.error("✗ 비밀번호 변경 에러:", err);
+        alert("비밀번호 변경 중 문제가 발생했습니다.");
+        
+        // 버튼 다시 활성화
+        resetPwBtn.disabled = false;
+        resetPwBtn.innerText = "비밀번호 변경";
+    });
+    
+}   // resetPassword() 함수 끝
+
+
+// ===========================================================================================
+// 7. 이벤트 리스너 - 인증번호 발송 버튼
 // ===========================================================================================
 
 /**
  * 인증번호 발송 버튼 클릭 이벤트
  * 
  * [동작 순서]
- * 1. 이름, 주민번호, 이메일 유효성 검사
+ * 1. 아이디, 이름, 주민번호, 이메일 유효성 검사
  * 2. 모두 통과하면 이메일로 인증번호 발송 (AJAX)
  * 3. 발송 성공 시 5분 타이머 시작
  */
 sendAuthKeyBtn.addEventListener("click", () => {
     
     // 유효성 검사 (하나라도 실패하면 중단)
+    if(!validateId()) return;       // [새로 추가!] 아이디 검사
     if(!validateName()) return;
     if(!validateRrn()) return;
     if(!validateEmail()) return;
@@ -353,7 +605,7 @@ sendAuthKeyBtn.addEventListener("click", () => {
 
 
 // ===========================================================================================
-// 7. 이벤트 리스너 - 인증번호 확인 버튼
+// 8. 이벤트 리스너 - 인증번호 확인 버튼
 // ===========================================================================================
 
 /**
@@ -363,7 +615,7 @@ sendAuthKeyBtn.addEventListener("click", () => {
  * 1. 인증번호 입력 확인
  * 2. 유효성 검사 재확인
  * 3. 서버에 인증번호 확인 요청 (AJAX)
- * 4. 인증 성공 시 아이디 찾기 자동 실행
+ * 4. 인증 성공 시 회원 정보 확인 자동 실행
  */
 checkAuthKeyBtn.addEventListener("click", () => {
     
@@ -376,6 +628,7 @@ checkAuthKeyBtn.addEventListener("click", () => {
     }
     
     // 유효성 검사 재확인
+    if(!validateId()) return;       // [새로 추가!] 아이디 검사
     if(!validateName()) return;
     if(!validateRrn()) return;
     if(!validateEmail()) return;
@@ -404,8 +657,8 @@ checkAuthKeyBtn.addEventListener("click", () => {
             authKeyCheck = true;
             checkAuthKeyBtn.disabled = true;
             
-            // 아이디 찾기 자동 실행
-            findMemberId();
+            // [아이디 찾기와의 차이점] 회원 정보 확인 자동 실행
+            verifyMember();
             
         } else {
             // 인증 실패
@@ -422,8 +675,27 @@ checkAuthKeyBtn.addEventListener("click", () => {
 
 
 // ===========================================================================================
-// 8. 이벤트 리스너 - 실시간 유효성 검사
+// 9. 이벤트 리스너 - 비밀번호 변경 버튼
 // ===========================================================================================
+
+/**
+ * [새로 추가!] 비밀번호 변경 버튼 클릭 이벤트
+ * 
+ * [동작 순서]
+ * 1. 새 비밀번호 유효성 검사
+ * 2. 비밀번호 확인 일치 여부 검사
+ * 3. 서버에 비밀번호 변경 요청 (AJAX)
+ * 4. 성공 시 로그인 페이지로 이동
+ */
+resetPwBtn.addEventListener("click", resetPassword);
+
+
+// ===========================================================================================
+// 10. 이벤트 리스너 - 실시간 유효성 검사
+// ===========================================================================================
+
+// 아이디 입력 시 실시간 검사
+memberId.addEventListener("input", validateId);
 
 // 이름 입력 시 실시간 검사
 memberName.addEventListener("input", validateName);
@@ -435,27 +707,38 @@ memberRrn2.addEventListener("input", validateRrn);
 // 이메일 입력 시 실시간 검사
 memberEmail.addEventListener("input", validateEmail);
 
+// [새로 추가!] 새 비밀번호 입력 시 실시간 검사
+newPw.addEventListener("input", validateNewPw);
+
+// [새로 추가!] 새 비밀번호 확인 입력 시 실시간 검사
+newPwConfirm.addEventListener("input", validateNewPwConfirm);
+
 
 // ===========================================================================================
-// 9. 이벤트 리스너 - 페이지 이동 버튼
+// 11. 페이지 로드 완료 시 실행
 // ===========================================================================================
 
-// ----- 로그인 페이지로 이동 -----
-const goToLoginBtn = document.querySelector("#goToLoginBtn");
+/**
+ * 페이지 로드 완료 시 초기화 작업
+ */
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("=== 비밀번호 찾기 페이지 로드 완료 ===");
+    
+    // 첫 번째 입력칸(아이디)에 포커스
+    memberId.focus();
+    
+    // 비밀번호 재설정 영역 숨김 (초기 상태)
+    if(resultArea) {
+        resultArea.style.display = "none";
+    }
+    
+    // 비밀번호 변경 버튼 초기 상태 (활성화)
+    if(resetPwBtn) {
+        resetPwBtn.disabled = false;
+    }
+});
 
-if(goToLoginBtn) {
-    goToLoginBtn.addEventListener("click", () => {
-        location.href = "/member/login";
-    });
-}
 
-// ----- 비밀번호 찾기 페이지로 이동 -----
-const goToFindPwBtn = document.querySelector("#goToFindPwBtn");
-
-if(goToFindPwBtn) {
-    goToFindPwBtn.addEventListener("click", () => {
-        // 찾은 아이디를 쿼리스트링으로 전달
-        const memberId = resultId.innerText;
-        location.href = "/member/findPw?memberId=" + memberId;
-    });
-}
+// ===========================================================================================
+// 끝!!!!!!!!!!!!!!!제발..
+// ===========================================================================================
