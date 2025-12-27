@@ -39,13 +39,13 @@ public interface MemberMapper {
 	Member login(String memberId);
 
 	/** 아이디 찾기
-	 * @param memberNickname : 이름
+	 * @param memberName : 이름
 	 * @param memberRrn1 : 주민번호 앞자리
 	 * @param memberEmail : 이메일
 	 * @return Member 객체 (조회 성공) 또는 null (조회 실패)
 	 */
 	 Member findId(
-		        @Param("memberNickname") String memberNickname,
+		        @Param("memberName") String memberName,
 		        @Param("memberRrn1") String memberRrn1,
 		        @Param("memberEmail") String memberEmail
 		 );       

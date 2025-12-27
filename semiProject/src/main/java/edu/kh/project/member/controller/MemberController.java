@@ -146,7 +146,7 @@ public class MemberController {
 	 @ResponseBody  // 리턴값을 HTTP 응답 본문(JSON)으로 변환 (AJAX 요청이므로 필수!)
 	 @PostMapping("findId")  // /member/findId POST 요청 처리
 	 public Member findId(
-		    @RequestParam("memberNickname") String memberNickname,  // 이름 파라미터
+			 @RequestParam("memberName") String memberName,
 		    @RequestParam("memberRrn1") String memberRrn1,          // 주민번호 앞자리 파라미터
 		    @RequestParam("memberEmail") String memberEmail         // 이메일 파라미터
 		) {
@@ -155,7 +155,7 @@ public class MemberController {
 	    // - 3개 파라미터가 모두 일치하는 회원 찾기
 	    // - 조회 성공 시: Member 객체 리턴 (memberId, enrollDate 포함)
 	    // - 조회 실패 시: null 리턴
-	    Member findMember = service.findId(memberNickname, memberRrn1, memberEmail);
+		 Member findMember = service.findId(memberName, memberRrn1, memberEmail);
 	    
 	    // @ResponseBody 덕분에 Member 객체가 자동으로 JSON으로 변환되어 응답됨
 	    // 예시: { "memberId": "user123", "enrollDate": "2024년 01월 15일", ... }

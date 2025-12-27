@@ -89,7 +89,7 @@ public class MemberServiceImpl implements MemberService {
     
     // 아이디 찾기
     @Override
-    public Member findId(String memberNickname, String memberRrn1, String memberEmail) {
-        return mapper.findId(memberNickname, memberRrn1, memberEmail);
+    public Member findId(String memberName, String memberRrn1, String memberEmail) {
+        return mapper.findId(memberName, memberRrn1, memberEmail);
     }
 }

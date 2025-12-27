@@ -14,6 +14,7 @@ public interface MemberService {
 
 	Member login(Member inputMember);
 
-	Member findId(String memberNickname, String memberRrn1, String memberEmail);
+	Member findId(String memberName, String memberRrn1, String memberEmail);
 
+	
 }
