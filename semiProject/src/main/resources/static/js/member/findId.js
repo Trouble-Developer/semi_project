@@ -398,7 +398,7 @@ function findMemberId() {
     // FormData: HTML form 데이터를 쉽게 전송하기 위한 객체
     const formData = new FormData();
     
-    // ✅ Controller 파라미터 이름에 정확히 맞춰서 추가
+    // Controller 파라미터 이름에 정확히 맞춰서 추가
     formData.append("memberNickname", memberName.value.trim());  // 이름
     formData.append("memberRrn1", memberRrn1.value.trim());      // 주민번호 앞 6자리만
     formData.append("memberEmail", memberEmail.value.trim());    // 이메일
@@ -413,7 +413,7 @@ function findMemberId() {
     
     fetch("/member/findId", {
         method: "POST",
-        body: formData  // ✅ FormData로 전송 (headers 불필요)
+        body: formData  // FormData로 전송 (headers 불필요)
     })
     .then(response => {
         if(response.ok) {
@@ -427,100 +427,24 @@ function findMemberId() {
         
         // data가 null이 아니고 memberId가 있으면 성공
         if(data != null && data.memberId) {
-            // ✅ 아이디 찾기 성공!
-            console.log("✅ 아이디 찾기 성공!");
+            // 아이디 찾기 성공!
+            console.log(" 아이디 찾기 성공!");
             
             resultId.innerText = data.memberId;
             enrollDate.innerText = data.enrollDate;
             resultArea.style.display = "block";
             
         } else {
-            // ❌ 일치하는 회원 없음
-            console.log("❌ 일치하는 회원 없음");
+            //  일치하는 회원 없음
+            console.log(" 일치하는 회원 없음");
             alert("입력하신 정보와 일치하는 회원이 없습니다.");
         }
     })
     .catch(err => {
-        console.error("❌ 아이디 찾기 에러:", err);
+        console.error(" 아이디 찾기 에러:", err);
         alert("아이디 찾기 중 문제가 발생했습니다.");
     });
 }
-    // ===== AJAX: 아이디 찾기 요청 =====
-    
-    fetch("/member/findId", {  // 요청 URL
-        
-        method: "POST",  // POST: 데이터 전송
-        
-        // 요청 헤더 설정
-        // JSON 형식으로 데이터를 보낸다고 서버에 알림
-        headers: {"Content-Type": "application/json"},
-        
-        // 요청 본문(body)
-        // JSON.stringify(): JavaScript 객체를 JSON 문자열로 변환
-        // 서버는 JSON 문자열만 이해할 수 있음
-        // 예: {memberName: "홍길동"} → '{"memberName":"홍길동"}'
-        body: JSON.stringify(findData)
-    })
-    .then(response => {
-        // 서버 응답 받기
-        if(response.ok) {  // HTTP 상태코드 200~299 (성공)
-            // response.json(): 응답 데이터를 JSON 객체로 변환
-            // JSON 문자열 → JavaScript 객체
-            return response.json();
-        }
-        // 에러 발생 시 catch로 이동
-        throw new Error("아이디 조회 실패");
-    })
-    .then(data => {
-        // 서버에서 받은 데이터 처리
-        // data: JavaScript 객체로 변환된 응답 데이터
-        console.log("서버 응답 데이터:", data);
-        
-        // 예상 응답 형태:
-        // 성공 시: 
-        //   { 
-        //     memberId: "user01", 
-        //     enrollDate: "2024년 12월 26일" 
-        //   }
-        // 실패 시: 
-        //   { 
-        //     message: "일치하는 회원이 없습니다" 
-        //   }
-        
-        // memberId 속성이 있으면 = 아이디 찾기 성공
-       
-        if(data.memberId) {
-            // 아이디 찾기 성공!
-            
-            // 찾은 아이디를 화면에 표시
-            // innerText: HTML 요소의 텍스트 내용 변경
-            resultId.innerText = data.memberId;
-            
-            // 가입일자를 화면에 표시
-            enrollDate.innerText = "가입일: " + data.enrollDate;
-            
-            // 결과 영역 보이기
-            // style.display: CSS display 속성 변경
-            // "none" → "block": 숨김 → 보임
-            resultArea.style.display = "block";
-            
-            // 선택사항: 입력 폼 숨기기 (깔끔한 UI를 위해)
-            // 필요하면 주석 해제
-            // document.querySelector("#findIdForm").style.display = "none";
-            
-        } else {
-            // 일치하는 회원 없음
-            // data.message가 있으면 그 메시지 표시, 없으면 기본 메시지
-            alert(data.message || "입력하신 정보와 일치하는 회원이 없습니다.");
-        }
-    })
-    .catch(err => {
-        // 에러 발생 시 실행
-        // 네트워크 오류, 서버 오류 등
-        console.error("아이디 찾기 에러:", err);
-        alert("아이디 찾기 중 문제가 발생했습니다.\n잠시 후 다시 시도해주세요.");
-    });
-    }
 
 
     // ===== 7. 실시간 유효성 검사 이벤트 리스너 =====

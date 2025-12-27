@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: 'Malgun Gothic', sans-serif;
+            background-color: #f4f5f9;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h3 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .auth-key {
+            font-size: 36px;
+            color: #FF6B00;
+            font-weight: bold;
+            background-color: #f4f5f9;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            letter-spacing: 5px;
+        }
+        .notice {
+            color: #666;
+            font-size: 14px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h3>🔐 아이디 찾기 인증번호</h3>
+        <p>아래의 인증번호를 입력해주세요.</p>
+        <div class="auth-key" th:text="${authKey}">123456</div>
+        <p class="notice">※ 인증번호는 5분간 유효합니다.</p>
+    </div>
+</body>
+</html>
