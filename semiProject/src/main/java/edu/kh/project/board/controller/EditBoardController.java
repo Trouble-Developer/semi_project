@@ -1,9 +1,12 @@
 package edu.kh.project.board.controller;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,11 +14,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
+import edu.kh.project.admin.controller.AdminController;
 import edu.kh.project.board.model.dto.Board;
+import edu.kh.project.board.model.dto.BoardImg;
 import edu.kh.project.board.model.service.BoardService;
 import edu.kh.project.board.model.service.EditBoardService;
 import edu.kh.project.member.model.dto.Member;
@@ -26,11 +31,23 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class EditBoardController {
 
+	private final AdminController adminController;
+
 	@Autowired
 	private EditBoardService service;
 
 	@Autowired
 	private BoardService boardService;
+
+	@Value("${board.image.web-path}")
+	private String boardImageWebPath;
+
+	@Value("${board.image.folder-path}")
+	private String boardImageFolderPath;
+
+	EditBoardController(AdminController adminController) {
+		this.adminController = adminController;
+	}
 
 	/**
 	 * dev.안재훈 게시판 삭제
@@ -83,72 +100,66 @@ public class EditBoardController {
 		return "redirect:" + path;
 	}
 
+	/* ===================== 글 작성 페이지 ===================== */
 	@GetMapping("{boardCode:[0-9]+}/insert")
-	public String boardInsert(@PathVariable("boardCode") int boardCode, Model model,
-			@SessionAttribute(value = "loginMember", required = false) Member loginMember, RedirectAttributes ra) {
+	public String insertForm(@PathVariable("boardCode") int boardCode,
+			@SessionAttribute(value = "loginMember", required = false) Member loginMember, RedirectAttributes ra,
+			Model model) {
+
 		if (loginMember == null) {
-			ra.addFlashAttribute("message", "로그인 후 이용해주세요!");
+			ra.addFlashAttribute("message", "로그인 후 이용해주세요");
 			return "redirect:/member/login";
 		}
+
 		model.addAttribute("boardCode", boardCode);
 		return "board/boardWrite";
 	}
 
+	/* ===================== 글 등록 ===================== */
 	@PostMapping("{boardCode:[0-9]+}/insert")
-	public String boardInsert(@PathVariable("boardCode") int boardCode, @RequestParam Map<String, Object> writeMap,
-			RedirectAttributes ra, @RequestParam(value = "cp", required = false, defaultValue = "1") int cp,
-			@SessionAttribute(value = "loginMember", required = false) Member loginMember) {
-		log.info("섬머노트 데이터 : {}", writeMap);
+	public String boardInsert(@PathVariable("boardCode") int boardCode, @RequestParam Map<String, Object> paramMap,
+			@SessionAttribute("loginMember") Member loginMember, RedirectAttributes ra) {
 
-		// 비밀글 체크 했을 때 : 섬머노트 데이터 : {boardType=3, title=안녕하심꽈 테스트 글임돠!, checkbox=on,
-		// editordata=<p>테스트1</p>, files=}
-		// 비밀글 체크 안했을 때 : 섬머노트 데이터 : {boardType=3, title=ㅁㅁㅁㅁ, editordata=<p>ㅁㅁㅁㅁ</p>,
-		// files=}
-		// boardType
-		String message = null;
-		String path = null;
+		paramMap.put("content", paramMap.get("editordata"));
+		paramMap.put("boardCode", boardCode);
+		paramMap.put("memberNo", loginMember.getMemberNo());
+		paramMap.put("boardLock", paramMap.get("checkbox") != null ? "Y" : "N");
 
-		if (loginMember == null) {
-			message = "로그인 후 이용해주세요!";
-			ra.addFlashAttribute("message", message);
-			return "redirect:/";
-		}
+		int result = service.boardInsert(paramMap);
 
-		String boardLock = "N";
+		ra.addFlashAttribute("message", result > 0 ? "게시글이 등록되었습니다." : "게시글 등록 실패");
 
-		// if (((String) writeMap.get("editordata")).indexOf("img") == -1) {
-		log.debug("img 없이 텍스트만 존재");
+		return "redirect:/board/" + boardCode;
+	}
+
+	/* ===================== 이미지 업로드 (Summernote) ===================== */
+	@PostMapping("image/upload")
+	@ResponseBody
+	public Map<String, Object> imageUpload(@RequestParam("file") MultipartFile file) throws Exception {
+
+		String folderPath = "C:/semiProject/upload/board/";
+		File dir = new File(folderPath);
+		if (!dir.exists())
+			dir.mkdirs();
+
+		String original = file.getOriginalFilename();
+		String ext = original.substring(original.lastIndexOf("."));
+		String rename = UUID.randomUUID() + ext;
+
+		file.transferTo(new File(folderPath + rename));
+
+		BoardImg img = new BoardImg();
+		img.setImgPath("/upload/board/");
+		img.setImgRename(rename);
+		img.setImgOriginal(original);
+		img.setImgOrder(0); // 첫 이미지 = 썸네일
+
+		service.insertBoardImg(img);
+
 		Map<String, Object> map = new HashMap<>();
-		if (writeMap.get("checkbox") != null) {
-			boardLock = "Y";
-		}
-		map.put("boardCode", boardCode);
-		map.put("memberNo", loginMember.getMemberNo());
-		map.put("title", writeMap.get("title"));
-		map.put("content", writeMap.get("editordata"));
-		map.put("boardLock", boardLock);
+		map.put("url", img.getImgPath() + img.getImgRename());
 
-		int result = service.boardInsert(map);
-
-		if (result > 0) {
-			message = "게시글이 등록되었습니다.";
-			path = "redirect:/board/" + boardCode + "?cp=" + cp;
-		} else {
-			message = "게시글이 등록 실패...";
-			path = "redirect:/" + boardCode + "/insert";
-		}
-		ra.addFlashAttribute("message", message);
-		return path;
+		return map;
 	}
 
-	@GetMapping("{boardCode:[0-9]+}/update")
-	public String boardUpdate(Board board, @RequestParam(value = "cp", required = false, defaultValue = "1") int cp) {
-
-		return null;
-	}
-
-//	@PostMapping("{boardCode:[0-9]+}/update")
-//	public String boardUpdate(@RequestParam(value = "cp", required = false, defaultValue = "1") int cp) {
-//		return null;
-//	}
 }

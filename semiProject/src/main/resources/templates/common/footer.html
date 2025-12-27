@@ -15,6 +15,7 @@
       const message = /*[[${message}]]*/ "전달 받은 message";
 
       if (message != null) alert(message);
+      history.replaceState(null, "", location.pathname + location.search);
     </script>
   </body>
 </html>
