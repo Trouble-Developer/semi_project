@@ -28,6 +28,8 @@ public class Board {
 	
 	private int scrapCheck; // 0: 스크랩 X, 1: 스크랩 O
 	
+
+	private String thumbnailPath;
 	// 추후 이미지 리스트, 댓글 리스트 추가
 	// 우선은 글 가져오는 것 부터!
 	
