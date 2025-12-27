@@ -35,6 +35,7 @@
 	<insert id="signup" parameterType="Member">
 		INSERT INTO "MEMBER" (
 			MEMBER_NO, 
+			MEMBER_NAME,
 			MEMBER_ID, 
 			MEMBER_PW, 
 			MEMBER_NICKNAME, 
@@ -49,6 +50,7 @@
 		)
 		VALUES (
 			SEQ_MEMBER_NO.NEXTVAL,
+			#{memberName},
 			#{memberId},
 			#{memberPw},
 			#{memberNickname},
