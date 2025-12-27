@@ -67,8 +67,9 @@
                   th:href="@{/board/{boardCode}/{boardNo}(boardCode=${boardCode}, boardNo=*{boardNo}, cp=${pagination.currentPage})}"
                 >
                   <img
-                    src="/images/volunteer.jpeg"
-                    alt=""
+                    th:src="${board.thumbnailPath != null 
+           ? board.thumbnailPath 
+           : '/images/volunteer.jpeg'}"
                     id="content-img-info"
                   />
                 </a>

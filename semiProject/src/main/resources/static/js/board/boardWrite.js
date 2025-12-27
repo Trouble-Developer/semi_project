@@ -1,7 +1,7 @@
 const writeBtn = document.querySelector("#write-btn");
-const summernoteWrite = document.querySelector("#summernote-write");
+const form = document.querySelector("#summernote-write");
 
-summernoteWrite.addEventListener("submit", (e) => {
+form.addEventListener("submit", (e) => {
   const boardTitle = document.querySelector("#board-title");
   const summernote = document.querySelector("#summernote");
 

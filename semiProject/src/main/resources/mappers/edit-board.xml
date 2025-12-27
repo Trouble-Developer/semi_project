@@ -3,27 +3,81 @@
 <mapper
 	namespace="edu.kh.project.board.model.mapper.EditBoardMapper">
 
-	<!-- 자유게시판 삭제 -->
+	<!-- 게시글 등록 -->
+	<insert id="boardInsert" parameterType="map">
+		INSERT INTO BOARD (
+		BOARD_NO, BOARD_TITLE, BOARD_CONTENT,
+		BOARD_WRITE_DATE, READ_COUNT,
+		BOARD_DEL_FL, BOARD_LOCK,
+		BOARD_CODE, MEMBER_NO
+		)
+		VALUES (
+		SEQ_BOARD_NO.NEXTVAL,
+		#{title},
+		#{content},
+		SYSDATE,
+		0,
+		'N',
+		#{boardLock},
+		#{boardCode},
+		#{memberNo}
+		)
+	</insert>
+
+	<!-- 마지막 게시글 번호 -->
+	<select id="selectLastBoardNo" resultType="int">
+		SELECT MAX(BOARD_NO)
+		FROM BOARD
+		WHERE MEMBER_NO = #{memberNo}
+	</select>
+
+	<!-- 이미지 INSERT (BOARD_NO는 NULL 허용) -->
+	<insert id="insertBoardImg"
+		parameterType="edu.kh.project.board.model.dto.BoardImg">
+		INSERT INTO BOARD_IMG (
+		IMG_NO,
+		IMG_PATH,
+		IMG_RENAME,
+		IMG_ORIGINAL_NAME,
+		IMG_ORDER,
+		BOARD_NO
+		)
+		VALUES (
+		SEQ_IMG_NO.NEXTVAL,
+		#{imgPath},
+		#{imgRename},
+		#{imgOriginal},
+		#{imgOrder},
+		NULL
+		)
+	</insert>
+
+	<!-- 게시글 등록 후 이미지 연결 -->
+	<update id="updateBoardImgBoardNo">
+		UPDATE BOARD_IMG
+		SET BOARD_NO = #{boardNo}
+		WHERE BOARD_NO IS NULL
+	</update>
+
+	<!-- 게시글 이미지 조회 -->
+	<select id="selectBoardImgList"
+		resultType="edu.kh.project.board.model.dto.BoardImg">
+		SELECT *
+		FROM BOARD_IMG
+		WHERE BOARD_NO = #{boardNo}
+		ORDER BY IMG_ORDER
+	</select>
+
+	<!-- 게시글 이미지 삭제 -->
+	<delete id="deleteBoardImg">
+		DELETE FROM BOARD_IMG
+		WHERE BOARD_NO = #{boardNo}
+	</delete>
 	<update id="boardDelete">
 		UPDATE "BOARD"
 		SET BOARD_DEL_FL = 'Y'
 		WHERE BOARD_NO =
 		#{boardNo}
 	</update>
-	<insert id="boardInsert" parameterType="map">
-    INSERT INTO BOARD
-    VALUES (
-        SEQ_BOARD_NO.NEXTVAL,
-        #{title},
-        #{content},
-        SYSDATE,
-        NULL,
-        0,
-        'N',
-        #{boardPw},
-        #{boardLock},
-        #{boardCode},
-        #{memberNo}
-    )
-</insert>
+
 </mapper>
