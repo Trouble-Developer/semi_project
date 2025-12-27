@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import edu.kh.project.member.model.dto.Member;
 import edu.kh.project.member.model.mapper.MemberMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
@@ -84,5 +85,11 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public int checkEmail(String memberEmail) {
         return mapper.checkEmail(memberEmail);
+    }
+    
+    // 아이디 찾기
+    @Override
+    public Member findId(String memberName, String memberRrn1, String memberEmail) {
+        return mapper.findId(memberName, memberRrn1, memberEmail);
     }
 }
