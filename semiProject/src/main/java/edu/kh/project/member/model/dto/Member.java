@@ -14,6 +14,7 @@ import lombok.ToString;
 public class Member {
     // DB 컬럼과 매칭되는 필드
     private int memberNo;           // MEMBER_NO
+    private String memberName;		// MEMBER_NAME
     private String memberId;        // MEMBER_ID
     private String memberPw;        // MEMBER_PW
     private String memberNickname;  // MEMBER_NICKNAME
