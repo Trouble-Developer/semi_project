@@ -22,9 +22,6 @@ public interface BoardMapper {
 
 	List<Board> getFreeList(Map<String, Object> paramMap, RowBounds rowBounds);
 
-
-
-
 	Board freeBoardDetil(Board board);
 
 	Board getPrevBoard(Board board);
@@ -44,5 +41,9 @@ public interface BoardMapper {
 	int boardReport(Map<String, Object> report);
 
 	BoardReport getReport(Map<String, Object> report);
+
+	int updateReadCount(int boardNo);
+
+	int selectReadCount(int boardNo);
 
 }
