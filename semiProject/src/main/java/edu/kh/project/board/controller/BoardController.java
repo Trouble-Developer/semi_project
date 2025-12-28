@@ -84,6 +84,7 @@ public class BoardController {
 		}
 		Board selectedBoard = service.freeBoardDetil(board);
 
+		
 		String path = null;
 		String message = null;
 

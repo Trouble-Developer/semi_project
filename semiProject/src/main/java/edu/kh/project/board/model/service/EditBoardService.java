@@ -14,4 +14,6 @@ public interface EditBoardService {
 	int boardDelete(int boardNo);
 
 	List<BoardImg> selectBoardImgList(int boardNo);
+
+	int boardUpdate(Map<String, Object> paramMap);
 }

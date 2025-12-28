@@ -34,12 +34,17 @@
       </div>
       <form
         method="post"
-        th:action="@{/editBoard/{boardCode}/insert(boardCode=${boardCode})}"
+        th:action="${boardInfo == null}
+          ? @{/editBoard/{boardCode}/insert(boardCode=${boardCode})}
+          : @{/editBoard/{boardCode}/{boardNo}/update(
+                boardCode=${boardCode},
+                boardNo=${boardInfo.boardNo}
+            )}"
         id="summernote-write"
       >
         <div id="board-write">
           <div id="board-info">
-            <select name="boardType" id="board-type">
+            <select name="boardCode" id="board-type">
               <option
                 value="1"
                 th:text="'자유 게시판'"
@@ -77,6 +82,7 @@
                 id="board-title"
                 placeholder="제목을 입력해주세요."
                 name="title"
+                th:value="${boardInfo != null ? boardInfo.boardTitle : ''}"
               />
               <div>
                 <input type="checkbox" id="checkbox" name="checkbox" />
@@ -86,8 +92,17 @@
           </div>
         </div>
         <div id="board-write-info">
-          <textarea id="summernote" name="editordata"></textarea>
-          <button id="write-btn">등록하기</button>
+          <textarea
+            id="summernote"
+            name="editordata"
+            th:utext="${boardInfo != null ? boardInfo.boardContent : ''}"
+          ></textarea>
+          <th:block th:if="${boardInfo == null}">
+            <button id="write-btn">등록하기</button>
+          </th:block>
+          <th:block th:if="${boardInfo != null}">
+            <button id="write-btn">수정하기</button>
+          </th:block>
         </div>
       </form>
     </div>
@@ -169,7 +184,10 @@
         });
       }
     </script>
-
+    <script th:inline="javascript">
+      const boardInfo = /*[[${boardInfo}]]*/ "보드정보";
+      console.log(boardInfo);
+    </script>
     <script src="/js/board/boardWrite.js"></script>
   </body>
 </html>
