@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.session.RowBounds;
 
 import edu.kh.project.board.model.dto.Board;
+import edu.kh.project.board.model.dto.BoardReport;
 
 @Mapper
 public interface BoardMapper {
@@ -39,5 +40,9 @@ public interface BoardMapper {
 	int deleteScrap(Map<String, Integer> map);
 
 	int insertScrap(Map<String, Integer> map);
+
+	int boardReport(Map<String, Object> report);
+
+	BoardReport getReport(Map<String, Object> report);
 
 }

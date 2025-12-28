@@ -1,6 +1,5 @@
 package edu.kh.project.board.controller;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import edu.kh.project.board.model.dto.Board;
+import edu.kh.project.board.model.dto.BoardReport;
 import edu.kh.project.board.model.service.BoardService;
 import edu.kh.project.member.model.dto.Member;
 import lombok.extern.slf4j.Slf4j;
@@ -84,7 +84,6 @@ public class BoardController {
 		}
 		Board selectedBoard = service.freeBoardDetil(board);
 
-		
 		String path = null;
 		String message = null;
 
@@ -117,11 +116,62 @@ public class BoardController {
 		log.debug("board : " + map);
 		return service.boardLike(map);
 	}
-	
+
 	@ResponseBody
 	@PostMapping("scrap")
 	public int boardScrab(@RequestBody Map<String, Integer> map) {
 		return service.boardScrap(map);
+	}
+
+	@GetMapping("{boardCode}/{boardNo}/report")
+	public String boardReport(@PathVariable("boardCode") int boardCode, @PathVariable("boardNo") int boardNo,
+			@RequestParam(value = "cp", required = false, defaultValue = "1") int cp,
+			@SessionAttribute(value = "loginMember", required = false) Member loginMember, RedirectAttributes ra,
+			Model model) {
+		String message = null;
+
+		if (loginMember == null) {
+			message = "로그인 후 이용 가능합니다.";
+			ra.addFlashAttribute("message", message);
+			return "redirect:/member/login";
+		}
+		Board board = new Board();
+		board.setBoardCode(boardCode);
+		board.setBoardNo(boardNo);
+
+		Board selectedBoard = service.freeBoardDetil(board);
+		selectedBoard.setBoardNo(boardNo);
+		selectedBoard.setBoardCode(boardCode);
+		model.addAttribute("cp", cp);
+		model.addAttribute("board", selectedBoard);
+		// Board(boardNo=2013, boardTitle=관리자가 자유 게시판에 글쓰면 안됨?, boardContent=<p><span
+		// style="font-family: 바탕체;">어쩔 저쩔 </span><span style="font-size: 36px;
+		// background-color: rgb(255, 255, 0);"><b><i><font color="#000000">내맘대로
+		// 쓸꺼임</font></i></b></span></p>, boardWriteDate=2025-12-25,
+		// boardUpdateDate=null, readCount=0, boardDelFl=
+		return "board/boardReport";
+	}
+
+	@ResponseBody
+	@PostMapping("{boardCode}/{boardNo}/report")
+	public int boardReport(@PathVariable("boardCode") int boardCode, @PathVariable("boardNo") int boardNo,
+			RedirectAttributes ra, @RequestBody Map<String, Object> report,
+			@SessionAttribute(value = "loginMember", required = false) Member loginMember) {
+
+		int result = 0;
+		// 이미 신고한 게시글인지 확인
+		report.put("boardCode", boardCode);
+		report.put("boardNo", boardNo);
+		report.put("memberNo", loginMember.getMemberNo());
+		
+		BoardReport selectedReport = service.getReport(report);
+		if (selectedReport != null) {
+			result = -2;
+		} else {
+			result = service.boardReport(report);
+		}
+
+		return result;
 	}
 
 }

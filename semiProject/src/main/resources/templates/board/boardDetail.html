@@ -47,6 +47,12 @@
       <div id="btn">
         <!-- 로그인 했을 때만 활성화 -->
         <button
+          id="report-btn"
+          th:if="${session.loginMember != null and session.loginMember.memberNo != boardInfo.memberNo}"
+        >
+          신고
+        </button>
+        <button
           id="like-btn"
           th:if="${session.loginMember != null and (boardCode == 1 or boardCode == 3)}"
         >
@@ -100,9 +106,7 @@
         </div>
       </div>
       <div id="list-btn">
-        <a
-          th:href="@{/board/{boardCode}(boardCode = ${boardCode}, cp=${cp})}"
-          id="list-btn"
+        <a th:href="@{/board/{boardCode}(boardCode = ${boardCode}, cp=${cp})}"
           >목록</a
         >
       </div>
