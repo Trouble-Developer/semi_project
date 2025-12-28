@@ -1,7 +1,6 @@
 const updateBtn = document.querySelector("#update-btn");
 const deleteBtn = document.querySelector("#delete-btn");
 const likeBtn = document.querySelector("#like-btn");
-
 if (updateBtn !== null) {
   updateBtn.addEventListener("click", () => {
     const url = location.pathname.replace("board", "editBoard") + "/update";
@@ -19,7 +18,6 @@ if (deleteBtn !== null) {
     const url = location.pathname.replace("board", "editBoard") + "/delete";
     // /board/2/1997?cp=1
 
-    console.log("클릭됨");
     const queryString = location.search; // ? cp=1
     location.href = url + queryString;
     //   /editBoard/2/1997/delete?cp=1
@@ -99,3 +97,13 @@ if (scrapBtn) {
       });
   });
 }
+
+const reportBtn = document.querySelector("#report-btn");
+
+reportBtn.addEventListener("click", () => {
+  const url = location.pathname + "/report";
+  // /board/2/1997?cp=1
+
+  const queryString = location.search; // ? cp=1
+  location.href = url + queryString;
+});

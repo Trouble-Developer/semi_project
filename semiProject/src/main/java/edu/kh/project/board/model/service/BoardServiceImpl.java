@@ -8,8 +8,10 @@ import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import edu.kh.project.board.model.dto.Board;
 import edu.kh.project.board.model.dto.Pagination;
+import edu.kh.project.board.model.dto.BoardReport;
 import edu.kh.project.board.model.mapper.BoardMapper;
 
 @Service
@@ -126,5 +128,15 @@ public class BoardServiceImpl implements BoardService {
 		}
 
 		return result > 0 ? 1 : -1;
+	}
+
+	@Override
+	public int boardReport(Map<String, Object> report) {
+		return mapper.boardReport(report);
+	}
+
+	@Override
+	public BoardReport getReport(Map<String, Object> report) {
+		return mapper.getReport(report);
 	}
 }

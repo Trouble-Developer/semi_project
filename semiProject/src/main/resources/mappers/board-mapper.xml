@@ -107,10 +107,12 @@
 		(
 		SELECT I.IMG_PATH || I.IMG_RENAME
 		FROM BOARD_IMG I
-		WHERE I.BOARD_NO = B.BOARD_NO
+		WHERE I.BOARD_NO =
+		B.BOARD_NO
 		ORDER BY I.IMG_ORDER
 		FETCH FIRST 1 ROW ONLY
-		) AS THUMBNAIL_PATH,
+		) AS
+		THUMBNAIL_PATH,
 		LIKE_COUNT,
 		<![CDATA[
 		CASE
@@ -248,5 +250,31 @@
 		AND
 		MEMBER_NO = #{memberNo}
 	</delete>
-
+	<insert id="boardReport">
+		INSERT INTO BOARD_REPORT (
+		REPORT_NO,
+		MEMBER_NO,
+		BOARD_NO,
+		REPORT_REASON,
+		REPORT_REASON_DETAIL,
+		REPORT_DATE,
+		PROCESS_YN
+		)
+		VALUES (
+		SEQ_BOARD_REPORT.NEXTVAL,
+		#{memberNo},
+		#{boardNo},
+		#{reportReason},
+		#{reportReasonDetail},
+		SYSDATE,
+		'N'
+		)
+	</insert>
+	<select id="getReport">
+		SELECT *
+		FROM "BOARD_REPORT"
+		WHERE MEMBER_NO =
+		#{memberNo} AND
+		BOARD_NO = #{boardNo}
+	</select>
 </mapper>
