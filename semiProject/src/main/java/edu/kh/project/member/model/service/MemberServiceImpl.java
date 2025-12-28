@@ -92,4 +92,40 @@ public class MemberServiceImpl implements MemberService {
     public Member findId(String memberName, String memberRrn1, String memberEmail) {
         return mapper.findId(memberName, memberRrn1, memberEmail);
     }
+
+	@Override
+	public Member findPw(String memberId, String memberName, String memberRrn1, String memberEmail) {
+		
+		// Mapper 호출해서 DB 조회
+		// - 4개의 파라미터가 모두 일치하는 회원 찾기 
+		Member findMember = mapper.findPw(memberId, memberName, memberRrn1, memberEmail);
+		
+		return findMember;
+		
+	}
+	
+		
+		/**
+		 * 비밀번호 재설정
+		 * 
+		 * @param memberId : 회원 아이디
+		 * @param newPw : 새 비밀번호 (평문)
+		 * @return result (1:성공, 0:실패)
+		 */
+		@Override
+		public int resetPw(String memberId, String newPw) {
+			
+			// 1. 새 비밀번호 암호화
+			// BCrypt를 사용하여 평문 비밀번호를 암호화
+			// 예: "1234" -> "$2a$10$abcd..."
+			String encPw = bcrypt.encode(newPw);
+			
+			// 2. Mapper 호출하여 DB 업데이트
+			int result = mapper.resetPw(memberId, encPw);
+		
+		
+		return result;
+	}
+
+	
 }
