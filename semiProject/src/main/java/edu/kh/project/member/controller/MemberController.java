@@ -161,15 +161,7 @@ public class MemberController {
 	    // 예시: { "memberId": "user123", "enrollDate": "2024년 01월 15일", ... }
 	    return findMember;
 	}
-	
-	 /**
-	 * @return "member/findPw" : 비밀번호 찾기 페이지로 이동
-	 */
-	@GetMapping("findPw")
-	 public String findPwPage() {
-	     // Thymeleaf가 /templates/member/findPw.html 을 찾아서 보여줌
-	     return "member/findPw";
-	 }
+
 	
 	// ========================================
 	// 비밀번호 찾기 관련 기능
@@ -187,61 +179,55 @@ public class MemberController {
 	    // Thymeleaf가 /templates/member/findPw.html 을 찾아서 보여줌
 	    return "member/findPw";
 	}
-
-
-	/** 비밀번호 찾기 - 회원 정보 확인 (비동기 요청)
-	 * 
-	 * 사용자가 입력한 아이디, 이름, 주민번호 앞자리, 이메일 정보를 받아서
-	 * DB에서 일치하는 회원 정보를 조회
-	 * @param memberId : 아이디 (추가!)
-	 * @param memberName : 이름
+	
+	/**
+	 * @param memberId: 회원 아이디
+	 * @param memberName : 회원 이름
 	 * @param memberRrn1 : 주민번호 앞자리 (생년월일)
 	 * @param memberEmail : 이메일
-	 * @return Member 객체 (회원번호, 아이디 포함) 또는 null
+	 * @return Member 객체 (조회 성공) 또는 null (조회 실패)
 	 */
-	@ResponseBody  // 리턴값을 HTTP 응답 본문(JSON)으로 변환 (AJAX 요청이므로 필수!)
-	@PostMapping("findPw")  // /member/findPw POST 요청 처리
+	@ResponseBody
+	@PostMapping("findPw")
 	public Member findPw(
-	        @RequestParam("memberId") String memberId,          // 아이디 파라미터 (아이디 찾기와의 차이!)
-	        @RequestParam("memberName") String memberName,      // 이름 파라미터
-	        @RequestParam("memberRrn1") String memberRrn1,      // 주민번호 앞자리 파라미터
-	        @RequestParam("memberEmail") String memberEmail     // 이메일 파라미터
-	    ) {
-	    
-	    // Service의 findPw 메서드 호출하여 DB 조회
-	    // - 4개 파라미터가 모두 일치하는 회원 찾기
-	    // - 조회 성공 시: Member 객체 리턴 (memberNo, memberId 포함)
-	    // - 조회 실패 시: null 리턴
-	    Member findMember = service.findPw(memberId, memberName, memberRrn1, memberEmail);
-	    
-	    // @ResponseBody 덕분에 Member 객체가 자동으로 JSON으로 변환되어 응답됨
-	    // 예시: { "memberNo": 1, "memberId": "user123", ... }
-	    return findMember;
+		@RequestParam("memberId") String memberId,
+		@RequestParam("memberName") String memberName,
+		@RequestParam("memberRrn1") String memberRrn1,
+		@RequestParam("memberEmail") String memberEmail
+	) {
+		/* Serivce의 findPw 메서드 호출하여 DB 조회
+		 * 4개 파라미터가 모두 일치하는 회원 찾기
+		 * 조회 성공 : Member 객체 리턴
+		 * 조회 실패 : null 리턴
+		 * */
+		Member findMember = service.findPw(memberId, memberName, memberRrn1, memberEmail);
+		
+		return findMember; 
+	}
+		/** 비밀번호 재설정 처리 (AJAX)
+		 * 
+		 * @param memberId : 회원 아디
+		 * @param newPw : 새 비번
+		 * @return result (1: 성공, 0: 실패)
+		 */
+		@ResponseBody
+		@PostMapping("resetPw")
+		public int resetPw(
+			@RequestParam("memberId") String memberId,
+			@RequestParam("newPw") String newPw
+		) {
+		
+			// Service의  resetPw 메서드 호출
+			// 비밀번호 암호화 하고 DB 업데이트 해야함
+			// 성공 시: 1 리턴
+			// 실패 시: 0 리턴
+		
+		int result = service.resetPw(memberId, newPw);
+		
+		return result;
+		
 	}
 
-
-	/** 비밀번호 재설정 (비동기 요청)
-	 * @param memberId : 아이디 (비밀번호를 변경할 회원)
-	 * @param newPw : 새 비밀번호 (평문)
-	 * @return 1 : 변경 성공, 0 : 변경 실패
-	 */
-	@ResponseBody  // 리턴값을 HTTP 응답 본문으로 변환
-	@PostMapping("resetPw")  // /member/resetPw POST 요청 처리
-	public int resetPw(
-	        @RequestParam("memberId") String memberId,      // 아이디 파라미터
-	        @RequestParam("newPw") String newPw             // 새 비밀번호 파라미터 (평문)
-	    ) {
-	    
-	    // Service의 resetPw 메서드 호출
-	    // - Service에서 BCrypt로 비밀번호 암호화 처리
-	    // - Mapper를 통해 DB UPDATE
-	    // - 성공 시 1, 실패 시 0 리턴
-	    int result = service.resetPw(memberId, newPw);
-	    
-	    // 결과값 리턴 (1 또는 0)
-	    // JavaScript에서 이 값을 받아서 성공/실패 처리
-	    return result;
-	}
 	/**
 	 * 회원가입 진행 (POST)
 	 * 

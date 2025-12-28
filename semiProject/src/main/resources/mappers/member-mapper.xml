@@ -109,5 +109,77 @@
 		AND MEMBER_DEL_FL = 'N' <!-- 조건 4: 탈퇴하지 않은 회원만 -->
 	</select>
 	
+	<!-- ========================================
+	     비밀번호 찾기 관련 SQL
+	     ======================================== -->
+	
+	<!-- 
+		비밀번호 찾기 - 본인 확인
+		
+		[기능 설명]
+		- 회원이 입력한 아이디, 이름, 주민번호 앞자리, 이메일 정보를 기준으로
+		  DB에서 일치하는 회원이 있는지 확인
+		
+		[파라미터]
+		- memberId   : 회원 아이디 (Mapper에서 @Param으로 전달)
+		- memberName : 회원 이름
+		- memberRrn1 : 주민번호 앞 6자리 (생년월일, 예: 990101)
+		- memberEmail : 회원 이메일 주소
+		
+		[반환값]
+		- Member 객체 (조회 성공 시)
+		  → memberNo, memberId 필드만 채워져서 반환
+		- null (조회 실패 시)
+		  → 입력 정보와 일치하는 회원이 없음
+		
+		[보안 및 주의사항]
+		- 주민번호는 MEMBER_RRN 컬럼에 "000000-1234567" 형식으로 저장됨
+		- SUBSTR(MEMBER_RRN, 1, 6)으로 앞 6자리만 추출하여 비교
+		- 탈퇴한 회원(MEMBER_DEL_FL = 'Y')은 조회 제외
+		- 4가지 조건이 모두 일치해야만 조회 가능 (AND 조건)
+	-->
+	<select id="findPw" resultType="Member">
+		SELECT 
+		    MEMBER_NO,      <!-- 회원 번호 -->
+		    MEMBER_ID       <!-- 회원 아이디 -->
+		FROM "MEMBER"
+		WHERE MEMBER_ID = #{memberId}              <!-- 조건 1: 아이디 일치 -->
+		  AND MEMBER_NAME = #{memberName}          <!-- 조건 2: 이름 일치 -->
+		  AND SUBSTR(MEMBER_RRN, 1, 6) = #{memberRrn1}  <!-- 조건 3: 주민번호 앞자리 일치 -->
+		  AND MEMBER_EMAIL = #{memberEmail}        <!-- 조건 4: 이메일 일치 -->
+		  AND MEMBER_DEL_FL = 'N'                  <!-- 조건 5: 탈퇴하지 않은 회원만 -->
+	</select>
+	
+	<!-- 
+		비밀번호 재설정
+		
+		[기능 설명]
+		- 본인 확인 완료 후 회원의 비밀번호를 새로운 비밀번호로 업데이트
+		
+		[파라미터]
+		- memberId : 회원 아이디 (Mapper에서 @Param으로 전달)
+		- encPw    : BCrypt로 암호화된 새 비밀번호
+		
+		[반환값]
+		- int (업데이트된 행의 개수)
+		  → 1: 성공 (1개 행 업데이트됨)
+		  → 0: 실패 (조건에 맞는 회원 없음)
+		
+		[보안 및 주의사항]
+		- 비밀번호는 반드시 BCrypt로 암호화된 값이어야 함
+		  (Service에서 암호화 후 전달됨)
+		- 탈퇴한 회원(MEMBER_DEL_FL = 'Y')은 업데이트 제외
+		
+		[예시]
+		- 입력: memberId = "user01", encPw = "$2a$10$abcd..."
+		- 실행: UPDATE "MEMBER" SET MEMBER_PW = "$2a$10$abcd..." WHERE MEMBER_ID = 'user01'
+		- 결과: 1 (성공)
+	-->
+	<update id="resetPw">
+		UPDATE "MEMBER"
+		SET MEMBER_PW = #{encPw}
+		WHERE MEMBER_ID = #{memberId}
+		  AND MEMBER_DEL_FL = 'N'
+	</update>
 	
 </mapper>
