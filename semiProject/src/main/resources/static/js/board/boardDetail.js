@@ -3,7 +3,10 @@ const deleteBtn = document.querySelector("#delete-btn");
 const likeBtn = document.querySelector("#like-btn");
 
 if (updateBtn !== null) {
-  updateBtn.addEventListener("click", () => {});
+  updateBtn.addEventListener("click", () => {
+    const url = location.pathname.replace("board", "editBoard") + "/update";
+    location.href = url;
+  });
 }
 
 if (deleteBtn !== null) {

@@ -118,10 +118,9 @@ public class EditBoardController {
 	/* ===================== 글 등록 ===================== */
 	@PostMapping("{boardCode:[0-9]+}/insert")
 	public String boardInsert(@PathVariable("boardCode") int boardCode, @RequestParam Map<String, Object> paramMap,
-			@SessionAttribute("loginMember") Member loginMember, RedirectAttributes ra) {
+			@SessionAttribute(value = "loginMember", required = false) Member loginMember, RedirectAttributes ra) {
 
 		paramMap.put("content", paramMap.get("editordata"));
-		paramMap.put("boardCode", boardCode);
 		paramMap.put("memberNo", loginMember.getMemberNo());
 		paramMap.put("boardLock", paramMap.get("checkbox") != null ? "Y" : "N");
 
@@ -162,4 +161,65 @@ public class EditBoardController {
 		return map;
 	}
 
+	@GetMapping("{boardCode:[0-9]+}/{boardNo:[0-9]+}/update")
+	public String boardUpdate(@PathVariable("boardCode") int boardCode, @PathVariable("boardNo") int boardNo,
+			@RequestParam(value = "cp", required = false, defaultValue = "1") int cp, Model model,
+			@SessionAttribute(value = "loginMember", required = false) Member loginMember, RedirectAttributes ra) {
+
+		Board board = new Board();
+		board.setBoardCode(boardCode);
+		board.setBoardNo(boardNo);
+
+		Board selectedBoard = boardService.freeBoardDetil(board);
+
+		if (loginMember == null) {
+			ra.addFlashAttribute("message", "로그인 후 이용해주세요");
+			return "redirect:/member/login";
+		}
+
+		if (selectedBoard == null) {
+			ra.addFlashAttribute("message", "존재하지 않는 게시글입니다.");
+			return "redirect:/board/" + boardCode;
+		}
+
+		if (loginMember.getMemberNo() != selectedBoard.getMemberNo()) {
+			ra.addFlashAttribute("message", "본인이 작성한 글만 수정할 수 있습니다.");
+			return "redirect:/board/" + boardCode + "/" + boardNo + "?cp=" + cp;
+		}
+
+		model.addAttribute("boardInfo", selectedBoard);
+		model.addAttribute("boardCode", boardCode);
+
+		return "board/boardWrite";
+	}
+
+	@PostMapping("{boardCode:[0-9]+}/{boardNo:[0-9]+}/update")
+	public String boardUpdate(@PathVariable("boardCode") int boardCode, @PathVariable("boardNo") int boardNo,
+			Model model, @SessionAttribute(value = "loginMember", required = false) Member loginMember,
+			RedirectAttributes ra, @RequestParam Map<String, Object> paramMap) {
+
+		String message = null;
+
+		if (loginMember == null) {
+			message = "로그인 후 이용해주세요.";
+			ra.addFlashAttribute("message", message);
+			return "redirect:/member/login";
+		}
+
+		paramMap.put("boardNo", boardNo);
+		paramMap.put("boardCode", boardCode);
+		paramMap.put("memberNo", loginMember.getMemberNo());
+		paramMap.put("content", paramMap.get("editordata"));
+		paramMap.put("boardLock", paramMap.get("checkbox") != null ? "Y" : "N");
+		
+		int result = service.boardUpdate(paramMap);
+		
+		if(result > 0) {
+			message = "게시글이 수정되었습니다.";
+		} else {
+			message = "게시글 수정 실패..";
+		}
+		ra.addFlashAttribute("message", message);
+		return "redirect:/board/" + boardCode + "/" + boardNo;
+	}
 }

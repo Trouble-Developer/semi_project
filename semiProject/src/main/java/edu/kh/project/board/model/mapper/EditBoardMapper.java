@@ -23,4 +23,6 @@ public interface EditBoardMapper {
     int deleteBoardImg(int boardNo);
 
     int boardDelete(int boardNo);
+
+	int boardUpdate(Map<String, Object> paramMap);
 }

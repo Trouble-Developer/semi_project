@@ -44,4 +44,9 @@ public class EditBoardServiceImpl implements EditBoardService {
 		return mapper.boardDelete(boardNo);
 	}
 
+	@Override
+	public int boardUpdate(Map<String, Object> paramMap) {
+		return mapper.boardUpdate(paramMap);
+	}
+
 }
