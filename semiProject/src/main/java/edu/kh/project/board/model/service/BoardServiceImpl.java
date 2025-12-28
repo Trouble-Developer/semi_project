@@ -139,4 +139,14 @@ public class BoardServiceImpl implements BoardService {
 	public BoardReport getReport(Map<String, Object> report) {
 		return mapper.getReport(report);
 	}
+
+	@Override
+	public int updateReadCount(int boardNo) {
+		int result = mapper.updateReadCount(boardNo);
+
+		if (result > 0) {
+			return mapper.selectReadCount(boardNo);
+		}
+		return -1;
+	}
 }

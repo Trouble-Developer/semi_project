@@ -27,4 +27,6 @@ public interface BoardService {
 	int boardReport(Map<String, Object> report);
 
 	BoardReport getReport(Map<String, Object> report);
+
+	int updateReadCount(int boardNo);
 }

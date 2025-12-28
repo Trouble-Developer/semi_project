@@ -1,5 +1,7 @@
 package edu.kh.project.board.controller;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,9 @@ import edu.kh.project.board.model.dto.Board;
 import edu.kh.project.board.model.dto.BoardReport;
 import edu.kh.project.board.model.service.BoardService;
 import edu.kh.project.member.model.dto.Member;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
@@ -75,7 +80,7 @@ public class BoardController {
 	public String freeBoardDetil(Board board,
 			@SessionAttribute(value = "loginMember", required = false) Member loginMember,
 			@RequestParam(value = "cp", required = false, defaultValue = "1") int cp, Model model,
-			RedirectAttributes ra) {
+			RedirectAttributes ra, HttpServletRequest req, HttpServletResponse resp) {
 		// 제목, 작성자, 작성일, 조회수, 콘텐츠, 좋아요
 
 		// 로그인 멤버에 대한 것은 추후 로그인 기능 완료되면 구현
@@ -93,9 +98,51 @@ public class BoardController {
 			path = "redirect:/board/1?" + "cp=" + cp;
 			ra.addFlashAttribute("message", message);
 		} else {
+
+			if (loginMember == null || loginMember.getMemberNo() != board.getMemberNo()) {
+				Cookie[] cookies = req.getCookies();
+
+				Cookie c = null;
+
+				for (Cookie temp : cookies) {
+					if (temp.getName().equals("readBoardNo")) {
+						c = temp;
+						break;
+					}
+				}
+
+				int result = 0;
+
+				if (c == null) {
+					c = new Cookie("readBoardNo", "[" + board.getBoardNo() + "]");
+					result = service.updateReadCount(board.getBoardNo());
+
+				} else {
+					if (c.getValue().indexOf("[" + board.getBoardNo() + "]") == -1) {
+						c.setValue(c.getValue() + "[" + board.getBoardNo() + "]");
+						result = service.updateReadCount(board.getBoardNo());
+					}
+				}
+				if (result > 0) {
+					board.setReadCount(result);
+
+					c.setPath("/");
+					LocalDateTime now = LocalDateTime.now();
+					LocalDateTime nextDayMidnight = now.plusDays(1).withHour(0).withMinute(0).withSecond(0).withNano(0);
+					long secondsUntilNextDay = Duration.between(now, nextDayMidnight).getSeconds();
+
+					c.setMaxAge((int) secondsUntilNextDay);
+					
+					resp.addCookie(c);
+					selectedBoard.setReadCount(result);
+				}
+
+			}
+
 			Board prevBoard = service.getPrevBoard(board);
 			Board nextBoard = service.getNextBoard(board);
 
+			
 			model.addAttribute("prevBoard", prevBoard);
 			model.addAttribute("nextBoard", nextBoard);
 			model.addAttribute("boardInfo", selectedBoard);
@@ -163,7 +210,7 @@ public class BoardController {
 		report.put("boardCode", boardCode);
 		report.put("boardNo", boardNo);
 		report.put("memberNo", loginMember.getMemberNo());
-		
+
 		BoardReport selectedReport = service.getReport(report);
 		if (selectedReport != null) {
 			result = -2;

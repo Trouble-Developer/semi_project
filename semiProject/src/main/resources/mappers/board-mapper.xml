@@ -277,4 +277,14 @@
 		#{memberNo} AND
 		BOARD_NO = #{boardNo}
 	</select>
+	<update id="updateReadCount">
+		UPDATE "BOARD"
+		SET READ_COUNT = READ_COUNT + 1
+		WHERE BOARD_NO = #{boardNo}
+	</update>
+	<select id="selectReadCount">
+		SELECT READ_COUNT
+		FROM "BOARD"
+		WHERE BOARD_NO = #{boardNo}
+	</select>
 </mapper>
