@@ -1,0 +1,156 @@
+@charset "UTF-8";
+
+/* 마이페이지 레이아웃 (사이드바 + 메인) */
+.mypage-container {
+  display: flex;
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: 800px; /* 푸터 밀림 방지 */
+}
+
+/* 메인 콘텐츠 영역 */
+.main-content {
+  flex: 1;
+  padding: 40px;
+  background-color: #fff;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 40px;
+  font-size: 2rem;
+  color: #333;
+}
+
+/* 프로필 이미지 스타일 */
+.profile-img-area {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.profile-img-area label {
+  display: inline-block;
+  cursor: pointer;
+  position: relative;
+  transition: 0.3s;
+}
+
+.profile-img-area label:hover {
+  opacity: 0.8;
+}
+
+.profile-img-area img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #ff7f00;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.edit-icon {
+  position: absolute;
+  bottom: 0;
+  right: 10px;
+  background-color: #fff;
+  border-radius: 50%;
+  padding: 5px;
+  font-size: 1.2rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* 폼 공통 스타일 */
+.form-group {
+  margin-bottom: 25px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.form-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #555;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+/* 읽기 전용 인풋 (회색 - 닉네임, 이름, 아이디, 이메일에 적용됨) */
+.form-group input[readonly] {
+  background-color: #f5f5f5;
+  color: #777;
+  cursor: not-allowed;
+}
+
+/* 주소 입력 스타일 */
+.address-group input {
+  margin-bottom: 10px;
+}
+
+.address-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.address-row #postcode {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+/* 주소 검색 버튼 */
+.btn-dark {
+  width: 100px;
+  background-color: #333;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-dark:hover {
+  background-color: #555;
+}
+
+/* 변경 버튼 영역 */
+.btn-area {
+  text-align: center;
+  margin-top: 50px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.btn-submit {
+  width: 100%;
+  padding: 18px;
+  background-color: #fff3e0;
+  color: #e65100;
+  border: 2px solid #ffb74d;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-submit:hover {
+  background-color: #ffe0b2;
+}
+
+/* 라벨 옆 필수 표시 (*) 스타일 */
+.required-mark {
+  color: red;
+  margin-left: 4px;
+  font-weight: bold;
+}
