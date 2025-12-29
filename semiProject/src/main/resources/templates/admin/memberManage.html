@@ -13,7 +13,7 @@
         <th>닉네임</th>
         <th>가입일</th>
         <th>회원 상태</th>
-        <th>강제 탈퇴</th>
+        <th>관리</th>
       </tr>
     </thead>
 
@@ -28,25 +28,41 @@
         <!-- 회원 상태 -->
         <td th:text="${m.memberDelFl == 'Y'} ? '탈퇴' : '정상'">정상</td>
 
-        <!-- 강제 탈퇴 -->
+        <!-- 탈퇴 / 복구 -->
         <td>
-          <form action="/admin/member/updateStatus"
+
+          <!-- 정상 회원 → 탈퇴 -->
+          <form th:if="${m.memberDelFl == 'N'}"
+                action="/admin/member/updateStatus"
                 method="post"
                 onsubmit="return confirm('정말 이 회원을 탈퇴 처리하시겠습니까?');">
 
             <input type="hidden" name="memberNo" th:value="${m.memberNo}">
             <input type="hidden" name="memberDelFl" value="Y">
 
-            <button type="submit"
-                    class="btn-outline"
-                    th:disabled="${m.memberDelFl == 'Y'}">
+            <button type="submit" class="btn-outline withdraw-btn">
               탈퇴
             </button>
           </form>
+
+          <!-- 탈퇴 회원 → 복구 -->
+          <form th:if="${m.memberDelFl == 'Y'}"
+                action="/admin/member/updateStatus"
+                method="post"
+                onsubmit="return confirm('정말 이 회원을 복구 처리하시겠습니까?');">
+
+            <input type="hidden" name="memberNo" th:value="${m.memberNo}">
+            <input type="hidden" name="memberDelFl" value="N">
+
+            <button type="submit" class="btn-outline restore-btn">
+              복구
+            </button>
+          </form>
+
         </td>
       </tr>
 
-      <!-- 회원이 없을 때 -->
+      <!-- 회원 없음 -->
       <tr th:if="${#lists.isEmpty(memberList)}">
         <td colspan="6">회원이 없습니다.</td>
       </tr>
@@ -65,8 +81,7 @@
            class="page-btn">&lt;</a>
       </li>
 
-      <th:block
-        th:each="i : ${#numbers.sequence(pagination.startPage, pagination.endPage)}">
+      <th:block th:each="i : ${#numbers.sequence(pagination.startPage, pagination.endPage)}">
         <li>
           <a th:href="@{/admin/member(cp=${i})}"
              th:text="${i}"
@@ -92,28 +107,18 @@
   <div id="page" th:if="${param.key}" th:object="${pagination}">
     <ul>
       <li>
-        <a th:href="@{/admin/member(
-                      cp=1,
-                      key=${param.key},
-                      query=${param.query})}"
+        <a th:href="@{/admin/member(cp=1, key=${param.key}, query=${param.query})}"
            class="page-btn">&lt;&lt;</a>
       </li>
 
       <li>
-        <a th:href="@{/admin/member(
-                      cp=*{prevPage},
-                      key=${param.key},
-                      query=${param.query})}"
+        <a th:href="@{/admin/member(cp=*{prevPage}, key=${param.key}, query=${param.query})}"
            class="page-btn">&lt;</a>
       </li>
 
-      <th:block
-        th:each="i : ${#numbers.sequence(startPage, endPage)}">
+      <th:block th:each="i : ${#numbers.sequence(startPage, endPage)}">
         <li>
-          <a th:href="@{/admin/member(
-                        cp=${i},
-                        key=${param.key},
-                        query=${param.query})}"
+          <a th:href="@{/admin/member(cp=${i}, key=${param.key}, query=${param.query})}"
              th:text="${i}"
              class="page-btn"
              th:classappend="${i == currentPage} ? ' curr-page' : ''">
@@ -122,33 +127,24 @@
       </th:block>
 
       <li>
-        <a th:href="@{/admin/member(
-                      cp=*{nextPage},
-                      key=${param.key},
-                      query=${param.query})}"
+        <a th:href="@{/admin/member(cp=*{nextPage}, key=${param.key}, query=${param.query})}"
            class="page-btn">&gt;</a>
       </li>
 
       <li>
-        <a th:href="@{/admin/member(
-                      cp=*{maxPage},
-                      key=${param.key},
-                      query=${param.query})}"
+        <a th:href="@{/admin/member(cp=*{maxPage}, key=${param.key}, query=${param.query})}"
            class="page-btn">&gt;&gt;</a>
       </li>
     </ul>
   </div>
 
-  <!-- ================= 검색 영역 ================= -->
+  <!-- ================= 검색 ================= -->
   <div class="search-area">
     <form action="/admin/member" method="get">
       <select name="key" id="search-box">
-        <option value="memberNo"
-                th:selected="${param.key == 'memberNo'}">회원번호</option>
-        <option value="email"
-                th:selected="${param.key == 'email'}">이메일</option>
-        <option value="nickname"
-                th:selected="${param.key == 'nickname'}">닉네임</option>
+        <option value="memberNo" th:selected="${param.key == 'memberNo'}">회원번호</option>
+        <option value="email" th:selected="${param.key == 'email'}">이메일</option>
+        <option value="nickname" th:selected="${param.key == 'nickname'}">닉네임</option>
       </select>
 
       <input type="text"

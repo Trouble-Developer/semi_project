@@ -52,16 +52,168 @@
     OFFSET #{offset} ROWS FETCH NEXT #{limit} ROWS ONLY
   </select>
 
-  <!-- 회원 강제 탈퇴 -->
-  <update id="updateMemberStatus">
+  <!-- 회원 상태 변경 (탈퇴 / 복구 공통) -->
+  <update id="updateMemberStatus"
+          parameterType="map">
     UPDATE MEMBER
     SET MEMBER_DEL_FL = #{memberDelFl}
     WHERE MEMBER_NO = #{memberNo}
   </update>
+  
+  
+  <!-- 공지사항 -->
+  <!-- 공지사항 전체 개수 조회 (검색 조건 포함) -->
+  <select id="getNoticeCount"
+          parameterType="map"
+          resultType="int">
+
+    SELECT COUNT(*)
+    FROM BOARD B
+    WHERE B.BOARD_CODE = 4
+      AND B.BOARD_DEL_FL = 'N'
+
+    <if test="key != null and query != null and query != ''">
+      <choose>
+        <when test="key == 't'">
+          AND B.BOARD_TITLE LIKE '%' || #{query} || '%'
+        </when>
+        <when test="key == 'c'">
+          AND B.BOARD_CONTENT LIKE '%' || #{query} || '%'
+        </when>
+        <when test="key == 'tc'">
+          AND (
+            B.BOARD_TITLE   LIKE '%' || #{query} || '%'
+            OR
+            B.BOARD_CONTENT LIKE '%' || #{query} || '%'
+          )
+        </when>
+      </choose>
+    </if>
+
+  </select>
+  
+  <!-- 공지사항 목록 조회 -->
+  <select id="selectNoticeList"
+          parameterType="map"
+          resultType="edu.kh.project.board.model.dto.Board">
+
+    SELECT
+      B.BOARD_NO         AS boardNo,
+      B.BOARD_TITLE      AS boardTitle,
+      M.MEMBER_NICKNAME  AS memberNickname,
+      B.BOARD_WRITE_DATE AS boardWriteDate,
+      B.READ_COUNT       AS readCount
+    FROM BOARD B
+    JOIN MEMBER M
+      ON B.MEMBER_NO = M.MEMBER_NO
+    WHERE B.BOARD_CODE = 4
+      AND B.BOARD_DEL_FL = 'N'
+
+    <if test="key != null and query != null and query != ''">
+      <choose>
+        <when test="key == 't'">
+          AND B.BOARD_TITLE LIKE '%' || #{query} || '%'
+        </when>
+        <when test="key == 'c'">
+          AND B.BOARD_CONTENT LIKE '%' || #{query} || '%'
+        </when>
+        <when test="key == 'tc'">
+          AND (
+            B.BOARD_TITLE   LIKE '%' || #{query} || '%'
+            OR
+            B.BOARD_CONTENT LIKE '%' || #{query} || '%'
+          )
+        </when>
+      </choose>
+    </if>
+
+    ORDER BY B.BOARD_NO DESC
+    OFFSET #{offset} ROWS FETCH NEXT #{limit} ROWS ONLY
+
+  </select>
+
+  <!-- 공지사항 삭제 (관리자 전용 / 논리 삭제) -->
+  <update id="deleteNotice" parameterType="int">
+    UPDATE BOARD
+    SET BOARD_DEL_FL = 'Y'
+    WHERE BOARD_NO = #{boardNo}
+  </update>
 
 
+  <!-- 고객지원 게시글 -->
+  <!-- 고객지원 게시글 전체 개수 조회 -->
+  <!-- 페이징 계산을 위해 먼저 COUNT -->
+  <select id="getSupportCount"
+          parameterType="map"
+          resultType="int">
 
+    SELECT COUNT(*)
+    FROM BOARD B
+    WHERE B.BOARD_CODE = 3       <!-- 고객지원 게시판 코드 -->
+      AND B.BOARD_DEL_FL = 'N'   <!-- 삭제되지 않은 글 -->
 
+    <!-- 검색 조건이 있을 경우 -->
+    <if test="key != null and query != null and query != ''">
+      <choose>
+        <when test="key == 'title'">
+          AND B.BOARD_TITLE LIKE '%' || #{query} || '%'
+        </when>
+        <when test="key == 'content'">
+          AND B.BOARD_CONTENT LIKE '%' || #{query} || '%'
+        </when>
+        <when test="key == 'writer'">
+          AND B.MEMBER_NO IN (
+            SELECT MEMBER_NO
+            FROM MEMBER
+            WHERE MEMBER_NICKNAME LIKE '%' || #{query} || '%'
+          )
+        </when>
+      </choose>
+    </if>
+
+  </select>
+  
+  
+  <!-- 고객지원 게시글 목록 조회 -->
+  <select id="selectSupportList"
+          parameterType="map"
+          resultType="edu.kh.project.board.model.dto.Board">
+
+    SELECT
+      B.BOARD_NO         AS boardNo,
+      B.BOARD_TITLE      AS boardTitle,
+      M.MEMBER_NICKNAME  AS memberNickname,
+      B.BOARD_WRITE_DATE AS boardWriteDate
+    FROM BOARD B
+    JOIN MEMBER M
+      ON B.MEMBER_NO = M.MEMBER_NO
+    WHERE B.BOARD_CODE = 3
+      AND B.BOARD_DEL_FL = 'N'
+
+    <!-- 검색 조건 -->
+    <if test="key != null and query != null and query != ''">
+      <choose>
+        <when test="key == 'title'">
+          AND B.BOARD_TITLE LIKE '%' || #{query} || '%'
+        </when>
+        <when test="key == 'content'">
+          AND B.BOARD_CONTENT LIKE '%' || #{query} || '%'
+        </when>
+        <when test="key == 'writer'">
+          AND M.MEMBER_NICKNAME LIKE '%' || #{query} || '%'
+        </when>
+      </choose>
+    </if>
+
+    <!-- 최신 글이 위로 오도록 정렬 -->
+    ORDER BY B.BOARD_NO DESC
+
+    <!-- 페이징 처리 -->
+    OFFSET #{offset} ROWS
+    FETCH NEXT #{limit} ROWS ONLY
+
+  </select>
+  
 
 
 

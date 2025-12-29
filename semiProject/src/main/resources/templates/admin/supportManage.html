@@ -1,11 +1,141 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>관리자(고객지원)</title>
-</head>
-<body>
-    
-</body>
-</html>
+<section class="admin-main">
+
+  <!-- 페이지 제목 -->
+  <h1 class="admin-page-title">고객지원</h1>
+  <hr>
+
+  <!-- 고객지원 게시글 테이블 -->
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>번호</th>
+        <th>제목</th>
+        <th>닉네임</th>
+        <th>작성일</th>
+        <th>게시글 삭제</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <!-- 고객지원 게시글 목록 -->
+      <tr th:each="s : ${supportList}">
+        <td th:text="${s.boardNo}">1</td>
+
+        <td>
+          <a th:href="@{/admin/support/{no}(no=${s.boardNo})}"
+             th:text="${s.boardTitle}">
+            제목
+          </a>
+        </td>
+
+        <td th:text="${s.memberNickname}">닉네임</td>
+        <td th:text="${s.boardWriteDate}">2025-12-15</td>
+
+        <td>
+          <form action="/admin/support/delete"
+                method="post"
+                onsubmit="return confirm('정말 이 게시글을 삭제하시겠습니까?');">
+            <input type="hidden" name="boardNo" th:value="${s.boardNo}">
+            <button type="submit" class="btn-outline withdraw-btn">
+              삭제
+            </button>
+          </form>
+        </td>
+      </tr>
+
+      <!-- 게시글 없음 -->
+      <tr th:if="${#lists.isEmpty(supportList)}">
+        <td colspan="5">고객지원 게시글이 없습니다.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ================= 페이지네이션 (검색 X) ================= -->
+  <div id="page" th:unless="${param.key}">
+    <ul>
+      <li>
+        <a th:href="@{/admin/support(cp=1)}" class="page-btn">&lt;&lt;</a>
+      </li>
+
+      <li>
+        <a th:href="@{/admin/support(cp=${pagination.prevPage})}"
+           class="page-btn">&lt;</a>
+      </li>
+
+      <th:block th:each="i : ${#numbers.sequence(pagination.startPage, pagination.endPage)}">
+        <li>
+          <a th:href="@{/admin/support(cp=${i})}"
+             th:text="${i}"
+             class="page-btn"
+             th:classappend="${i == pagination.currentPage} ? ' curr-page' : ''">
+          </a>
+        </li>
+      </th:block>
+
+      <li>
+        <a th:href="@{/admin/support(cp=${pagination.nextPage})}"
+           class="page-btn">&gt;</a>
+      </li>
+
+      <li>
+        <a th:href="@{/admin/support(cp=${pagination.maxPage})}"
+           class="page-btn">&gt;&gt;</a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- ================= 페이지네이션 (검색 O) ================= -->
+  <div id="page" th:if="${param.key}" th:object="${pagination}">
+    <ul>
+      <li>
+        <a th:href="@{/admin/support(cp=1, key=${param.key}, query=${param.query})}"
+           class="page-btn">&lt;&lt;</a>
+      </li>
+
+      <li>
+        <a th:href="@{/admin/support(cp=*{prevPage}, key=${param.key}, query=${param.query})}"
+           class="page-btn">&lt;</a>
+      </li>
+
+      <th:block th:each="i : ${#numbers.sequence(startPage, endPage)}">
+        <li>
+          <a th:href="@{/admin/support(cp=${i}, key=${param.key}, query=${param.query})}"
+             th:text="${i}"
+             class="page-btn"
+             th:classappend="${i == currentPage} ? ' curr-page' : ''">
+          </a>
+        </li>
+      </th:block>
+
+      <li>
+        <a th:href="@{/admin/support(cp=*{nextPage}, key=${param.key}, query=${param.query})}"
+           class="page-btn">&gt;</a>
+      </li>
+
+      <li>
+        <a th:href="@{/admin/support(cp=*{maxPage}, key=${param.key}, query=${param.query})}"
+           class="page-btn">&gt;&gt;</a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- ================= 검색 ================= -->
+  <div class="search-area">
+    <form action="/admin/support" method="get">
+      <select name="key" id="search-box">
+        <option value="title" th:selected="${param.key == 'title'}">제목</option>
+        <option value="content" th:selected="${param.key == 'content'}">내용</option>
+        <option value="writer" th:selected="${param.key == 'writer'}">작성자</option>
+      </select>
+
+      <input type="text"
+             name="query"
+             id="search-input"
+             th:value="${param.query}"
+             placeholder="검색어를 입력해주세요">
+
+      <button type="submit" id="search-btn">검색</button>
+    </form>
+  </div>
+
+</section>
