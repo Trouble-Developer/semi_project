@@ -20,6 +20,11 @@ public class Board {
 	private int boardCode;
 	private int memberNo;
 
+	// BOARD_IMG 조인
+	private String imgPath;
+	private String imgRename;
+	
+	
 	// MEMBER 테이블 조인
 	private String memberNickname;
 	
