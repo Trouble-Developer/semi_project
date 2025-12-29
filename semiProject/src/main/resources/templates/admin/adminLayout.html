@@ -65,7 +65,7 @@
             <!-- 본문 (우측. 좌측 사이드바 옆.) -->
             <main class="admin-main">
                 <!-- 각 페이지 본문(section)이 들어갈 자리(회원 관리, 공지사항, 고객지원, 신고글 목록) -->
-                <th:block th:replace="${content}"></th:block>
+                <th:block th:replace="~{${content}}"></th:block>
             </main>
 
         </div>
