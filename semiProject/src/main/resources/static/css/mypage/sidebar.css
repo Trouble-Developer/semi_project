@@ -1,0 +1,58 @@
+@charset "UTF-8";
+
+.sidebar {
+  width: 200px;
+  border-right: 1px solid #ddd;
+  padding-right: 20px;
+  background-color: #fff;
+  height: 100%;
+}
+
+.sidebar h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+  padding-left: 10px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar li {
+  margin-bottom: 5px; /* 항목 간 간격 살짝 줌 */
+  border-radius: 5px;
+  transition: all 0.2s ease;
+}
+
+/* [핵심] a 태그 스타일 - 영역 꽉 채우기 */
+.sidebar li a {
+  display: block;       /* 영역 꽉 차게 */
+  padding: 15px 10px;   /* 기존 li에 있던 패딩을 일로 가져옴 */
+  text-decoration: none; /* 밑줄 제거 */
+  color: #555;          /* 글자색 */
+  width: 100%;          /* 가로 꽉 */
+  box-sizing: border-box; /* 패딩 포함 크기 계산 */
+}
+
+.sidebar li:hover {
+  background-color: #f5f5f5;
+}
+
+.sidebar li:hover a {
+  color: #333;
+}
+
+/* Active 상태 스타일 */
+.sidebar li.active {
+  background-color: #ffe0b2;
+}
+
+.sidebar li.active a {
+  color: #e65100;
+  font-weight: bold;
+}
