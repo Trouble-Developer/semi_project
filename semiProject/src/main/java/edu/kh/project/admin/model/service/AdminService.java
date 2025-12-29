@@ -26,6 +26,26 @@ public interface AdminService {
 	 */
 	int updateMemberStatus(Map<String, Object> paramMap);
 
+	/** 공지사항 조회
+	 * @param cp : 현재 페이지 번호. 이하 게시글 메서드에서도 동일한 의미.
+	 * @param paramMap : 검색 조건. 이하 게시글 메서드에서도 동일한 의미.
+	 * @return
+	 */
+	Map<String, Object> selectNoticeList(int cp, Map<String, Object> paramMap);
+
+	/** 공지사항 삭제
+	 * @param boardNo
+	 * @return
+	 */
+	int deleteNotice(int boardNo);
+
+	/** 고객지원 게시글 목록 조회
+	 * @param cp 
+	 * @param paramMap
+	 * @return
+	 */
+	Map<String, Object> selectSupportList(int cp, Map<String, Object> paramMap);
+
 	
 
 }

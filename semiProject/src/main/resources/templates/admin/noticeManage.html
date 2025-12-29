@@ -1,11 +1,134 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>관리자(공지사항)</title>
-</head>
-<body>
-    
-</body>
-</html>
+<section>
+
+  <!-- ================= 제목 + 글작성 버튼 ================= -->
+  <div class="admin-title-wrap">
+    <h1 class="admin-page-title">공지사항</h1>
+
+    <!-- 관리자 전용 공지사항 작성 버튼 -->
+    <!-- 기존 board 글쓰기 기능 재사용 (boardCode = 4) -->
+    <a href="/board/write?boardCode=4"
+       class="btn-write">
+      글작성
+    </a>
+  </div>
+
+  <hr>
+
+  <!-- ================= 공지사항 목록 테이블 ================= -->
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>번호</th>
+        <th>제목</th>
+        <th>작성자</th>
+        <th>작성일</th>
+        <th>조회수</th>
+        <th>관리</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <!-- 공지사항 목록 -->
+      <tr th:each="notice : ${freeBoardList}">
+        <td th:text="${notice.boardNo}">1</td>
+
+        <!-- 기존 공지사항 상세 페이지로 이동 (board 재사용) -->
+        <td>
+          <a th:href="@{/board/4/{boardNo}(boardNo=${notice.boardNo})}"
+             th:text="${notice.boardTitle}">
+            공지사항 제목
+          </a>
+        </td>
+
+        <td th:text="${notice.memberNickname}">관리자</td>
+        <td th:text="${notice.boardWriteDate}">2025-12-24</td>
+        <td th:text="${notice.readCount}">0</td>
+
+        <!-- 관리자 전용 삭제 버튼 -->
+        <td>
+          <form th:action="@{/admin/notice/delete}"
+                method="post"
+                onsubmit="return confirm('정말 이 공지사항을 삭제하시겠습니까?');">
+
+            <!-- 삭제 대상 게시글 번호 -->
+            <input type="hidden"
+                   name="boardNo"
+                   th:value="${notice.boardNo}">
+
+            <button type="submit"
+                    class="btn-outline danger">
+              삭제
+            </button>
+          </form>
+        </td>
+      </tr>
+
+      <!-- 공지사항이 없을 때 -->
+      <tr th:if="${#lists.isEmpty(freeBoardList)}">
+        <td colspan="6">등록된 공지사항이 없습니다.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ================= 페이지네이션 ================= -->
+  <div id="page">
+    <ul>
+      <li>
+        <a th:href="@{/admin/notice(cp=1)}"
+           class="page-btn">&lt;&lt;</a>
+      </li>
+
+      <li>
+        <a th:href="@{/admin/notice(cp=${pagination.prevPage})}"
+           class="page-btn">&lt;</a>
+      </li>
+
+      <th:block
+        th:each="i : ${#numbers.sequence(pagination.startPage, pagination.endPage)}">
+        <li>
+          <a th:href="@{/admin/notice(cp=${i})}"
+             th:text="${i}"
+             class="page-btn"
+             th:classappend="${i == pagination.currentPage} ? ' curr-page' : ''">
+          </a>
+        </li>
+      </th:block>
+
+      <li>
+        <a th:href="@{/admin/notice(cp=${pagination.nextPage})}"
+           class="page-btn">&gt;</a>
+      </li>
+
+      <li>
+        <a th:href="@{/admin/notice(cp=${pagination.maxPage})}"
+           class="page-btn">&gt;&gt;</a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- ================= 검색 영역 ================= -->
+  <div class="search-area">
+    <form action="/admin/notice" method="get">
+      <select name="key" id="search-box">
+        <option value="t"
+                th:selected="${param.key == 't'}">제목</option>
+        <option value="c"
+                th:selected="${param.key == 'c'}">내용</option>
+        <option value="tc"
+                th:selected="${param.key == 'tc'}">제목 + 내용</option>
+      </select>
+
+      <input type="text"
+             name="query"
+             id="search-input"
+             th:value="${param.query}"
+             placeholder="검색어를 입력해주세요">
+
+      <button type="submit"
+              id="search-btn">
+        검색
+      </button>
+    </form>
+  </div>
+
+</section>
