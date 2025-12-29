@@ -1,5 +1,8 @@
 package edu.kh.project.board.model.dto;
 
+import java.util.List;
+
+import edu.kh.project.comment.dto.Comment;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -33,5 +36,6 @@ public class Board {
 	// 추후 이미지 리스트, 댓글 리스트 추가
 	// 우선은 글 가져오는 것 부터!
 	
-
+	// 댓글 리스트 추가!
+	private List<Comment> commentList; // 게시글의 댓글 목록
 }
