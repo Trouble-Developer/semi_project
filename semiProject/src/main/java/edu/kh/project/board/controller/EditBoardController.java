@@ -211,10 +211,10 @@ public class EditBoardController {
 		paramMap.put("memberNo", loginMember.getMemberNo());
 		paramMap.put("content", paramMap.get("editordata"));
 		paramMap.put("boardLock", paramMap.get("checkbox") != null ? "Y" : "N");
-		
+
 		int result = service.boardUpdate(paramMap);
-		
-		if(result > 0) {
+
+		if (result > 0) {
 			message = "게시글이 수정되었습니다.";
 		} else {
 			message = "게시글 수정 실패..";

@@ -2,14 +2,21 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="edu.kh.project.main.model.mapper.MainMapper">
 
-	<!-- name 수정 필요 -->
-
-	<select id="testData">
-		SELECT MEMBER_NO, MEMBER_ID,
-		MEMBER_NICKNAME,
-		MEMBER_EMAIL,
-		MEMBER_RRN,
-		MEMBER_TEL FROM "MEMBER"
-		WHERE MEMBER_NO = 1
+	<select id="getVolunteerList">
+		SELECT BOARD_TITLE, IMG_PATH, IMG_RENAME, MEMBER_NICKNAME, BOARD_CODE, BOARD_NO
+		FROM (
+		SELECT B.BOARD_TITLE, I.IMG_PATH, I.IMG_RENAME, M.MEMBER_NICKNAME, B.BOARD_CODE, B.BOARD_NO
+		FROM BOARD B
+		JOIN BOARD_IMG I
+		ON B.BOARD_NO = I.BOARD_NO
+		JOIN MEMBER M
+		ON M.MEMBER_NO = B.MEMBER_NO
+		WHERE B.BOARD_CODE = 3
+		ORDER BY B.BOARD_NO DESC
+		)
+		<![CDATA[
+		WHERE ROWNUM <= 10
+		]]>
 	</select>
+
 </mapper>
