@@ -70,42 +70,82 @@
     </tbody>
   </table>
 
-  <!-- ================= 페이지네이션 ================= -->
-  <div id="page">
+  <!-- ================= 페이지네이션 (검색 X) ================= -->
+  <div
+    id="page"
+    th:if="${param.key == null and freeBoardList != null and !#lists.isEmpty(freeBoardList)}"
+  >
     <ul>
       <li>
-        <a th:href="@{/admin/notice(cp=1)}"
-           class="page-btn">&lt;&lt;</a>
+        <a th:href="@{/admin/notice(cp=1)}" class="page-btn">&lt;&lt;</a>
       </li>
 
       <li>
         <a th:href="@{/admin/notice(cp=${pagination.prevPage})}"
-           class="page-btn">&lt;</a>
+          class="page-btn">&lt;</a>
       </li>
 
-      <th:block
-        th:each="i : ${#numbers.sequence(pagination.startPage, pagination.endPage)}">
+      <th:block th:each="i : ${#numbers.sequence(pagination.startPage, pagination.endPage)}">
         <li>
           <a th:href="@{/admin/notice(cp=${i})}"
-             th:text="${i}"
-             class="page-btn"
-             th:classappend="${i == pagination.currentPage} ? ' curr-page' : ''">
+            th:text="${i}"
+            class="page-btn"
+            th:classappend="${i == pagination.currentPage} ? ' curr-page' : ''">
           </a>
         </li>
       </th:block>
 
       <li>
         <a th:href="@{/admin/notice(cp=${pagination.nextPage})}"
-           class="page-btn">&gt;</a>
+          class="page-btn">&gt;</a>
       </li>
 
       <li>
         <a th:href="@{/admin/notice(cp=${pagination.maxPage})}"
-           class="page-btn">&gt;&gt;</a>
+          class="page-btn">&gt;&gt;</a>
       </li>
     </ul>
   </div>
 
+  <!-- ================= 페이지네이션 (검색 O) ================= -->
+  <div
+    id="page"
+    th:if="${param.key != null and freeBoardList != null and !#lists.isEmpty(freeBoardList)}"
+    th:object="${pagination}"
+  >
+    <ul>
+      <li>
+        <a th:href="@{/admin/notice(cp=1, key=${param.key}, query=${param.query})}"
+          class="page-btn">&lt;&lt;</a>
+      </li>
+
+      <li>
+        <a th:href="@{/admin/notice(cp=*{prevPage}, key=${param.key}, query=${param.query})}"
+          class="page-btn">&lt;</a>
+      </li>
+
+      <th:block th:each="i : ${#numbers.sequence(pagination.startPage, pagination.endPage)}">
+        <li>
+          <a th:href="@{/admin/notice(cp=${i}, key=${param.key}, query=${param.query})}"
+            th:text="${i}"
+            class="page-btn"
+            th:classappend="${i == pagination.currentPage} ? ' curr-page' : ''">
+          </a>
+        </li>
+      </th:block>
+
+      <li>
+        <a th:href="@{/admin/notice(cp=*{nextPage}, key=${param.key}, query=${param.query})}"
+          class="page-btn">&gt;</a>
+      </li>
+
+      <li>
+        <a th:href="@{/admin/notice(cp=*{maxPage}, key=${param.key}, query=${param.query})}"
+          class="page-btn">&gt;&gt;</a>
+      </li>
+    </ul>
+  </div>
+  
   <!-- ================= 검색 영역 ================= -->
   <div class="search-area">
     <form action="/admin/notice" method="get">

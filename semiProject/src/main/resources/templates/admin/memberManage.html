@@ -116,7 +116,7 @@
            class="page-btn">&lt;</a>
       </li>
 
-      <th:block th:each="i : ${#numbers.sequence(startPage, endPage)}">
+      <th:block th:each="i : ${#numbers.sequence(pagination.startPage, pagination.endPage)}"> <!-- 여기가 실수 -->
         <li>
           <a th:href="@{/admin/member(cp=${i}, key=${param.key}, query=${param.query})}"
              th:text="${i}"

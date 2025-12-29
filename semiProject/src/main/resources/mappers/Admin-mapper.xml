@@ -9,13 +9,13 @@
     <where>
       <if test="key != null and query != null">
         <choose>
-          <when test="key == 'memberNo'">
+          <when test="'memberNo'.equals(key)">
             MEMBER_NO = #{query}
           </when>
-          <when test="key == 'email'">
+          <when test="'email'.equals(key)">
             MEMBER_EMAIL LIKE '%' || #{query} || '%'
           </when>
-          <when test="key == 'nickname'">
+          <when test="'nickname'.equals(key)">
             MEMBER_NICKNAME LIKE '%' || #{query} || '%'
           </when>
         </choose>
@@ -36,13 +36,13 @@
     <where>
       <if test="key != null and query != null">
         <choose>
-          <when test="key == 'memberNo'">
+          <when test="'memberNo'.equals(key)">
             MEMBER_NO = #{query}
           </when>
-          <when test="key == 'email'">
+          <when test="'email'.equals(key)">
             MEMBER_EMAIL LIKE '%' || #{query} || '%'
           </when>
-          <when test="key == 'nickname'">
+          <when test="'nickname'.equals(key)">
             MEMBER_NICKNAME LIKE '%' || #{query} || '%'
           </when>
         </choose>
@@ -69,27 +69,26 @@
 
     SELECT COUNT(*)
     FROM BOARD B
-    WHERE B.BOARD_CODE = 4
-      AND B.BOARD_DEL_FL = 'N'
+    WHERE B.BOARD_DEL_FL = 'N'
+      AND B.BOARD_CODE = 4
 
-    <if test="key != null and query != null and query != ''">
-      <choose>
-        <when test="key == 't'">
-          AND B.BOARD_TITLE LIKE '%' || #{query} || '%'
-        </when>
-        <when test="key == 'c'">
-          AND B.BOARD_CONTENT LIKE '%' || #{query} || '%'
-        </when>
-        <when test="key == 'tc'">
-          AND (
-            B.BOARD_TITLE   LIKE '%' || #{query} || '%'
-            OR
-            B.BOARD_CONTENT LIKE '%' || #{query} || '%'
-          )
-        </when>
-      </choose>
-    </if>
+    <choose>
+      <when test='key == "t"'>
+        AND B.BOARD_TITLE LIKE '%' || #{query} || '%'
+      </when>
 
+      <when test='key == "c"'>
+        AND B.BOARD_CONTENT LIKE '%' || #{query} || '%'
+      </when>
+
+      <when test='key == "tc"'>
+        AND (
+          B.BOARD_TITLE LIKE '%' || #{query} || '%'
+          OR B.BOARD_CONTENT LIKE '%' || #{query} || '%'
+        )
+      </when>
+    </choose>
+  
   </select>
   
   <!-- 공지사항 목록 조회 -->
@@ -101,31 +100,35 @@
       B.BOARD_NO         AS boardNo,
       B.BOARD_TITLE      AS boardTitle,
       M.MEMBER_NICKNAME  AS memberNickname,
-      B.BOARD_WRITE_DATE AS boardWriteDate,
-      B.READ_COUNT       AS readCount
+      B.READ_COUNT       AS readCount,
+      TO_CHAR(B.BOARD_WRITE_DATE, 'YYYY-MM-DD') AS boardWriteDate
+
     FROM BOARD B
     JOIN MEMBER M
       ON B.MEMBER_NO = M.MEMBER_NO
-    WHERE B.BOARD_CODE = 4
-      AND B.BOARD_DEL_FL = 'N'
 
-    <if test="key != null and query != null and query != ''">
-      <choose>
-        <when test="key == 't'">
-          AND B.BOARD_TITLE LIKE '%' || #{query} || '%'
-        </when>
-        <when test="key == 'c'">
-          AND B.BOARD_CONTENT LIKE '%' || #{query} || '%'
-        </when>
-        <when test="key == 'tc'">
-          AND (
-            B.BOARD_TITLE   LIKE '%' || #{query} || '%'
-            OR
-            B.BOARD_CONTENT LIKE '%' || #{query} || '%'
-          )
-        </when>
-      </choose>
-    </if>
+    WHERE B.BOARD_DEL_FL = 'N'
+      AND B.BOARD_CODE = 4   <!-- 관리자 공지사항 고정 -->
+
+    <choose>
+      <!-- 제목 검색 -->
+      <when test='key == "t"'>
+        AND B.BOARD_TITLE LIKE '%' || #{query} || '%'
+      </when>
+
+      <!-- 내용 검색 -->
+      <when test='key == "c"'>
+        AND B.BOARD_CONTENT LIKE '%' || #{query} || '%'
+      </when>
+
+      <!-- 제목 + 내용 -->
+      <when test='key == "tc"'>
+        AND (
+          B.BOARD_TITLE LIKE '%' || #{query} || '%'
+          OR B.BOARD_CONTENT LIKE '%' || #{query} || '%'
+        )
+      </when>
+    </choose>
 
     ORDER BY B.BOARD_NO DESC
     OFFSET #{offset} ROWS FETCH NEXT #{limit} ROWS ONLY
