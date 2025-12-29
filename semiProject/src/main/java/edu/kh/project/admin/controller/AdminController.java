@@ -18,6 +18,8 @@ import edu.kh.project.admin.dto.AdminMember;
 import edu.kh.project.admin.model.service.AdminService;
 import edu.kh.project.board.model.dto.Board;
 import edu.kh.project.board.model.dto.Pagination;
+import edu.kh.project.member.model.dto.Member;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,14 +30,34 @@ public class AdminController {
 
     private final AdminService adminService;
 
+    // 관리자 접근 제어
+    private boolean isAdmin(HttpSession session,
+            				RedirectAttributes ra) {
+
+    	Member loginMember = (Member) session.getAttribute("loginMember");
+
+    	if (loginMember == null || loginMember.getAuthority() != 2) {
+    			ra.addFlashAttribute("message", "관리자만 접근 가능합니다.");
+    						
+    			return false;
+    	}
+    	return true;
+    }
+    
     // 회원 관리 페이지
     @GetMapping("member")
     public String memberManage(
             @RequestParam(value = "cp", defaultValue = "1") int cp,
             @RequestParam(value = "key", required = false) String key,
             @RequestParam(value = "query", required = false) String query,
-            Model model) {
+            Model model,
+            HttpSession session,
+            RedirectAttributes ra) {
 
+    	if (!isAdmin(session, ra)) {
+            return "redirect:/";
+        }
+    	
         // 검색 파라미터 Map (mapper가 매개변수를 하나밖에 못 받아서)
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("key", key);
@@ -70,8 +92,13 @@ public class AdminController {
     public String updateMemberStatus(
             @RequestParam("memberNo") int memberNo,
             @RequestParam("memberDelFl") String memberDelFl,
+            HttpSession session,
             RedirectAttributes ra) {
 
+        if (!isAdmin(session, ra)) {
+            return "redirect:/";
+        }
+    	
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("memberNo", memberNo);
         paramMap.put("memberDelFl", memberDelFl);
@@ -99,8 +126,14 @@ public class AdminController {
             @RequestParam(value = "cp", defaultValue = "1") int cp,
             @RequestParam(value = "key", required = false) String key,
             @RequestParam(value = "query", required = false) String query,
-            Model model) {
+            Model model,
+            HttpSession session,
+            RedirectAttributes ra) {
 
+        if (!isAdmin(session, ra)) {
+            return "redirect:/";
+        }
+    	
         // 검색 파라미터 Map
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("key", key);
@@ -123,9 +156,14 @@ public class AdminController {
     // 공지사항 삭제
     @PostMapping("notice/delete")
     public String deleteNotice(
-            @RequestParam("boardNo") int boardNo,
+    		@RequestParam("boardNo") int boardNo,
+            HttpSession session,
             RedirectAttributes ra) {
 
+        if (!isAdmin(session, ra)) {
+            return "redirect:/";
+        }
+    	
         int result = adminService.deleteNotice(boardNo);
 
         if (result > 0) {
@@ -147,8 +185,14 @@ public class AdminController {
             @RequestParam(value = "key", required = false) String key,
             // 검색어
             @RequestParam(value = "query", required = false) String query,
-            Model model) {
+            Model model,
+            HttpSession session,
+            RedirectAttributes ra) {
 
+        if (!isAdmin(session, ra)) {
+            return "redirect:/";
+        }
+    	
         // Mapper는 매개변수 1개만 받을 수 있으므로
         // 검색 조건을 Map으로 묶어서 전달
         Map<String, Object> paramMap = new HashMap<>();
