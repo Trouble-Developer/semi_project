@@ -72,9 +72,9 @@ public class EditBoardController {
 			ra.addFlashAttribute("message", "로그인 후 이용해주세요.");
 			return "redirect:/member/login";
 		}
-		// 관리자만이 공지사항 및 고객지원 삭제 가능
-		if ((board.getBoardCode() == 4 || board.getBoardCode() == 5) && loginMember.getAuthority() == 1) {
-			message = "공지사항 및 고객지원 게시글은 관리자만 삭제할 수 있습니다.";
+		// 관리자만이 공지사항 삭제 가능
+		if ((board.getBoardCode() == 4) && loginMember.getAuthority() == 1) {
+			message = "공지사항은 관리자만이 삭제할 수 있습니다.";
 			ra.addFlashAttribute("message", message);
 			return "redirect:/board/" + board.getBoardCode() + "?cp=" + cp;
 		}
@@ -129,7 +129,6 @@ public class EditBoardController {
 	public String boardInsert(@PathVariable("boardCode") int boardCode, @RequestParam Map<String, Object> paramMap,
 			@SessionAttribute(value = "loginMember", required = false) Member loginMember, RedirectAttributes ra) {
 
-		
 		paramMap.put("content", paramMap.get("editordata"));
 		paramMap.put("memberNo", loginMember.getMemberNo());
 		// ✅ 수정: checkbox가 null이어도 에러 안 나도록 변경
