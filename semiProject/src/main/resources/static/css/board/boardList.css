@@ -139,11 +139,13 @@ a {
   border: 1px solid #ddd;
   border-radius: 20px;
   overflow: hidden;
+  display: flex;
 }
 #content-img-info {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  display: block;
+  object-fit: fill;
 }
 #volunteerReviewListContent {
   display: flex;
