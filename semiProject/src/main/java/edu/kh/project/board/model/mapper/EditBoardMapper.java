@@ -12,17 +12,15 @@ public interface EditBoardMapper {
 
 	int boardInsert(Map<String, Object> map);
 
-    int selectLastBoardNo(int memberNo);
+	int updateBoardImgBoardNo(int boardNo);
 
-    int insertBoardImg(BoardImg img);
+	List<BoardImg> selectBoardImgList(int boardNo);
 
-    int updateBoardImgBoardNo(int boardNo);
+	int deleteBoardImg(int boardNo);
 
-    List<BoardImg> selectBoardImgList(int boardNo);
-
-    int deleteBoardImg(int boardNo);
-
-    int boardDelete(int boardNo);
+	int boardDelete(int boardNo);
 
 	int boardUpdate(Map<String, Object> paramMap);
+
+	int insertUploadList(List<BoardImg> imgList);
 }
