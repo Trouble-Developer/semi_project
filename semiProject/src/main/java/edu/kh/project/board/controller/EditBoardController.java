@@ -131,7 +131,8 @@ public class EditBoardController {
 
 		paramMap.put("content", paramMap.get("editordata"));
 		paramMap.put("memberNo", loginMember.getMemberNo());
-		String boardLock = paramMap.get("checkbox").equals("on") ? "Y" : "N";
+		// ✅ 수정: checkbox가 null이어도 에러 안 나도록 변경
+		String boardLock = "on".equals(paramMap.get("checkbox")) ? "Y" : "N";
 		paramMap.put("boardLock", boardLock);
 
 		int result = service.boardInsert(paramMap);

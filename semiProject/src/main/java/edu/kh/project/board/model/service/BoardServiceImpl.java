@@ -13,6 +13,9 @@ import edu.kh.project.board.model.dto.Board;
 import edu.kh.project.board.model.dto.Pagination;
 import edu.kh.project.board.model.dto.BoardReport;
 import edu.kh.project.board.model.mapper.BoardMapper;
+// ⭐⭐⭐ 추가 1: import 2줄 추가 ⭐⭐⭐
+import edu.kh.project.board.model.dto.Comment;
+import edu.kh.project.board.model.mapper.CommentMapper;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
@@ -20,6 +23,10 @@ public class BoardServiceImpl implements BoardService {
 
 	@Autowired
 	private BoardMapper mapper;
+	
+	// ⭐⭐⭐ 추가 2: CommentMapper 의존성 주입 ⭐⭐⭐
+	@Autowired
+	private CommentMapper commentMapper;
 
 	/**
 	 * dev.안재훈 게시판 종류별 데이터 가져오기
@@ -84,10 +91,19 @@ public class BoardServiceImpl implements BoardService {
 		return map;
 	}
 
+	// ⭐⭐⭐ 추가 3: 이 메서드 전체를 아래 코드로 교체! ⭐⭐⭐
 	@Override
 	public Board freeBoardDetil(Board board) {
-		// TODO Auto-generated method stub
-		return mapper.freeBoardDetil(board);
+		// 1. 게시글 조회
+		Board result = mapper.freeBoardDetil(board);
+		
+		// 2. 댓글 목록 조회 (게시글이 존재하는 경우에만)
+		if(result != null) {
+			List<Comment> commentList = commentMapper.selectCommentList(result.getBoardNo());
+			result.setCommentList(commentList);
+		}
+		
+		return result;
 	}
 
 	@Override

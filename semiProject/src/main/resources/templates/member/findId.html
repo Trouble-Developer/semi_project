@@ -63,9 +63,7 @@
                    placeholder="뒤 1자리" 
                    maxlength="1" 
                    autocomplete="off">
-            
-            <!-- 성별 표시 기호 (장식용) -->
-            <span class="gender-symbol">⚥</span>
+          
           </div>
           
           <!-- 에러 메시지 표시 영역 -->
@@ -162,11 +160,13 @@
     </section>
     <!-- 메인 영역 끝 -->
 
+  </main>
+    
     <!-- ===== 공통 푸터 영역 (Thymeleaf 조각 사용) ===== -->
     <th:block th:replace="~{common/footer}"></th:block>
 
-  </main>
-  
+
+
   <!-- JavaScript 파일 연결 (맨 마지막에 로드) -->
   <!-- HTML이 모두 로드된 후 JavaScript 실행 -->
   <script src="/js/member/findId.js"></script>

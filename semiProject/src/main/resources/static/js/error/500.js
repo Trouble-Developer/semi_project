@@ -1,6 +1,7 @@
 const errorBtn = document.querySelector("#error-btn");
 const modal = document.querySelector("#modal");
 const closeBtn = document.querySelector("#close-btn");
+const mainBtn = document.querySelector("#main-btn"); // mainBtn 추가!
 
 errorBtn.addEventListener("click", () => {
 	console.log("click");
