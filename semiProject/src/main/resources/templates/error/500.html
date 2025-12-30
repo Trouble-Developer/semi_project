@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Document</title>
+<link rel="stylesheet" href="/css/error/500.css" />
+</head>
+<body>
+	<div id="container">
+		<p id="error-text">500 ERROR</p>
+		<p id="info-1">서비스 이용에 불편을 드려 죄송합니다.</p>
+		<p id="info-2">시스템 에러가 발생하여 페이지를 표시할 수 없습니다.</p>
+		<p id="info-3">잠시 후 다시 시도하세요.</p>
+		<div id="btn">
+			<button id="error-btn">에러메시지</button>
+		</div>
+		<div id="modal" class="hidden">
+			<div id="content">
+				<p th:text="${e}">에러메시지</p>
+				<div>
+					<button id="close-btn">닫기</button>
+				</div>
+			</div>
+
+		</div>
+		<script src="/js/error/500.js"></script>
+	</div>
+</body>
+</html>

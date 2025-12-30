@@ -1,0 +1,154 @@
+<!-- 
+    댓글 영역 Fragment
+    
+    - 게시글 상세 조회 페이지에서 th:replace로 include하여 사용
+    - 사용 예: <div th:replace="~{board/comment :: commentFragment}"></div>
+    
+    [파일 위치]
+    templates/board/comment.html
+    
+-->
+
+<div id="commentArea" th:fragment="commentFragment">
+
+    <!-- ================================================================ -->
+    <!--                        댓글 목록 영역                              -->
+    <!-- ================================================================ -->
+    <div class="comment-list-area">
+        
+        <!-- 
+            댓글 목록을 담는 ul 태그
+            - JavaScript(selectCommentList)에서 동적으로 내용 생성
+            - 초기 로딩 시 Thymeleaf로 서버사이드 렌더링
+        -->
+        <ul id="commentList">
+
+            <!-- 
+                [Thymeleaf 댓글 목록 반복 출력]
+                
+                - th:each     : board.commentList를 순회하며 각 comment 생성
+                - th:classappend : 조건에 따라 클래스 동적 추가
+                - th:object   : 현재 comment 객체를 참조 (*{필드명} 형태로 접근)
+                
+                [대댓글 판별]
+                - parentCommentNo가 0이 아니면 답글 → "child-comment" 클래스 추가
+            -->
+            <li class="comment-row" 
+                th:each="comment : ${board.commentList}"
+                th:classappend="${comment.parentCommentNo != null and comment.parentCommentNo != 0} ? 'child-comment'"
+                th:object="${comment}">
+
+                <!-- ========== 삭제된 댓글인 경우 ========== -->
+                <!-- 
+                    삭제된 댓글이지만 답글이 존재하는 경우
+                    → 완전히 숨기지 않고 "삭제된 댓글입니다" 표시
+                -->
+                <th:block th:if="*{commentDelFl} == 'Y'">
+                    삭제된 댓글입니다
+                </th:block>
+
+                <!-- ========== 삭제되지 않은 정상 댓글 ========== -->
+                <th:block th:if="*{commentDelFl} == 'N'">
+
+                    <!-- ───────── 작성자 정보 영역 ───────── -->
+                    <p class="comment-writer">
+                        
+                        <!-- 프로필 이미지 -->
+                        <!-- 이미지 없는 경우: 기본 이미지 표시 -->
+                        <img th:unless="*{profileImg}" 
+                             th:src="@{/images/user.png}" 
+                             alt="기본 프로필">
+                        
+                        <!-- 이미지 있는 경우: 회원 프로필 이미지 표시 -->
+                        <img th:if="*{profileImg}" 
+                             th:src="*{profileImg}" 
+                             alt="프로필 이미지">
+
+                        <!-- 닉네임 -->
+                        <span th:text="*{memberNickname}">닉네임</span>
+
+                        <!-- 작성일 -->
+                        <span class="comment-date" 
+                              th:text="*{commentWriteDate}">2024-12-30 12:00:00</span>
+                    </p>
+
+                    <!-- ───────── 댓글 내용 ───────── -->
+                    <p class="comment-content" 
+                       th:text="*{commentContent}">댓글 내용이 여기에 표시됩니다.</p>
+
+                    <!-- ───────── 버튼 영역 (답글/수정/삭제) ───────── -->
+                    <div class="comment-btn-area">
+                        
+                        <!-- 
+                            답글 버튼 (모든 사용자에게 표시)
+                            - onclick : showInsertComment(부모댓글번호, this)
+                            - Thymeleaf 인라인 문법: |...|로 문자열 연결
+                        -->
+                        <button th:onclick="|showInsertComment(*{commentNo}, this)|">
+                            답글
+                        </button>
+
+                        <!-- 
+                            수정/삭제 버튼 (본인 댓글인 경우에만 표시)
+                            
+                            [조건]
+                            1. 로그인 상태 (session.loginMember != null)
+                            2. 로그인 회원 = 댓글 작성자 (memberNo 비교)
+                        -->
+                        <th:block th:if="${session.loginMember != null 
+                                          and session.loginMember.memberNo == comment.memberNo}">
+                            
+                            <!-- 수정 버튼 -->
+                            <button th:onclick="|showUpdateComment(*{commentNo}, this)|">
+                                수정
+                            </button>
+                            
+                            <!-- 삭제 버튼 -->
+                            <button th:onclick="|deleteComment(*{commentNo})|">
+                                삭제
+                            </button>
+                        </th:block>
+                    </div>
+
+                </th:block>
+            </li>
+
+        </ul>
+    </div>
+
+
+    <!-- ================================================================ -->
+    <!--                        댓글 작성 영역                              -->
+    <!-- ================================================================ -->
+    <div class="comment-write-area">
+        
+        <!-- 댓글 입력 textarea -->
+        <textarea id="commentContent" 
+                  placeholder="댓글을 입력해주세요"
+                  maxlength="2000"></textarea>
+
+        <!-- 댓글 등록 버튼 -->
+        <button id="addComment">
+            댓글<br>등록
+        </button>
+    </div>
+
+</div>
+
+
+<!-- ================================================================ -->
+<!--                     JavaScript 파일 로드                          -->
+<!-- ================================================================ -->
+<!-- 
+    [주의]
+    comment.js는 boardDetail.html에서 직접 로드됨
+    
+    [실제 파일 위치]
+    /src/main/resources/static/js/board/comment.js
+    
+    [주의사항]
+    - 이 스크립트는 boardNo, loginMemberNo 변수가 
+      먼저 선언된 후에 로드되어야 함
+-->
+<!-- Fragment에서는 script 태그가 동작하지 않으므로 주석 처리 -->
+<!-- <script th:src="@{/js/board/comment.js}"></script> -->

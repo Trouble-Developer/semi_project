@@ -1,0 +1,19 @@
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#container {
+  flex: 1;
+  margin: 0px 200px;
+  width: 1169px;
+  margin-bottom: 67px;
+}

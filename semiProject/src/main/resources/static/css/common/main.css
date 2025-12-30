@@ -1,0 +1,105 @@
+#mainContent > div > p {
+}
+
+#container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+  background-color: rgba(255, 216, 121, 0.32);
+}
+#mainLogoImg {
+  width: 100%;
+  height: 441px;
+}
+#mainContent {
+  display: flex;
+  justify-content: center;
+  width: 1000px;
+  height: 788px;
+  gap: 74px;
+  flex-wrap: wrap;
+}
+#boardContentType {
+  background-color: white;
+}
+#boardTitle {
+  font-size: 24px;
+  margin-bottom: 26px;
+}
+#boardContentType {
+  width: 377px;
+  height: 223px;
+  border: 1px solid #8d8d8d;
+  border-radius: 20px;
+}
+#boardContentType > ul {
+  display: flex;
+  flex-direction: column;
+  gap: 19px;
+}
+#boardContentType > ul > li {
+  width: 95%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  list-style-position: inside;
+}
+#boardContentType > ul > li > a:hover {
+  text-decoration: underline;
+}
+#mainContent > div {
+  /* display: flex; */
+  /* flex-direction: column; */
+  /* align-items: center; */
+}
+
+/* 봉사후기 */
+#volunteerReviewListContent {
+  display: flex;
+  gap: 61px;
+  flex-wrap: wrap;
+}
+#content-img {
+  width: 246px;
+  height: 243px;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  overflow: hidden;
+}
+#content-img-info {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+#volunteerReviewListContent {
+  display: flex;
+  gap: 61px;
+  flex-wrap: wrap;
+}
+#content-1 {
+  width: 246px;
+}
+#content-title {
+  font-size: 20px;
+  font-weight: bold;
+}
+#content-info > div {
+  display: flex;
+  justify-content: space-between;
+}
+#content-info > div > p {
+  margin: 0;
+  color: #697077;
+  font-size: 16px;
+}
+#content-title:hover {
+  text-decoration: underline;
+}
+.empty-message {
+  text-align: center;
+  padding: 40px 0;
+  color: #888;
+  font-size: 25px;
+}
