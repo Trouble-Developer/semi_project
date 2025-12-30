@@ -4,15 +4,21 @@
 	namespace="edu.kh.project.board.model.mapper.EditBoardMapper">
 
 	<!-- 게시글 등록 -->
-	<insert id="boardInsert" parameterType="map">
+	<insert id="boardInsert" parameterType="map"
+		useGeneratedKeys="true">
+		<selectKey keyProperty="boardNo" order="BEFORE"
+			resultType="_int">
+			SELECT SEQ_BOARD_NO.NEXTVAL FROM DUAL
+		</selectKey>
 		INSERT INTO BOARD (
 		BOARD_NO, BOARD_TITLE, BOARD_CONTENT,
 		BOARD_WRITE_DATE, READ_COUNT,
 		BOARD_DEL_FL, BOARD_LOCK,
-		BOARD_CODE, MEMBER_NO
+		BOARD_CODE,
+		MEMBER_NO
 		)
 		VALUES (
-		SEQ_BOARD_NO.NEXTVAL,
+		#{boardNo},
 		#{title},
 		#{content},
 		SYSDATE,
@@ -24,16 +30,9 @@
 		)
 	</insert>
 
-	<!-- 마지막 게시글 번호 -->
-	<select id="selectLastBoardNo" resultType="int">
-		SELECT MAX(BOARD_NO)
-		FROM BOARD
-		WHERE MEMBER_NO = #{memberNo}
-	</select>
 
-	<!-- 이미지 INSERT (BOARD_NO는 NULL 허용) -->
-	<insert id="insertBoardImg"
-		parameterType="edu.kh.project.board.model.dto.BoardImg">
+	<!-- 이미지 INSERT -->
+	<insert id="insertUploadList" parameterType="list">
 		INSERT INTO BOARD_IMG (
 		IMG_NO,
 		IMG_PATH,
@@ -42,21 +41,25 @@
 		IMG_ORDER,
 		BOARD_NO
 		)
-		VALUES (
-		SEQ_IMG_NO.NEXTVAL,
-		#{imgPath},
-		#{imgRename},
-		#{imgOriginal},
-		#{imgOrder},
-		NULL
-		)
+		<foreach collection="list" item="img" separator=" UNION ALL ">
+			SELECT
+			NEXT_IMG_NO(),
+			#{img.imgPath},
+			#{img.imgRename},
+			#{img.imgOriginal},
+			#{img.imgOrder},
+			#{img.boardNo}
+			FROM DUAL
+		</foreach>
 	</insert>
+
 
 	<!-- 게시글 등록 후 이미지 연결 -->
 	<update id="updateBoardImgBoardNo">
 		UPDATE BOARD_IMG
 		SET BOARD_NO = #{boardNo}
-		WHERE BOARD_NO IS NULL
+		WHERE
+		BOARD_NO IS NULL
 	</update>
 
 	<!-- 게시글 이미지 조회 -->
@@ -65,7 +68,8 @@
 		SELECT *
 		FROM BOARD_IMG
 		WHERE BOARD_NO = #{boardNo}
-		ORDER BY IMG_ORDER
+		ORDER BY
+		IMG_ORDER
 	</select>
 
 	<!-- 게시글 이미지 삭제 -->
@@ -81,13 +85,15 @@
 	</update>
 	<update id="boardUpdate">
 		UPDATE "BOARD"
-		SET 
-			BOARD_TITLE = #{title},
-			BOARD_CONTENT = #{content},
-			BOARD_UPDATE_DATE = SYSDATE,
-			BOARD_LOCK = #{boardLock}
+		SET
+		BOARD_TITLE = #{title},
+		BOARD_CONTENT = #{content},
+		BOARD_UPDATE_DATE = SYSDATE,
+		BOARD_LOCK =
+		#{boardLock}
 		WHERE BOARD_NO = #{boardNo}
-		AND BOARD_CODE = #{boardCode}
+		AND BOARD_CODE =
+		#{boardCode}
 		AND MEMBER_NO = #{memberNo}
 	</update>
 </mapper>

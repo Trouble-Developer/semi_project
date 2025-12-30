@@ -23,6 +23,7 @@ import edu.kh.project.board.model.dto.Board;
 import edu.kh.project.board.model.dto.BoardImg;
 import edu.kh.project.board.model.service.BoardService;
 import edu.kh.project.board.model.service.EditBoardService;
+import edu.kh.project.common.util.Utility;
 import edu.kh.project.member.model.dto.Member;
 import lombok.extern.slf4j.Slf4j;
 
@@ -115,7 +116,13 @@ public class EditBoardController {
 		return "board/boardWrite";
 	}
 
-	/* ===================== 글 등록 ===================== */
+	/** 글 등록
+	 * @param boardCode
+	 * @param paramMap
+	 * @param loginMember
+	 * @param ra
+	 * @return
+	 */
 	@PostMapping("{boardCode:[0-9]+}/insert")
 	public String boardInsert(@PathVariable("boardCode") int boardCode, @RequestParam Map<String, Object> paramMap,
 			@SessionAttribute(value = "loginMember", required = false) Member loginMember, RedirectAttributes ra) {
@@ -125,39 +132,34 @@ public class EditBoardController {
 		paramMap.put("boardLock", paramMap.get("checkbox") != null ? "Y" : "N");
 
 		int result = service.boardInsert(paramMap);
+		String message = null;
 
-		ra.addFlashAttribute("message", result > 0 ? "게시글이 등록되었습니다." : "게시글 등록 실패");
+		if (result > 0) {
+			message = "게시글이 등록되었습니다.";
+		} else {
+			message = "게시글 등록 실패..";
+		}
+		ra.addFlashAttribute("message", message);
 
 		return "redirect:/board/" + boardCode;
 	}
 
-	/* ===================== 이미지 업로드 (Summernote) ===================== */
+	/** 이미지 서버 컴퓨터에 업로드 (Summernote) 
+	 * @param file
+	 * @return
+	 * @throws Exception
+	 */
 	@PostMapping("image/upload")
 	@ResponseBody
 	public Map<String, Object> imageUpload(@RequestParam("file") MultipartFile file) throws Exception {
 
-		String folderPath = "C:/semiProject/upload/board/";
-		File dir = new File(folderPath);
-		if (!dir.exists())
-			dir.mkdirs();
+		String rename = Utility.fileRename(file.getOriginalFilename());
 
-		String original = file.getOriginalFilename();
-		String ext = original.substring(original.lastIndexOf("."));
-		String rename = UUID.randomUUID() + ext;
-
-		file.transferTo(new File(folderPath + rename));
-
-		BoardImg img = new BoardImg();
-		img.setImgPath("/upload/board/");
-		img.setImgRename(rename);
-		img.setImgOriginal(original);
-		img.setImgOrder(0); // 첫 이미지 = 썸네일
-
-		service.insertBoardImg(img);
+		File target = new File(boardImageFolderPath + rename);
+		file.transferTo(target);
 
 		Map<String, Object> map = new HashMap<>();
-		map.put("url", img.getImgPath() + img.getImgRename());
-
+		map.put("url", boardImageWebPath + rename); // /upload/board/xxx.jpg 형식으로 서버컴퓨터에 저장
 		return map;
 	}
 

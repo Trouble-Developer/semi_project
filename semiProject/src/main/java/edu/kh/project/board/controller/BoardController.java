@@ -112,7 +112,6 @@ public class BoardController {
 				}
 
 				int result = 0;
-
 				if (c == null) {
 					c = new Cookie("readBoardNo", "[" + board.getBoardNo() + "]");
 					result = service.updateReadCount(board.getBoardNo());
