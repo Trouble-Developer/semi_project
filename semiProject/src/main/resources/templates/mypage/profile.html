@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>마이페이지 - 프로필 관리</title>
-  
+  <link rel="stylesheet" href="/css/common/header.css" />
   <link rel="stylesheet" href="/css/mypage/sidebar.css">
   <link rel="stylesheet" href="/css/mypage/profile.css">
 
@@ -11,7 +11,7 @@
 </head>
 <body>
 
-  <th:block th:replace="~{common/header}"></th:block>
+  <th:block th:replace="~{common/header :: header}"></th:block>
 
   <div class="mypage-container">
     
@@ -20,21 +20,21 @@
     <main class="main-content">
       <h2>프로필 관리</h2>
 
-      <form th:action="@{/member/mypage/update}" method="post" 
+      <form th:action="@{/mypage/update}" method="post" 
         enctype="multipart/form-data" th:object="${session.loginMember}" id="profileFrm">
         
         <div class="profile-img-area">
           <label for="profileImgInput">
-            <img th:src="*{profileImage != null} ? *{profileImage} : '/images/default_profile.png'" 
+            <img th:src="*{profileImg != null} ? *{profileImg} : '/images/default_profile.png'" 
                  id="profilePreview" alt="프로필 이미지">
             <div class="edit-icon">📷</div>
           </label>
           <input type="file" id="profileImgInput" name="uploadFile" accept="image/*" style="display: none;">
         </div>
 
-        <div class="form-group">
+<div class="form-group">
           <label>닉네임</label>
-          <input type="text" name="nickname" th:value="*{nickname}" readonly>
+          <input type="text" name="memberNickname" th:value="*{memberNickname}" readonly>
         </div>
 
         <div class="form-group">
@@ -53,12 +53,12 @@
         </div>
 
         <div class="form-group">
-          <label>비밀번호</label>
+          <label>비밀번호 변경</label>
           <input type="password" name="memberPw" placeholder="변경할 비밀번호를 입력하세요">
         </div>
 
         <div class="form-group">
-          <label>비밀번호 확인</label>
+          <label>비밀번호 변경 확인</label>
           <input type="password" id="pwConfirm" placeholder="비밀번호를 다시 입력하세요">
         </div>
 
@@ -67,20 +67,25 @@
           <input type="email" name="memberEmail" th:value="*{memberEmail}" readonly>
         </div>
 
+        <div class="form-group">
+          <label>전화번호</label>
+          <input type="text" name="memberTel" th:value="*{memberTel}" placeholder="(- 없이 숫자만 입력)" maxlength="11">
+        </div>
+
         <div class="form-group address-group">
           <label>주소</label>
           
           <div class="address-row">
             <input type="text" id="postcode" name="postcode" placeholder="우편번호" readonly 
-                   th:value="*{postcode}">
+                   th:value="${postcode}">
             <button type="button" id="searchAddressBtn" class="btn-dark">검색</button>
           </div>
 
           <input type="text" id="address" name="address" placeholder="기본 주소" readonly 
-                 th:value="*{address}">
+                 th:value="${address}">
 
           <input type="text" id="detailAddress" name="detailAddress" placeholder="상세 주소" 
-                 th:value="*{detailAddress}">
+                 th:value="${detailAddress}">
         </div>
 
         <div class="btn-area">
