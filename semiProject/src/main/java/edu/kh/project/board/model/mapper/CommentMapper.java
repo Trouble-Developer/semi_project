@@ -1,10 +1,10 @@
-package edu.kh.project.comment.mapper;
+package edu.kh.project.board.model.mapper;
 
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import edu.kh.project.comment.dto.Comment;
+import edu.kh.project.board.model.dto.Comment;
 
 /**
  * 댓글 관련 SQL을 수행하는 Mapper 인터페이스

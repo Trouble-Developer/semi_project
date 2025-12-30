@@ -2,7 +2,6 @@ package edu.kh.project.board.model.dto;
 
 import java.util.List;
 
-import edu.kh.project.comment.dto.Comment;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

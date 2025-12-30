@@ -6,6 +6,7 @@
     <title>Document</title>
     <link rel="stylesheet" href="/css/common/common.css" />
     <link rel="stylesheet" href="/css/board/boardDetail.css" />
+    <link rel="stylesheet" href="/css/board/comment.css" />
   </head>
   <body>
     <th:block th:replace="~{common/header}"></th:block>
@@ -110,12 +111,17 @@
           >목록</a
         >
       </div>
+
+      <!-- ===== 댓글 영역 ===== -->
+      <div th:replace="~{board/comment :: commentFragment}"></div>
+
     </div>
     <th:block th:replace="~{common/footer}"></th:block>
     <script th:inline="javascript">
       const boardNo = /*[[${boardInfo.boardNo}]]*/ "게시판 번호";
       const memberNo =
         /*[[${session.loginMember?.memberNo}]]*/ "로그인한 유저 번호";
+      const loginMemberNo = memberNo; // comment.js를 위한 변수
       let likeCheck = Number(/*[[${boardInfo.likeCheck}]]*/ 0);
       let scrapCheck = Number(/*[[${boardInfo.scrapCheck}]]*/ 0);
     </script>
@@ -124,5 +130,6 @@
       crossorigin="anonymous"
     ></script>
     <script src="/js/board/boardDetail.js"></script>
+    <script src="/js/board/comment.js"></script>
   </body>
 </html>
