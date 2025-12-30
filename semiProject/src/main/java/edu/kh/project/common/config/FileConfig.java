@@ -20,8 +20,7 @@ public class FileConfig implements WebMvcConfigurer {
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-
-		registry.addResourceHandler("/upload/**").addResourceLocations("file:///C:/semiProject/upload/");
+		registry.addResourceHandler("/upload/board/**").addResourceLocations("file:///C:/semiProject/upload/board/");
 	}
 
 	@Bean
