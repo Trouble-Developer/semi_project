@@ -84,10 +84,16 @@
                 name="title"
                 th:value="${boardInfo != null ? boardInfo.boardTitle : ''}"
               />
-              <div>
-                <input type="checkbox" id="checkbox" name="checkbox" />
-                <label id="secret-check" for="checkbox">비밀글</label>
-              </div>
+            </div>
+            <div id="secret-wrapper" style="display: none">
+              <input type="checkbox" id="checkbox" name="checkbox" />
+              <label id="secret-check" for="checkbox">비밀글</label>
+              <input
+                type="password"
+                placeholder="비밀글 설정시 비밀번호를 입력해주세요."
+                id="board-pw"
+                name="boardPw"
+              />
             </div>
           </div>
         </div>
@@ -126,7 +132,7 @@
             ["table", ["table"]],
             ["para", ["ul", "ol", "paragraph"]],
             ["height", ["height"]],
-            ["insert", ["picture", "link", "video"]],
+            ["insert", ["picture", "link"]],
             ["view", ["codeview", "fullscreen", "help"]],
           ],
           fontNames: [

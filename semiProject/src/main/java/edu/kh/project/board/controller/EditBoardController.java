@@ -116,7 +116,9 @@ public class EditBoardController {
 		return "board/boardWrite";
 	}
 
-	/** 글 등록
+	/**
+	 * 글 등록
+	 * 
 	 * @param boardCode
 	 * @param paramMap
 	 * @param loginMember
@@ -127,9 +129,11 @@ public class EditBoardController {
 	public String boardInsert(@PathVariable("boardCode") int boardCode, @RequestParam Map<String, Object> paramMap,
 			@SessionAttribute(value = "loginMember", required = false) Member loginMember, RedirectAttributes ra) {
 
+		
 		paramMap.put("content", paramMap.get("editordata"));
 		paramMap.put("memberNo", loginMember.getMemberNo());
-		paramMap.put("boardLock", paramMap.get("checkbox") != null ? "Y" : "N");
+		String boardLock = paramMap.get("checkbox").equals("on") ? "Y" : "N";
+		paramMap.put("boardLock", boardLock);
 
 		int result = service.boardInsert(paramMap);
 		String message = null;
@@ -144,7 +148,9 @@ public class EditBoardController {
 		return "redirect:/board/" + boardCode;
 	}
 
-	/** 이미지 서버 컴퓨터에 업로드 (Summernote) 
+	/**
+	 * 이미지 서버 컴퓨터에 업로드 (Summernote)
+	 * 
 	 * @param file
 	 * @return
 	 * @throws Exception
