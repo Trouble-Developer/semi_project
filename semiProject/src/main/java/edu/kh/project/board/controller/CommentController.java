@@ -36,20 +36,6 @@ public class CommentController {
     /**
      * 특정 게시글의 댓글 목록 조회 (AJAX)
      * 
-     * <p><b>요청 URL:</b> GET /comment?boardNo=123</p>
-     * <p><b>응답 형식:</b> JSON 배열</p>
-     * 
-     * <pre>
-     * [요청 예시]
-     * GET /comment?boardNo=123
-     * 
-     * [응답 예시]
-     * [
-     *   {"commentNo":1, "commentContent":"댓글1", "memberNickname":"홍길동", ...},
-     *   {"commentNo":2, "commentContent":"댓글2", "memberNickname":"김철수", ...}
-     * ]
-     * </pre>
-     * 
      * @param boardNo : 조회할 게시글 번호 (쿼리스트링)
      * @return commentList : 댓글 목록 (JSON 배열로 자동 변환)
      */
@@ -67,34 +53,6 @@ public class CommentController {
      * ============================================ */
     
     /**
-     * 댓글/답글 등록 (AJAX)
-     * 
-     * <p><b>요청 URL:</b> POST /comment</p>
-     * <p><b>요청 본문:</b> JSON 형식의 댓글 정보</p>
-     * 
-     * <pre>
-     * [일반 댓글 등록 요청]
-     * POST /comment
-     * Content-Type: application/json
-     * Body: {
-     *   "commentContent": "댓글 내용",
-     *   "boardNo": 123,
-     *   "memberNo": 1,
-     *   "parentCommentNo": 0    ← 일반 댓글은 0
-     * }
-     * 
-     * [답글 등록 요청]
-     * Body: {
-     *   "commentContent": "답글 내용",
-     *   "boardNo": 123,
-     *   "memberNo": 1,
-     *   "parentCommentNo": 5    ← 부모 댓글 번호
-     * }
-     * 
-     * [응답]
-     * 1 (성공) 또는 0 (실패)
-     * </pre>
-     * 
      * @param comment : 요청 본문의 JSON → Comment 객체로 변환
      *                  (@RequestBody가 JSON → Java 객체 변환 수행)
      * @return result : 삽입된 행의 수 (1: 성공, 0: 실패)
@@ -149,11 +107,6 @@ public class CommentController {
     /**
      * 댓글 삭제 (AJAX) - 논리적 삭제
      * 
-     * <p><b>요청 URL:</b> DELETE /comment</p>
-     * <p><b>삭제 방식:</b> 물리적 삭제가 아닌 논리적 삭제</p>
-     * <p>→ COMMENT_DEL_FL 컬럼을 'Y'로 UPDATE</p>
-     * 
-     * <pre>
      * [요청 예시]
      * DELETE /comment
      * Content-Type: application/json
@@ -161,7 +114,6 @@ public class CommentController {
      * 
      * [응답]
      * 1 (성공) 또는 0 (실패)
-     * </pre>
      * 
      * @param commentNo : 삭제할 댓글 번호 (요청 본문에서 수신)
      * @return result : 삭제 처리된 행의 수 (1: 성공, 0: 실패)

@@ -69,6 +69,11 @@ const selectCommentList = () => {
       /* ========== 조회된 댓글 목록 렌더링 ========== */
       for (let comment of commentList) {
 
+        // ----- 삭제된 댓글은 화면에 표시하지 않음 -----
+        if (comment.commentDelFl == 'Y') {
+          continue;  // 다음 댓글로 건너뛰기
+        }
+
         // ----- 1) 댓글 행(li) 생성 -----
         const commentRow = document.createElement("li");
         commentRow.classList.add("comment-row");
@@ -79,74 +84,67 @@ const selectCommentList = () => {
           commentRow.classList.add("child-comment");
         }
 
-        // ----- 3) 삭제된 댓글 처리 -----
-        // 삭제된 댓글이지만 답글이 있어서 표시해야 하는 경우
-        if (comment.commentDelFl == 'Y') {
-          commentRow.innerText = "삭제된 댓글입니다";
-        } 
-        else {
-          // ===== 삭제되지 않은 정상 댓글 렌더링 =====
+        // ===== 정상 댓글 렌더링 =====
 
-          /* ----- 작성자 정보 영역 ----- */
-          const commentWriter = document.createElement("p");
-          commentWriter.classList.add("comment-writer");
+        /* ----- 작성자 정보 영역 ----- */
+        const commentWriter = document.createElement("p");
+        commentWriter.classList.add("comment-writer");
 
-          // 프로필 이미지
-          const profileImg = document.createElement("img");
-          profileImg.src = comment.profileImg 
-                           ? comment.profileImg      // 등록된 이미지
-                           : userDefaultImage;       // 기본 이미지
+        // 프로필 이미지
+        const profileImg = document.createElement("img");
+        profileImg.src = comment.profileImg 
+                         ? comment.profileImg      // 등록된 이미지
+                         : userDefaultImage;       // 기본 이미지
 
-          // 닉네임
-          const nickname = document.createElement("span");
-          nickname.innerText = comment.memberNickname;
+        // 닉네임
+        const nickname = document.createElement("span");
+        nickname.innerText = comment.memberNickname;
 
-          // 작성일
-          const commentDate = document.createElement("span");
-          commentDate.classList.add("comment-date");
-          commentDate.innerText = comment.commentWriteDate;
+        // 작성일
+        const commentDate = document.createElement("span");
+        commentDate.classList.add("comment-date");
+        commentDate.innerText = comment.commentWriteDate;
 
-          // 작성자 영역에 요소들 추가
-          commentWriter.append(profileImg, nickname, commentDate);
-          commentRow.append(commentWriter);
+        // 작성자 영역에 요소들 추가
+        commentWriter.append(profileImg, nickname, commentDate);
+        commentRow.append(commentWriter);
 
-          /* ----- 댓글 내용 영역 ----- */
-          const content = document.createElement("p");
-          content.classList.add("comment-content");
-          content.innerText = comment.commentContent;
-          commentRow.append(content);
+        /* ----- 댓글 내용 영역 ----- */
+        const content = document.createElement("p");
+        content.classList.add("comment-content");
+        content.innerText = comment.commentContent;
+        commentRow.append(content);
 
-          /* ----- 버튼 영역 (답글/수정/삭제) ----- */
-          const commentBtnArea = document.createElement("div");
-          commentBtnArea.classList.add("comment-btn-area");
+        /* ----- 버튼 영역 (답글/수정/삭제) ----- */
+        const commentBtnArea = document.createElement("div");
+        commentBtnArea.classList.add("comment-btn-area");
 
-          // 답글 버튼 (모든 사용자에게 표시)
-          const childCommentBtn = document.createElement("button");
-          childCommentBtn.innerText = "답글";
-          childCommentBtn.setAttribute("onclick", 
-            `showInsertComment(${comment.commentNo}, this)`);
-          commentBtnArea.append(childCommentBtn);
+        // 답글 버튼 (모든 사용자에게 표시)
+        const childCommentBtn = document.createElement("button");
+        childCommentBtn.innerText = "답글";
+        childCommentBtn.setAttribute("onclick", 
+          `showInsertComment(${comment.commentNo}, this)`);
+        commentBtnArea.append(childCommentBtn);
 
-          // 수정/삭제 버튼 (본인 댓글인 경우에만 표시)
-          if (loginMemberNo != null && loginMemberNo == comment.memberNo) {
-            
-            // 수정 버튼
-            const updateBtn = document.createElement("button");
-            updateBtn.innerText = "수정";
-            updateBtn.setAttribute("onclick", 
-              `showUpdateComment(${comment.commentNo}, this)`);
+        // 수정/삭제 버튼 (본인 댓글인 경우에만 표시)
+        if (loginMemberNo != null && loginMemberNo == comment.memberNo) {
+          
+          // 수정 버튼
+          const updateBtn = document.createElement("button");
+          updateBtn.innerText = "수정";
+          updateBtn.setAttribute("onclick", 
+            `showUpdateComment(${comment.commentNo}, this)`);
 
-            // 삭제 버튼
-            const deleteBtn = document.createElement("button");
-            deleteBtn.innerText = "삭제";
-            deleteBtn.setAttribute("onclick", 
-              `deleteComment(${comment.commentNo})`);
+          // 삭제 버튼
+          const deleteBtn = document.createElement("button");
+          deleteBtn.innerText = "삭제";
+          deleteBtn.setAttribute("onclick", 
+            `deleteComment(${comment.commentNo})`);
 
-            commentBtnArea.append(updateBtn, deleteBtn);
-          }
-
-          commentRow.append(commentBtnArea);
+          commentBtnArea.append(updateBtn, deleteBtn);
         }
+
+        commentRow.append(commentBtnArea);
 
         // 댓글 목록(ul)에 행(li) 추가
         ul.append(commentRow);
@@ -506,5 +504,4 @@ const updateComment = (commentNo, btn) => {
  * =========================================================*/
 
 // 페이지 로드 시 댓글 목록 조회 실행
-// (게시글 상세 페이지에서 호출하거나, 아래 주석 해제)
-// document.addEventListener("DOMContentLoaded", selectCommentList);
+document.addEventListener("DOMContentLoaded", selectCommentList);

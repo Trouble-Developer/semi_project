@@ -88,8 +88,6 @@ public class CommentServiceImpl implements CommentService {
     /**
      * 댓글 삭제 (소프트 삭제)
      * 
-     * <p>실제 DELETE가 아닌 COMMENT_DEL_FL = 'Y'로 UPDATE</p>
-     * 
      * @param commentNo : 삭제할 댓글 번호
      * @return result : 삭제 성공 시 1, 실패 시 0
      */

@@ -18,7 +18,6 @@ public class Comment {
     private int boardNo;            // 게시글 번호 (FK)
     private int memberNo;           // 회원 번호 (FK)
     private int parentCommentNo;    // 부모 댓글 번호 (답글용)
-
     private String profileImg;      // 회원 프로필 이미지
     private String memberNickname;  // 회원 닉네임
 }

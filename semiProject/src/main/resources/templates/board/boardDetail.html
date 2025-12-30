@@ -113,7 +113,8 @@
       </div>
 
       <!-- ===== 댓글 영역 ===== -->
-      <div th:replace="~{board/comment :: commentFragment}"></div>
+      <!-- 공지사항(boardCode=2)을 제외한 게시판에만 댓글 표시 -->
+      <div th:if="${boardCode != 2}" th:replace="~{board/comment :: commentFragment}"></div>
 
     </div>
     <th:block th:replace="~{common/footer}"></th:block>
@@ -122,6 +123,7 @@
       const memberNo =
         /*[[${session.loginMember?.memberNo}]]*/ "로그인한 유저 번호";
       const loginMemberNo = memberNo; // comment.js를 위한 변수
+      const userDefaultImage = "/images/user.png"; // 기본 프로필 이미지
       let likeCheck = Number(/*[[${boardInfo.likeCheck}]]*/ 0);
       let scrapCheck = Number(/*[[${boardInfo.scrapCheck}]]*/ 0);
     </script>
