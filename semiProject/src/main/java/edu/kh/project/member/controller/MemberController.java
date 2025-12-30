@@ -240,7 +240,7 @@ public class MemberController {
 	public String signup(Member inputMember, @RequestParam("memberAddress") String[] memberAddress,
 			RedirectAttributes ra) {
 
-		// 1. 주소 하나로 합치기 (우편번호^^^도로명/지번^^^상세주소)
+		// 1. 주소 하나로 합치기 (우편번호,,도로명/지번,,상세주소)
 		// 만약 주소를 입력 안 했으면 memberAddress 배열 요소가 비어있을 수 있음.
 
 		if (inputMember.getMemberAddress() != null) { // 주소 입력값이 넘어왔다면

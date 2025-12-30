@@ -11,23 +11,23 @@
     <h3>마이 페이지</h3>
     <ul>
       <li th:classappend="${menu == 'profile'} ? 'active'">
-        <a th:href="@{/member/mypage/profile}">🏠 프로필 관리</a>
+        <a th:href="@{/member/mypage/profile}">프로필 관리</a>
       </li>
         
       <li th:classappend="${menu == 'posts'} ? 'active'">
-        <a th:href="@{/member/mypage/posts}">📝 내 작성글</a>
+        <a th:href="@{/member/mypage/posts}">내 작성글</a>
       </li>
         
       <li th:classappend="${menu == 'comments'} ? 'active'">
-        <a th:href="@{/member/mypage/comments}">💬 댓글 단 글</a>
+        <a th:href="@{/member/mypage/comments}">댓글 단 글</a>
       </li>
         
       <li th:classappend="${menu == 'scraps'} ? 'active'">
-        <a th:href="@{/member/mypage/scraps}">📌 스크랩한 글</a>
+        <a th:href="@{/member/mypage/scraps}">스크랩한 글</a>
       </li>
         
       <li th:classappend="${menu == 'withdraw'} ? 'active'">
-        <a th:href="@{/member/mypage/withdraw}">🚪 회원 탈퇴</a>
+        <a th:href="@{/member/mypage/withdraw}">회원 탈퇴</a>
       </li>
     </ul>
   </aside>
