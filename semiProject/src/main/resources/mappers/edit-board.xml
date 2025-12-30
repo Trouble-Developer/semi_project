@@ -15,18 +15,20 @@
 		BOARD_WRITE_DATE, READ_COUNT,
 		BOARD_DEL_FL, BOARD_LOCK,
 		BOARD_CODE,
-		MEMBER_NO
+		MEMBER_NO,
+		BOARD_PW
 		)
 		VALUES (
 		#{boardNo},
 		#{title},
 		#{content},
 		SYSDATE,
-		0,
-		'N',
+		DEFAULT,
+		DEFAULT,
 		#{boardLock},
 		#{boardCode},
-		#{memberNo}
+		#{memberNo},
+		#{encPw}
 		)
 	</insert>
 

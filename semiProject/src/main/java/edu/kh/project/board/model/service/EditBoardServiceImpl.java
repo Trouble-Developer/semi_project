@@ -7,6 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +19,8 @@ import edu.kh.project.board.model.mapper.EditBoardMapper;
 public class EditBoardServiceImpl implements EditBoardService {
 	@Autowired
 	private EditBoardMapper mapper;
+	@Autowired
+	private BCryptPasswordEncoder bcrypt;
 
 	@Override
 	public int boardInsert(Map<String, Object> map) {
@@ -26,15 +29,18 @@ public class EditBoardServiceImpl implements EditBoardService {
 //				img_original_name=안됌
 //				img_rename=10230213.png
 
-		/* 1️⃣ 게시글 먼저 등록 */
+		if (map.get("boardLock").equals("Y")) {
+			map.put("encPw", bcrypt.encode((CharSequence) map.get("boardPw")));
+		} else {
+			map.put("encPw", null);
+		}
 		int result = mapper.boardInsert(map);
+
 		if (result == 0)
 			return 0;
 
-		/* 3️⃣ content 가져오기 */
 		String content = (String) map.get("content");
 
-		/* 4️⃣ img src 추출 */
 		Pattern pattern = Pattern.compile("<img[^>]+src=\"(/upload/board/[^\"\\s>]+)\"");
 		Matcher matcher = pattern.matcher(content);
 
@@ -55,7 +61,6 @@ public class EditBoardServiceImpl implements EditBoardService {
 			imgList.add(img);
 		}
 
-		/* 5️⃣ 이미지 DB 저장 */
 		if (!imgList.isEmpty()) {
 			mapper.insertUploadList(imgList);
 		}
