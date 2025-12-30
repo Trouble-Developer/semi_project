@@ -99,49 +99,52 @@ public class BoardController {
 			ra.addFlashAttribute("message", message);
 		} else {
 
-			if (loginMember == null || loginMember.getMemberNo() != board.getMemberNo()) {
+			// 3. 조회수 증가 로직 (비로그인 또는 본인 글이 아닐 때)
+			if (loginMember == null || loginMember.getMemberNo() != selectedBoard.getMemberNo()) {
 				Cookie[] cookies = req.getCookies();
-
 				Cookie c = null;
 
-				for (Cookie temp : cookies) {
-					if (temp.getName().equals("readBoardNo")) {
-						c = temp;
-						break;
+				if (cookies != null) {
+					for (Cookie temp : cookies) {
+						if (temp.getName().equals("readBoardNo")) {
+							c = temp;
+							break;
+						}
 					}
 				}
 
 				int result = 0;
-				if (c == null) {
-					c = new Cookie("readBoardNo", "[" + board.getBoardNo() + "]");
-					result = service.updateReadCount(board.getBoardNo());
+				String boardNoTag = "[" + board.getBoardNo() + "]";
 
+				if (c == null) { // 쿠키가 아예 없거나 readBoardNo 쿠키가 없을 때
+					c = new Cookie("readBoardNo", boardNoTag);
+					result = service.updateReadCount(board.getBoardNo());
 				} else {
-					if (c.getValue().indexOf("[" + board.getBoardNo() + "]") == -1) {
-						c.setValue(c.getValue() + "[" + board.getBoardNo() + "]");
+					// 해당 게시글을 오늘 처음 읽는 경우
+					if (c.getValue().indexOf(boardNoTag) == -1) {
+						c.setValue(c.getValue() + boardNoTag);
 						result = service.updateReadCount(board.getBoardNo());
 					}
 				}
+
 				if (result > 0) {
-					board.setReadCount(result);
+					// DB에서 실제 증가된 조회수를 가져와 세팅
+					selectedBoard.setReadCount(result);
 
 					c.setPath("/");
-					LocalDateTime now = LocalDateTime.now();
-					LocalDateTime nextDayMidnight = now.plusDays(1).withHour(0).withMinute(0).withSecond(0).withNano(0);
-					long secondsUntilNextDay = Duration.between(now, nextDayMidnight).getSeconds();
-
+					// 자정까지 남은 시간 계산
+					long secondsUntilNextDay = Duration
+							.between(LocalDateTime.now(),
+									LocalDateTime.now().plusDays(1).withHour(0).withMinute(0).withSecond(0).withNano(0))
+							.getSeconds();
 					c.setMaxAge((int) secondsUntilNextDay);
-					
 					resp.addCookie(c);
-					selectedBoard.setReadCount(result);
 				}
-
 			}
 
 			Board prevBoard = service.getPrevBoard(board);
 			Board nextBoard = service.getNextBoard(board);
 
-			
 			model.addAttribute("prevBoard", prevBoard);
 			model.addAttribute("nextBoard", nextBoard);
 			model.addAttribute("boardInfo", selectedBoard);

@@ -15,3 +15,28 @@ if (writeBtn !== null) {
     location.href = url;
   });
 }
+
+const boardLink = document.querySelectorAll(".board-link");
+
+boardLink.map((a) => {
+  a.addEventListener("click", () => {
+    const isLock = a.getAttribute("data-lock") === "Y";
+    const isWriter = a.getAttribute("data-writer");
+
+    if (boardCode == 5 && isLock && !isWriter && !isAdmin) {
+      e.preventDefault();
+
+      const inputPw = prompt("비밀번호를 입력해주세요.");
+
+      if (inputPw != null) {
+        fetch("/board/checkPw", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(inputPw),
+        })
+          .then((resp) => resp.text())
+          .then((result) => {});
+      }
+    }
+  });
+});

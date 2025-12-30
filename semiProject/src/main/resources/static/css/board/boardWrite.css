@@ -4,7 +4,8 @@
 }
 
 #board-write {
-  height: 164px;
+  width: 1127px;
+  height: 200px;
   border: 1px solid #ddd;
   border-radius: 20px;
   padding: 20px;
@@ -17,7 +18,7 @@
 }
 #board-info-text {
   display: flex;
-  justify-content: center;
+  /* justify-content: center; */
   align-items: center;
   gap: 20px;
 }
@@ -25,9 +26,9 @@
 #board-info-text > div {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 5px;
-  width: 70px;
+  gap: 6px;
+  width: auto;
+  white-space: nowrap;
 }
 #checkbox,
 #secret-check {
@@ -110,4 +111,16 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+#secret-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+#board-pw {
+  border-radius: 5px;
+  width: 300px;
+  padding: 5px;
+  margin-left: 30px;
 }
