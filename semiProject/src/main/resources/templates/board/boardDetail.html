@@ -113,19 +113,26 @@
       </div>
 
       <!-- ===== 댓글 영역 ===== -->
-      <!-- 공지사항(boardCode=2)을 제외한 게시판에만 댓글 표시 -->
-      <div th:if="${boardCode != 2}" th:replace="~{board/comment :: commentFragment}"></div>
+      <!-- 공지사항(boardCode=4)을 제외한 게시판에만 댓글 표시 -->
+      <th:block th:if="${boardCode != 4}">
+        <div th:replace="~{board/comment :: commentFragment}"></div>
+      </th:block>
 
     </div>
     <th:block th:replace="~{common/footer}"></th:block>
     <script th:inline="javascript">
       const boardNo = /*[[${boardInfo.boardNo}]]*/ "게시판 번호";
+      const boardCode = /*[[${boardCode}]]*/ "게시판 코드";
       const memberNo =
         /*[[${session.loginMember?.memberNo}]]*/ "로그인한 유저 번호";
       const loginMemberNo = memberNo; // comment.js를 위한 변수
       const userDefaultImage = "/images/user.png"; // 기본 프로필 이미지
       let likeCheck = Number(/*[[${boardInfo.likeCheck}]]*/ 0);
       let scrapCheck = Number(/*[[${boardInfo.scrapCheck}]]*/ 0);
+      
+      // 디버깅: boardCode 값 확인
+      console.log("현재 boardCode:", boardCode, "타입:", typeof boardCode);
+    
     </script>
     <script
       src="https://kit.fontawesome.com/c0777c617e.js"
