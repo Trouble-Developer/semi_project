@@ -45,18 +45,31 @@
 
         <!-- 관리자 전용 삭제 버튼 -->
         <td>
-          <form th:action="@{/admin/notice/delete}"
+          <!-- 삭제된 글이 아닌 경우 -->
+          <form th:if="${notice.boardDelFl == 'N'}"
+                th:action="@{/admin/notice/updateStatus}"
                 method="post"
-                onsubmit="return confirm('정말 이 공지사항을 삭제하시겠습니까?');">
+                onsubmit="return confirm('정말 삭제하시겠습니까?');">
 
-            <!-- 삭제 대상 게시글 번호 -->
-            <input type="hidden"
-                   name="boardNo"
-                   th:value="${notice.boardNo}">
+            <input type="hidden" name="boardNo" th:value="${notice.boardNo}">
+            <input type="hidden" name="boardDelFl" value="Y">
 
-            <button type="submit"
-                    class="btn-outline danger">
+            <button type="submit" class="btn-outline danger">
               삭제
+            </button>
+          </form>
+
+          <!-- 삭제된 글인 경우 -->
+          <form th:if="${notice.boardDelFl == 'Y'}"
+                th:action="@{/admin/notice/updateStatus}"
+                method="post"
+                onsubmit="return confirm('이 공지사항을 복구하시겠습니까?');">
+
+            <input type="hidden" name="boardNo" th:value="${notice.boardNo}">
+            <input type="hidden" name="boardDelFl" value="N">
+
+            <button type="submit" class="btn-outline restore-btn">
+              복구
             </button>
           </form>
         </td>

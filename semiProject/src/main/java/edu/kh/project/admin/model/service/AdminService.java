@@ -33,11 +33,11 @@ public interface AdminService {
 	 */
 	Map<String, Object> selectNoticeList(int cp, Map<String, Object> paramMap);
 
-	/** 공지사항 삭제
-	 * @param boardNo
+	/** 공지사항 삭제/복구
+	 * @param paramMap
 	 * @return
 	 */
-	int deleteNotice(int boardNo);
+	int updateNoticeStatus(Map<String, Object> paramMap);
 
 	/** 고객지원 게시글 목록 조회
 	 * @param cp 
@@ -51,6 +51,8 @@ public interface AdminService {
 	 * @return
 	 */
 	int updateSupportStatus(Map<String, Object> paramMap);
+
+	
 
 	
 
