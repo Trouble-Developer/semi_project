@@ -2,21 +2,26 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="edu.kh.project.main.model.mapper.MainMapper">
 
-	<select id="getVolunteerList">
-		SELECT BOARD_TITLE, IMG_PATH, IMG_RENAME, MEMBER_NICKNAME, BOARD_CODE, BOARD_NO
-		FROM (
-		SELECT B.BOARD_TITLE, I.IMG_PATH, I.IMG_RENAME, M.MEMBER_NICKNAME, B.BOARD_CODE, B.BOARD_NO
-		FROM BOARD B
-		JOIN BOARD_IMG I
-		ON B.BOARD_NO = I.BOARD_NO
-		JOIN MEMBER M
-		ON M.MEMBER_NO = B.MEMBER_NO
-		WHERE B.BOARD_CODE = 3
-		ORDER BY B.BOARD_NO DESC
-		)
-		<![CDATA[
-		WHERE ROWNUM <= 10
-		]]>
-	</select>
+	<select id="getVolunteerList" resultType="Board">
+    SELECT * FROM (
+        SELECT 
+            B.BOARD_NO, 
+            B.BOARD_TITLE, 
+            B.BOARD_CODE,
+            M.MEMBER_NICKNAME, 
+            I.IMG_PATH, 
+            I.IMG_RENAME
+        FROM "BOARD" B
+        JOIN "MEMBER" M ON (B.MEMBER_NO = M.MEMBER_NO)
+        JOIN "BOARD_IMG" I ON (B.BOARD_NO = I.BOARD_NO) -- BOARD_IMG와 조인
+        WHERE B.BOARD_CODE = 3        -- 봉사후기 게시판
+        AND B.BOARD_DEL_FL = 'N'      -- 삭제되지 않은 글만
+        AND I.IMG_ORDER = 0           
+        ORDER BY B.BOARD_NO DESC      -- 최신순 정렬
+    )
+    <![CDATA[
+    WHERE ROWNUM <= 10
+    ]]>
+</select>
 
 </mapper>

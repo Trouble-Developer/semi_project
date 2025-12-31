@@ -144,7 +144,7 @@ public class EditBoardController {
 		}
 		ra.addFlashAttribute("message", message);
 
-		return "redirect:/board/" + boardCode;
+		return "redirect:/board/" + boardCode + "/" + result;
 	}
 
 	/**

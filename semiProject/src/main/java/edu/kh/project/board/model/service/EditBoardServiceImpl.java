@@ -65,7 +65,7 @@ public class EditBoardServiceImpl implements EditBoardService {
 			mapper.insertUploadList(imgList);
 		}
 
-		return result;
+		return (int) map.get("boardNo");
 	}
 
 	@Override
