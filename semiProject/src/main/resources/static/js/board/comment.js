@@ -17,6 +17,8 @@
  * <script th:inline="javascript">
  *   const boardNo = /*[[${board.boardNo}]]*/ 0;
 
+
+
 /* =========================================================
  *                   1. 댓글 목록 조회
  * =========================================================*/
@@ -55,11 +57,6 @@ const selectCommentList = () => {
       /* ========== 조회된 댓글 목록 렌더링 ========== */
       for (let comment of commentList) {
 
-        // ----- 삭제된 댓글은 화면에 표시하지 않음 -----
-        if (comment.commentDelFl == 'Y') {
-          continue;  // 다음 댓글로 건너뛰기
-        }
-
         // ----- 1) 댓글 행(li) 생성 -----
         const commentRow = document.createElement("li");
         commentRow.classList.add("comment-row");
@@ -68,6 +65,20 @@ const selectCommentList = () => {
         // parentCommentNo가 0이 아니면 답글 → 들여쓰기 스타일 적용
         if (comment.parentCommentNo != 0) {
           commentRow.classList.add("child-comment");
+        }
+
+        // ========== 삭제된 댓글 처리 ==========
+        if (comment.commentDelFl == 'Y') {
+          // 이 댓글의 답글(자식)이 있는지 확인
+          const hasChild = commentList.some(c => c.parentCommentNo == comment.commentNo);
+          
+          if (hasChild) {
+            // 답글이 있으면 "삭제된 댓글입니다" 표시 (계층 구조 유지)
+            commentRow.innerText = "삭제된 댓글입니다";
+            ul.append(commentRow);
+          }
+          // 답글이 없으면 아예 표시 안 함 (완전히 숨김)
+          continue;
         }
 
         // ===== 정상 댓글 렌더링 =====
@@ -327,6 +338,7 @@ const insertChildComment = (parentCommentNo, btn) => {
  * 
  * - 실제 DELETE가 아닌 COMMENT_DEL_FL = 'Y'로 UPDATE
  * - 답글이 있는 댓글은 "삭제된 댓글입니다"로 표시됨
+ * - 답글이 없는 댓글은 완전히 숨김
  * 
  * @param {number} commentNo - 삭제할 댓글 번호
  */
