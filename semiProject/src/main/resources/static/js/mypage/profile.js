@@ -149,7 +149,7 @@ if(profileFrm != null) {
                              (initAddress != currentAddress) || 
                              (initDetailAddress != currentDetailAddress);
 
-    // A. 변경된 게 하나도 없으면 막기
+    // 변경된 게 하나도 없으면 막기
     if( !isImgChanged && !isPwChanged && !isAddressChanged && 
         (memberTel.defaultValue == memberTel.value) ) { // 전화번호도 그대로면
       alert("수정된 정보가 없습니다.");
@@ -182,8 +182,19 @@ if(profileFrm != null) {
         return;
     }
 
+    const postcodeVal = document.getElementById("postcode").value.trim();
+    const detailAddressVal = document.getElementById("detailAddress").value.trim();
 
-    // B. 현재 비밀번호 입력 필수 체크
+    // 우편번호(주소)는 채워져 있는데, 상세 주소가 비어있으면 경고
+    if(postcodeVal.length > 0 && detailAddressVal.length == 0) {
+        alert("상세 주소를 입력해주세요.");
+        document.getElementById("detailAddress").focus();
+        e.preventDefault();
+        return;
+    }
+
+
+    // 현재 비밀번호 입력 필수 체크
     if(currentPw.value.trim().length == 0) {
       alert("정보를 수정하려면 현재 비밀번호를 입력해주세요.");
       currentPw.focus();
