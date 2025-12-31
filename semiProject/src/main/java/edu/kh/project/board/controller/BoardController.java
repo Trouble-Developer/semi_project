@@ -99,7 +99,6 @@ public class BoardController {
 			ra.addFlashAttribute("message", message);
 		} else {
 
-			log.info("로그인 멤버 번호 = {},  보드 번호 = {}", loginMember.getMemberNo(), board.getMemberNo());
 			if (loginMember == null || loginMember.getMemberNo() != selectedBoard.getMemberNo()) {
 				Cookie[] cookies = req.getCookies();
 
