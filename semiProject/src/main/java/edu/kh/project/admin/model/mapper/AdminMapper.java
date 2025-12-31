@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 
 import edu.kh.project.admin.dto.AdminMember;
+import edu.kh.project.admin.dto.AdminNotice;
 import edu.kh.project.admin.dto.AdminSupport;
 import edu.kh.project.board.model.dto.Board;
 
@@ -43,13 +44,13 @@ public interface AdminMapper {
 	 * @param paramMap
 	 * @return
 	 */
-	List<Board> selectNoticeList(Map<String, Object> paramMap);
+	List<AdminNotice> selectNoticeList(Map<String, Object> paramMap);
 
-	/** 공지사항 삭제(UPDATE)
-	 * @param boardNo
+	/** 공지사항 게시글 삭제/복구
+	 * @param paramMap
 	 * @return
 	 */
-	int deleteNotice(int boardNo);
+	int updateNoticeStatus(Map<String, Object> paramMap);
 
 	/** 고객지원 게시글 전체 개수 조회
 	 * @param paramMap
