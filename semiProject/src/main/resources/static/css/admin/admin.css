@@ -145,16 +145,22 @@
 
 /* 글작성 버튼 */
 .btn-write {
-  padding: 8px 16px;
-  background-color: #FFD86E;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: bold;
-  color: #333;
-}
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
+  margin: 20px 0;
+  width: 165px;
+  height: 63px;
+  font-size: 24px;
+  border-radius: 20px;
+  cursor: pointer;
+  background-color: #ff5900;
+  color: white;
+}
 .btn-write:hover {
-  background-color: #ffcc4d;
+  background-color: #ffd879;
+  color: #ff5900;
 }
 
 /* 공지사항 삭제 버튼 */

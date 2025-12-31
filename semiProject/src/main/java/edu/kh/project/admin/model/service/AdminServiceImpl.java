@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import edu.kh.project.admin.dto.AdminMember;
+import edu.kh.project.admin.dto.AdminSupport;
 import edu.kh.project.admin.model.mapper.AdminMapper;
 import edu.kh.project.board.model.dto.Board;
 import edu.kh.project.board.model.dto.Pagination;
@@ -95,7 +96,7 @@ public class AdminServiceImpl implements AdminService{
         paramMap.put("limit", pagination.getLimit());
 
         // 4. 고객지원 게시글 목록 조회
-        List<Board> supportList =
+        List<AdminSupport> supportList =
                 mapper.selectSupportList(paramMap);
 
         // 5. Controller로 반환할 데이터 구성
@@ -106,5 +107,11 @@ public class AdminServiceImpl implements AdminService{
         return resultMap;
     }
 	
+    // 고객지원 게시글 삭제/복구
+    @Override
+    public int updateSupportStatus(Map<String, Object> paramMap) {
+    	return mapper.updateSupportStatus(paramMap);
+    }
+    
 	
 }
