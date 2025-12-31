@@ -98,7 +98,9 @@
                     th:href="@{/board/{boardCode}/{boardNo}(boardCode=${board.boardCode}, boardNo=${board.boardNo})}"
                   >
                     <img
-                      th:src="@{|${board.imgPath}/${board.imgRename}|}"
+                      th:src="${board.imgRename != null 
+                      ? board.imgPath + board.imgRename 
+                      : '/images/mainLogo.jpg'}"
                       alt="배경"
                       class="bg"
                     />

@@ -25,10 +25,7 @@ boardLinks.forEach((a) => {
     const boardNo = a.getAttribute("data-board-no"); // 글 번호 가져오기
 
     // 관리자 여부 (script 영역에서 정의했다고 가정)
-    const isAdmin =
-      typeof loginMemberNo !== "undefined" && loginMemberNo != null
-        ? /* 관리자 권한 체크 로직 */ false
-        : false;
+    const isAdmin = loginMemberAuthority == 2;
 
     if (boardCode == 5 && isLock && !isWriter && !isAdmin) {
       e.preventDefault(); // 일단 상세페이지 이동 차단
