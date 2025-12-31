@@ -94,17 +94,22 @@
             <th:block th:each="board : ${boardList}">
               <swiper-slide>
                 <div class="swiper-content">
-                  <img
-                    th:src="@{|${board.imgPath}/${board.imgRename}|}"
-                    alt="배경"
-                    class="bg"
-                  />
+                  <a
+                    th:href="@{/board/{boardCode}/{boardNo}(boardCode=${board.boardCode}, boardNo=${board.boardNo})}"
+                  >
+                    <img
+                      th:src="@{|${board.imgPath}/${board.imgRename}|}"
+                      alt="배경"
+                      class="bg"
+                    />
+                  </a>
                 </div>
                 <div class="text-info">
                   <p th:text="|${board.memberNickname} 님|"></p>
                   <a
                     th:href="@{/board/{boardCode}/{boardNo}(boardCode=${board.boardCode}, boardNo = ${board.boardNo})}"
                     th:text="${board.boardTitle}"
+                    id="volun-title"
                   ></a>
                 </div>
               </swiper-slide>
