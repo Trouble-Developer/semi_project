@@ -2,16 +2,20 @@
  * 아이디 찾기 페이지 JavaScript
  * 
  * [기능 설명]
- * - 이름, 주민번호, 이메일 유효성 검사
+ * - 이름, 이메일 유효성 검사
  * - 이메일 인증번호 발송 및 확인
- * - 인증 완료 시 아이디 찾기 자동 실행
+ * - 인증 완료 후 아이디 찾기 자동 실행
+ * - 아이디 찾기 성공 시에만 모든 입력/버튼 비활성화
+ * - 아이디 찾기 실패 시 모든 입력/버튼 재활성화 (재시도 가능)
  * 
  * [동작 흐름]
- * 1. 사용자가 이름, 주민번호, 이메일 입력
+ * 1. 사용자가 이름, 이메일 입력
  * 2. "인증번호 발송" 버튼 클릭 → 이메일로 인증번호 발송
  * 3. 5분 타이머 시작
  * 4. 사용자가 인증번호 입력 후 "확인" 버튼 클릭
- * 5. 인증 성공 시 → 아이디 찾기 자동 실행 → 결과 화면 표시
+ * 5. 인증 성공 시 → 인증 확인 버튼만 비활성화 → 아이디 찾기 자동 실행
+ * 6-1. 아이디 찾기 성공 시 → 모든 입력/버튼 비활성화 → 결과 화면 표시
+ * 6-2. 아이디 찾기 실패 시 → 모든 입력/버튼 재활성화 (처음부터 재시도)
  * 
  */
 
@@ -21,8 +25,6 @@
 
 // ----- 입력 필드 -----
 const memberName = document.querySelector("#memberName");       // 이름 입력칸
-const memberRrn1 = document.querySelector("#memberRrn1");       // 주민번호 앞 6자리
-const memberRrn2 = document.querySelector("#memberRrn2");       // 주민번호 뒤 1자리
 const memberEmail = document.querySelector("#memberEmail");     // 이메일 입력칸
 const authKey = document.querySelector("#authKey");             // 인증번호 입력칸
 
@@ -32,7 +34,6 @@ const checkAuthKeyBtn = document.querySelector("#checkAuthKeyBtn"); // 인증번
 
 // ----- 메시지 영역 (에러/성공 메시지 표시) -----
 const nameMessage = document.querySelector("#nameMessage");         // 이름 메시지
-const rrnMessage = document.querySelector("#rrnMessage");           // 주민번호 메시지
 const emailMessage = document.querySelector("#emailMessage");       // 이메일 메시지
 const authKeyMessage = document.querySelector("#authKeyMessage");   // 인증번호 메시지
 
@@ -89,39 +90,6 @@ const validateName = () => {
     // 통과
     nameMessage.innerText = "";
     nameMessage.classList.remove("error");
-    return true;
-};
-
-
-/**
- * 주민번호 유효성 검사
- * - 조건: 앞자리 6자리 숫자, 뒷자리 1자리 숫자
- * @returns {boolean} true: 통과, false: 실패
- */
-const validateRrn = () => {
-    
-    const rrn1 = memberRrn1.value.trim();   // 앞 6자리
-    const rrn2 = memberRrn2.value.trim();   // 뒤 1자리
-    
-    // 검사 1: 앞자리 6자리 숫자 체크
-    if(rrn1.length !== 6 || isNaN(rrn1)) {
-        rrnMessage.innerText = "생년월일 6자리를 정확히 입력해주세요.";
-        rrnMessage.classList.add("error");
-        rrnMessage.classList.remove("confirm");
-        return false;
-    }
-    
-    // 검사 2: 뒷자리 1자리 숫자 체크
-    if(rrn2.length !== 1 || isNaN(rrn2)) {
-        rrnMessage.innerText = "뒤 1자리를 입력해주세요.";
-        rrnMessage.classList.add("error");
-        rrnMessage.classList.remove("confirm");
-        return false;
-    }
-    
-    // 통과
-    rrnMessage.innerText = "";
-    rrnMessage.classList.remove("error");
     return true;
 };
 
@@ -211,21 +179,21 @@ function checkTime() {
 /**
  * 아이디 찾기 실행 함수
  * - 인증 완료 후 자동으로 호출됨
- * - 이름 + 주민번호 앞자리 + 이메일을 서버로 전송
+ * - 이름 + 이메일을 서버로 전송
  * - 일치하는 회원의 아이디와 가입일자를 받아서 화면에 표시
+ * - 아이디 찾기 성공 시에만 모든 입력/버튼 비활성화 처리
+ * - 아이디 찾기 실패 시 모든 입력/버튼 재활성화 (처음부터 재시도)
  */
 function findMemberId() {
     
-    // URLSearchParams로 파라미터 생성
+    // URLSearchParams로 파라미터 생성 (주민번호 제거)
     const params = new URLSearchParams();
     params.append("memberName", memberName.value.trim());
-    params.append("memberRrn1", memberRrn1.value.trim());
     params.append("memberEmail", memberEmail.value.trim());
     
     // 디버깅용 로그
     console.log("=== 아이디 찾기 요청 데이터 ===");
     console.log("이름:", memberName.value.trim());
-    console.log("주민번호 앞자리:", memberRrn1.value.trim());
     console.log("이메일:", memberEmail.value.trim());
     
     // AJAX 요청
@@ -258,18 +226,96 @@ function findMemberId() {
         console.log("=== 파싱된 데이터 ===");
         console.log(data);
         
-        // 아이디 찾기 성공
+        // ========================================================================
+        // ✅ 아이디 찾기 성공
+        // ========================================================================
         if(data != null && data.memberId) {
             console.log("✓ 아이디 찾기 성공!");
             
+            // 결과 화면에 아이디와 가입일자 표시
             resultId.innerText = data.memberId;
             enrollDate.innerText = data.enrollDate;
             resultArea.style.display = "block";
             
-        } else {
-            // 일치하는 회원 없음
+            // ====================================================================
+            // 🔒 아이디 찾기 성공 시에만 모든 입력/버튼 비활성화
+            // ====================================================================
+            
+            // 1) 인증번호 발송 버튼 비활성화
+            sendAuthKeyBtn.disabled = true;
+            sendAuthKeyBtn.style.backgroundColor = "#cccccc";
+            sendAuthKeyBtn.style.cursor = "not-allowed";
+            
+            // 2) 인증 확인 버튼 비활성화 (이미 비활성화되어 있지만 확실하게)
+            checkAuthKeyBtn.disabled = true;
+            checkAuthKeyBtn.style.backgroundColor = "#cccccc";
+            checkAuthKeyBtn.style.cursor = "not-allowed";
+            
+            // 3) 인증번호 입력창 비활성화
+            authKey.disabled = true;
+            authKey.style.backgroundColor = "#f5f5f5";
+            
+            // 4) 이메일 입력창 비활성화
+            memberEmail.disabled = true;
+            memberEmail.style.backgroundColor = "#f5f5f5";
+            
+            // 5) 이름 입력창 비활성화
+            memberName.disabled = true;
+            memberName.style.backgroundColor = "#f5f5f5";
+            
+            console.log("✓ 아이디 찾기 성공 - 모든 입력/버튼 비활성화 완료");
+            
+        } 
+        // ========================================================================
+        // ❌ 아이디 찾기 실패 (일치하는 회원 없음)
+        // ========================================================================
+        else {
             console.log("✗ 일치하는 회원 없음");
-            alert("입력하신 정보와 일치하는 회원이 없습니다.");
+            
+            alert("입력하신 정보와 일치하는 회원이 없습니다.\n정보를 다시 확인하고 재시도해주세요.");
+            
+            // ====================================================================
+            // 🔓 아이디 찾기 실패 시 모든 입력/버튼 재활성화 (처음부터 재시도)
+            // ====================================================================
+            
+            // 1) 이름 입력창 재활성화
+            memberName.disabled = false;
+            memberName.style.backgroundColor = "#ffffff";
+            memberName.value = "";  // 입력값 초기화
+            
+            // 2) 이메일 입력창 재활성화
+            memberEmail.disabled = false;
+            memberEmail.style.backgroundColor = "#ffffff";
+            memberEmail.value = "";  // 입력값 초기화
+            
+            // 3) 인증번호 입력창 재활성화
+            authKey.disabled = false;
+            authKey.style.backgroundColor = "#ffffff";
+            authKey.value = "";  // 입력값 초기화
+            
+            // 4) 인증번호 발송 버튼 재활성화
+            sendAuthKeyBtn.disabled = false;
+            sendAuthKeyBtn.style.backgroundColor = "";
+            sendAuthKeyBtn.style.cursor = "pointer";
+            
+            // 5) 인증 확인 버튼 재활성화
+            checkAuthKeyBtn.disabled = false;
+            checkAuthKeyBtn.style.backgroundColor = "";
+            checkAuthKeyBtn.style.cursor = "pointer";
+            
+            // 6) 타이머 중지 및 메시지 초기화
+            clearInterval(authTimer);
+            authKeyMessage.innerText = "";
+            authKeyMessage.classList.remove("confirm");
+            authKeyMessage.classList.remove("error");
+            
+            // 7) 인증 플래그 초기화
+            authKeyCheck = false;
+            
+            // 8) 이름 입력칸으로 포커스 이동
+            memberName.focus();
+            
+            console.log("✗ 아이디 찾기 실패 - 모든 입력/버튼 재활성화 완료 (재시도 가능)");
         }
     })
     .catch(err => {
@@ -288,15 +334,15 @@ function findMemberId() {
  * 인증번호 발송 버튼 클릭 이벤트
  * 
  * [동작 순서]
- * 1. 이름, 주민번호, 이메일 유효성 검사
+ * 1. 이름, 이메일 유효성 검사
  * 2. 모두 통과하면 이메일로 인증번호 발송 (AJAX)
  * 3. 발송 성공 시 5분 타이머 시작
+ * 4. 인증 확인 버튼 활성화 및 스타일 초기화 (재발송 대응)
  */
 sendAuthKeyBtn.addEventListener("click", () => {
     
     // 유효성 검사 (하나라도 실패하면 중단)
     if(!validateName()) return;
-    if(!validateRrn()) return;
     if(!validateEmail()) return;
     
     // AJAX: 인증번호 발송 요청
@@ -341,8 +387,18 @@ sendAuthKeyBtn.addEventListener("click", () => {
         // 1초마다 checkTime() 실행
         authTimer = setInterval(checkTime, 1000);
         
-        // 확인 버튼 활성화
+        // ====================================================================
+        // 🔧 인증 확인 버튼 활성화 및 스타일 초기화 (재발송 대응)
+        // ====================================================================
+        // - 첫 발송 시: 기본적으로 활성화
+        // - 재발송 시: 이전에 비활성화된 버튼을 다시 활성화
+        // - 스타일도 함께 초기화하여 시각적으로도 정상 버튼으로 보이게 함
+        
         checkAuthKeyBtn.disabled = false;
+        checkAuthKeyBtn.style.backgroundColor = "";  // 스타일 초기화 ✅
+        checkAuthKeyBtn.style.cursor = "pointer";     // 커서 스타일 초기화 ✅
+        
+        console.log("✓ 인증번호 발송/재발송 - 인증 확인 버튼 활성화 및 스타일 초기화 완료");
     })
     .catch(err => {
         console.error("에러 발생:", err);
@@ -363,7 +419,14 @@ sendAuthKeyBtn.addEventListener("click", () => {
  * 1. 인증번호 입력 확인
  * 2. 유효성 검사 재확인
  * 3. 서버에 인증번호 확인 요청 (AJAX)
- * 4. 인증 성공 시 아이디 찾기 자동 실행
+ * 4. 인증 성공 시 아이디 찾기 자동 실행 (버튼 비활성화 하지 않음!)
+ * 5. 아이디 찾기 성공/실패 여부에 따라 findMemberId() 함수에서 비활성화 처리
+ * 
+ * [중요]
+ * - 인증 성공 시 버튼 비활성화 하지 않음!
+ * - 이메일이 틀릴 수도 있으므로 아이디 찾기 결과를 봐야 함
+ * - 아이디 찾기 성공 시에만 findMemberId()에서 모든 버튼 비활성화
+ * - 아이디 찾기 실패 시 모든 버튼 활성 유지 (재시도 가능)
  */
 checkAuthKeyBtn.addEventListener("click", () => {
     
@@ -377,7 +440,6 @@ checkAuthKeyBtn.addEventListener("click", () => {
     
     // 유효성 검사 재확인
     if(!validateName()) return;
-    if(!validateRrn()) return;
     if(!validateEmail()) return;
     
     // AJAX: 인증번호 확인 요청
@@ -394,7 +456,7 @@ checkAuthKeyBtn.addEventListener("click", () => {
         console.log("인증 확인 결과:", result);
         
         if(result > 0) {
-            // 인증 성공
+            // ✅ 인증 성공
             clearInterval(authTimer);   // 타이머 중지
             
             authKeyMessage.innerText = "✓ 인증되었습니다.";
@@ -402,13 +464,32 @@ checkAuthKeyBtn.addEventListener("click", () => {
             authKeyMessage.classList.remove("error");
             
             authKeyCheck = true;
-            checkAuthKeyBtn.disabled = true;
             
+            // ====================================================================
+            // ⚠️ 인증 성공 시 버튼 비활성화 하지 않음!
+            // ====================================================================
+            // [이유]
+            // - 인증번호는 맞지만 이메일이 틀릴 수 있음
+            // - 아이디 찾기 결과를 봐야 정확한 판단 가능
+            // - 아이디 찾기 성공 시에만 findMemberId()에서 비활성화
+            // - 아이디 찾기 실패 시 재시도 가능하도록 활성 유지
+            
+            // ❌ 제거: checkAuthKeyBtn.disabled = true;
+            // ❌ 제거: checkAuthKeyBtn.style.backgroundColor = "#cccccc";
+            // ❌ 제거: checkAuthKeyBtn.style.cursor = "not-allowed";
+            
+            console.log("✓ 인증 완료 - 버튼 활성 유지 (아이디 찾기 결과 대기)");
+            console.log("✓ 아이디 찾기 자동 실행 시작...");
+            
+            // ====================================================================
             // 아이디 찾기 자동 실행
+            // - 성공 시: findMemberId() 함수에서 모든 입력/버튼 비활성화
+            // - 실패 시: findMemberId() 함수에서 모든 입력/버튼 활성 유지
+            // ====================================================================
             findMemberId();
             
         } else {
-            // 인증 실패
+            // ❌ 인증 실패
             alert("인증번호가 일치하지 않습니다.");
             authKeyCheck = false;
         }
@@ -427,10 +508,6 @@ checkAuthKeyBtn.addEventListener("click", () => {
 
 // 이름 입력 시 실시간 검사
 memberName.addEventListener("input", validateName);
-
-// 주민번호 입력 시 실시간 검사
-memberRrn1.addEventListener("input", validateRrn);
-memberRrn2.addEventListener("input", validateRrn);
 
 // 이메일 입력 시 실시간 검사
 memberEmail.addEventListener("input", validateEmail);

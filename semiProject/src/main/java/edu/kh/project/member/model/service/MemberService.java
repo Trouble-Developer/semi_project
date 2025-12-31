@@ -4,21 +4,26 @@ import edu.kh.project.member.model.dto.Member;
 
 public interface MemberService {
 
-	int checkId(String memberId);
+    int checkId(String memberId);
 
-	int checkNickname(String memberNickname);
+    int checkNickname(String memberNickname);
 
-	int checkEmail(String memberEmail);
+    int checkEmail(String memberEmail);
 
-	int signup(Member inputMember);
+    int signup(Member inputMember);
 
-	Member login(Member inputMember);
+    Member login(Member inputMember);
 
-	Member findId(String memberName, String memberRrn1, String memberEmail);
+    /**
+     * 아이디 찾기 (이름 + 이메일)
+     * @param memberName : 회원 이름
+     * @param memberEmail : 회원 이메일
+     * @return Member 객체 (아이디, 가입일자)
+     */
+    Member findId(String memberName, String memberEmail);  
 
-	Member findPw(String memberId, String memberName, String memberRrn1, String memberEmail);
+    Member findPw(String memberId, String memberName, String memberRrn1, String memberEmail);
 
-	int resetPw(String memberId, String newPw);
+    int resetPw(String memberId, String newPw);
 
-	
 }

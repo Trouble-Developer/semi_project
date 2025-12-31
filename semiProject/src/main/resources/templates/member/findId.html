@@ -11,141 +11,231 @@
 <body>
 
   <main>
-    <!-- ===== 공통 헤더 영역 (Thymeleaf 조각 사용) ===== -->
+    <!-- ================================================================
+         공통 헤더 영역
+         - Thymeleaf 조각(fragment) 방식으로 header 삽입
+         - common/header.html 파일 내용이 이 위치에 포함됨
+    ================================================================ -->
     <th:block th:replace="~{common/header}"></th:block>
 
-    <!-- ===== 아이디 찾기 메인 영역 ===== -->
+    <!-- ================================================================
+         아이디 찾기 메인 영역
+         
+         [기능 설명]
+         1. 이름, 이메일 입력 및 유효성 검사
+         2. 이메일 인증번호 발송/확인
+         3. 인증 완료 시 아이디 자동 조회 및 결과 표시
+         
+         [주의사항]
+         - 주민번호는 보안상 제거됨 (2025-01-01)
+         - 인증 완료 후 아이디 찾기 성공 시 모든 입력/버튼 비활성화
+    ================================================================ -->
     <section class="findId-content">
       
       <!-- 페이지 제목 -->
       <h1>아이디 찾기</h1>
 
-      <!-- 입력 폼 영역 -->
+      <!-- ================================================================
+           입력 폼 영역
+           - form 태그 없이 div로 구성 (AJAX 통신 사용)
+           - JavaScript에서 입력값을 가져와 서버로 전송
+      ================================================================ -->
       <div class="find-form">
         
         <!-- ========== 1. 이름 입력 ========== -->
         <div class="input-group">
           <label for="memberName">이름</label>
           <!-- 
-            - id: JavaScript에서 querySelector로 찾을 때 사용
-            - name: 서버에 전송할 때 사용 (나중에 AJAX에서 사용)
-            - placeholder: 입력칸이 비어있을 때 보이는 안내 문구
-            - maxlength: 최대 입력 가능 글자 수
-            - autocomplete="off": 자동완성 끄기
+            [속성 설명]
+            - id: JavaScript querySelector()로 요소 선택 시 사용
+            - name: 서버 전송 시 파라미터명 (AJAX body에 포함)
+            - placeholder: 입력칸 안내 문구
+            - maxlength: 최대 입력 가능 글자 수 제한
+            - autocomplete="off": 브라우저 자동완성 기능 비활성화
+            
+            [유효성 검사]
+            - JavaScript validateName() 함수에서 검사
+            - 조건: 한글 2글자 이상
+            - 실시간 검사: input 이벤트 발생 시마다 확인
           -->
           <input type="text" name="memberName" id="memberName" 
                  placeholder="이름 입력 (한글 2글자 이상)" 
                  maxlength="10" 
                  autocomplete="off">
           
-          <!-- 에러 메시지 표시 영역 (처음엔 숨김) -->
+          <!-- 
+            에러/성공 메시지 표시 영역
+            - 처음엔 빈 상태 (innerText = "")
+            - JavaScript에서 동적으로 메시지 삽입
+            - CSS 클래스: .error (빨간색), .confirm (초록색)
+          -->
           <span class="error-msg" id="nameMessage"></span>
         </div>
 
-        <!-- ========== 2. 주민등록번호 입력 ========== -->
-        <div class="input-group">
-          <label>주민등록번호</label>
-          
-          <!-- 주민번호는 앞자리, 대시(-), 뒷자리로 구성 -->
-          <div class="rrn-box">
-            
-            <!-- 앞 6자리: 생년월일 (예: 950101) -->
-            <input type="text" name="memberRrn1" id="memberRrn1" 
-                   placeholder="생년월일 6자리" 
-                   maxlength="6" 
-                   autocomplete="off">
-            
-            <!-- 대시 기호 -->
-            <span class="dash">-</span>
-            
-            <!-- 뒤 1자리: 성별 (예: 1, 2, 3, 4) -->
-            <input type="text" name="memberRrn2" id="memberRrn2" 
-                   placeholder="뒤 1자리" 
-                   maxlength="1" 
-                   autocomplete="off">
-          
-          </div>
-          
-          <!-- 에러 메시지 표시 영역 -->
-          <span class="error-msg" id="rrnMessage"></span>
-        </div>
 
-        <!-- ========== 3. 이메일 입력 ========== -->
+        <!-- ========== 2. 이메일 입력 + 인증번호 발송 ========== -->
         <div class="input-group">
           <label for="memberEmail">이메일</label>
           
-          <!-- 이메일 입력칸과 버튼을 나란히 배치 (flex-row) -->
+          <!-- 
+            이메일 입력칸과 버튼을 가로로 나란히 배치
+            - CSS: display: flex; (flex-row 클래스)
+            - 입력칸이 남은 공간 차지, 버튼은 고정 너비
+          -->
           <div class="flex-row">
-            <!-- 이메일 입력칸 -->
+            <!-- 
+              이메일 입력칸
+              
+              [유효성 검사]
+              - 정규표현식: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+              - 조건: 이메일 형식 (예: abc@example.com)
+              - 실시간 검사: input 이벤트 발생 시마다 확인
+            -->
             <input type="text" name="memberEmail" id="memberEmail" 
                    placeholder="가입 시 등록한 이메일 입력" 
                    maxlength="30" 
                    autocomplete="off">
             
-            <!-- 인증번호 발송 버튼 -->
+            <!-- 
+              인증번호 발송 버튼
+              
+              [동작]
+              1. 이름, 이메일 유효성 검사
+              2. 모두 통과하면 AJAX로 /email/sendAuthKey 호출
+              3. 이메일로 6자리 인증번호 발송
+              4. 5분 타이머 시작
+              
+              [스타일]
+              - btn-orange-solid: 주황색 배경, 흰색 글자
+              - hover 시 색상 변경
+            -->
             <button type="button" class="btn-orange-solid" id="sendAuthKeyBtn">
               인증번호 발송
             </button>
           </div>
           
-          <!-- 에러 메시지 표시 영역 -->
+          <!-- 에러/성공 메시지 표시 영역 -->
           <span class="error-msg" id="emailMessage"></span>
         </div>
 
-        <!-- ========== 4. 인증번호 입력 ========== -->
+        <!-- ========== 3. 인증번호 입력 + 확인 ========== -->
         <div class="input-group">
           <label for="authKey">인증번호</label>
           
-          <!-- 인증번호 입력칸과 확인 버튼을 나란히 배치 -->
+          <!-- 인증번호 입력칸과 확인 버튼을 가로로 나란히 배치 -->
           <div class="flex-row">
-            <!-- 인증번호 입력칸 (6자리) -->
+            <!-- 
+              인증번호 입력칸
+              
+              [동작]
+              - 이메일로 발송된 6자리 숫자 입력
+              - maxlength="6": 6자리까지만 입력 가능
+              - 숫자만 입력되도록 JavaScript에서 제한 가능 (선택사항)
+            -->
             <input type="text" name="authKey" id="authKey" 
                    placeholder="인증번호 6자리 입력" 
                    maxlength="6" 
                    autocomplete="off">
             
-            <!-- 확인 버튼 (아이디 찾기 실행) -->
+            <!-- 
+              인증번호 확인 버튼
+              
+              [동작]
+              1. 인증번호 입력 확인
+              2. AJAX로 /email/checkAuthKey 호출
+              3. 인증 성공 시:
+                 - 타이머 중지
+                 - "✓ 인증되었습니다" 메시지 표시
+                 - 인증 확인 버튼만 비활성화
+                 - 아이디 찾기 자동 실행
+              4. 아이디 찾기 성공 시:
+                 - 모든 입력/버튼 비활성화
+                 - 결과 화면 표시
+              
+              [스타일]
+              - btn-sub: 회색 배경, 검은색 글자
+              - 비활성화 시: 배경색 #cccccc, cursor: not-allowed
+            -->
             <button type="button" class="btn-sub" id="checkAuthKeyBtn">
               확인
             </button>
           </div>
           
-          <!-- 에러 메시지 표시 영역 -->
+          <!-- 
+            에러/성공 메시지 + 타이머 표시 영역
+            
+            [표시 내용]
+            - 인증번호 발송 후: "05:00" (5분 카운트다운)
+            - 인증 성공: "✓ 인증되었습니다" (초록색)
+            - 인증 실패: "인증번호가 일치하지 않습니다" (빨간색)
+            - 시간 만료: "인증 시간이 만료되었습니다" (빨간색)
+          -->
           <span class="error-msg" id="authKeyMessage"></span>
         </div>
 
-        <!-- ========== 5. 결과 표시 영역 ========== -->
+        <!-- ========== 4. 결과 표시 영역 ========== -->
         <!-- 
-          처음엔 숨김 (style="display: none;")
-          JavaScript에서 아이디 찾기 성공하면 보여줌 (style.display = "block")
+          [초기 상태]
+          - style="display: none;": 처음엔 숨김
+          
+          [표시 시점]
+          - JavaScript findMemberId() 함수에서 아이디 찾기 성공 시
+          - resultArea.style.display = "block"; 으로 표시
+          
+          [표시 내용]
+          - 찾은 아이디 (예: abc***)
+          - 가입일자 (예: 2024-01-15)
+          - 로그인하러 가기 버튼
+          - 비밀번호 찾기 버튼
         -->
         <div class="result-area" id="resultArea" style="display: none;">
           
-          <!-- 결과 박스 -->
+          <!-- 결과 박스 (아이디 + 가입일자 표시) -->
           <div class="result-box">
             <p class="result-title">회원님의 아이디는</p>
             
-            <!-- 찾은 아이디 표시 (JavaScript에서 innerText로 값 넣음) -->
-            <!-- 예: abc*** -->
+            <!-- 
+              찾은 아이디 표시
+              - JavaScript에서 동적으로 값 삽입
+              - 예: resultId.innerText = "abc123";
+              - 보안을 위해 뒷부분을 ***로 마스킹할 수도 있음 (선택사항)
+            -->
             <p class="result-id" id="resultId"></p>
             
             <p class="result-subtitle">입니다.</p>
             
-            <!-- 가입일자 표시 (JavaScript에서 값 넣음) -->
-            <!-- 예: 가입일자: 2024-01-15 -->
+            <!-- 
+              가입일자 표시
+              - JavaScript에서 동적으로 값 삽입
+              - 예: enrollDate.innerText = "2024-01-15";
+              - 서버에서 TO_CHAR(ENROLL_DATE, 'YYYY-MM-DD') 형식으로 전달
+            -->
             <p class="result-date">
               가입일자: <span id="enrollDate"></span>
             </p>
           </div>
           
-          <!-- 버튼 영역 (2개 나란히) -->
+          <!-- 
+            버튼 영역
+            - 2개 버튼을 가로로 나란히 배치 (CSS: display: flex;)
+          -->
           <div class="btn-area">
-            <!-- 로그인 페이지로 이동 -->
+            <!-- 
+              로그인 페이지로 이동
+              - location.href = "/" 실행
+              - 메인 페이지(로그인 페이지)로 이동
+            -->
             <button type="button" class="btn-submit" onclick="location.href='/'">
               로그인하러 가기
             </button>
             
-            <!-- 비밀번호 찾기 페이지로 이동 -->
+            <!-- 
+              비밀번호 찾기 페이지로 이동
+              - location.href = "/member/findPw" 실행
+              - 비밀번호 찾기 페이지로 이동
+              - 선택사항: 찾은 아이디를 쿼리스트링으로 전달 가능
+                (예: /member/findPw?memberId=abc123)
+            -->
             <button type="button" class="btn-submit btn-find-pw" onclick="location.href='/member/findPw'">
               비밀번호 찾기
             </button>
@@ -162,13 +252,29 @@
 
   </main>
     
-    <!-- ===== 공통 푸터 영역 (Thymeleaf 조각 사용) ===== -->
+    <!-- ================================================================
+         공통 푸터 영역
+         - Thymeleaf 조각(fragment) 방식으로 footer 삽입
+         - common/footer.html 파일 내용이 이 위치에 포함됨
+    ================================================================ -->
     <th:block th:replace="~{common/footer}"></th:block>
 
 
 
-  <!-- JavaScript 파일 연결 (맨 마지막에 로드) -->
-  <!-- HTML이 모두 로드된 후 JavaScript 실행 -->
+  <!-- ================================================================
+       JavaScript 파일 연결
+       
+       [로드 순서]
+       - HTML이 모두 파싱된 후 JavaScript 실행
+       - body 태그 맨 마지막에 배치하는 이유:
+         1. DOM 요소들이 모두 생성된 후 접근 가능
+         2. querySelector()로 요소를 찾을 때 에러 없음
+         3. 페이지 로딩 속도 향상 (HTML 먼저 렌더링)
+       
+       [파일 경로]
+       - /js/member/findId.js
+       - static 폴더 기준 경로
+  ================================================================ -->
   <script src="/js/member/findId.js"></script>
 
 </body>
