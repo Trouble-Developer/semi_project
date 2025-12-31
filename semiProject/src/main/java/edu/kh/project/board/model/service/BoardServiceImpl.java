@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,10 +24,13 @@ public class BoardServiceImpl implements BoardService {
 
 	@Autowired
 	private BoardMapper mapper;
-	
+
 	// ⭐⭐⭐ 추가 2: CommentMapper 의존성 주입 ⭐⭐⭐
 	@Autowired
 	private CommentMapper commentMapper;
+
+	@Autowired
+	private BCryptPasswordEncoder bcrypt;
 
 	/**
 	 * dev.안재훈 게시판 종류별 데이터 가져오기
@@ -96,13 +100,13 @@ public class BoardServiceImpl implements BoardService {
 	public Board freeBoardDetil(Board board) {
 		// 1. 게시글 조회
 		Board result = mapper.freeBoardDetil(board);
-		
+
 		// 2. 댓글 목록 조회 (게시글이 존재하는 경우에만)
-		if(result != null) {
+		if (result != null) {
 			List<Comment> commentList = commentMapper.selectCommentList(result.getBoardNo());
 			result.setCommentList(commentList);
 		}
-		
+
 		return result;
 	}
 
@@ -164,5 +168,16 @@ public class BoardServiceImpl implements BoardService {
 			return mapper.selectReadCount(boardNo);
 		}
 		return -1;
+	}
+
+	@Override
+	public int checkBoardPw(Board board) {
+
+		Board selectedBoard = mapper.freeBoardDetil(board);
+
+		if (bcrypt.matches(board.getBoardPw(), selectedBoard.getBoardPw())) {
+			return 1;
+		} 
+		return 0;
 	}
 }
