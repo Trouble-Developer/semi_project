@@ -17,11 +17,22 @@ public class FileConfig implements WebMvcConfigurer {
 
 	@Value("${board.image.folder-path}")
 	private String boardImageFolderPath;
+	
+	@Value("${profile.image.web-path}")
+    private String profileImageWebPath;
+
+    @Value("${profile.image.folder-path}")
+    private String profileImageFolderPath;
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry.addResourceHandler("/upload/board/**").addResourceLocations("file:///C:/semiProject/upload/board/");
+		
+		registry.addResourceHandler("/upload/profile/**")
+        .addResourceLocations("file:///C:/semiProject/upload/profile/");
 	}
+	
+	
 
 	@Bean
 	public MultipartResolver multipartResolver() {
