@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 
 import edu.kh.project.admin.dto.AdminMember;
+import edu.kh.project.admin.dto.AdminSupport;
 import edu.kh.project.board.model.dto.Board;
 
 
@@ -60,6 +61,12 @@ public interface AdminMapper {
 	 * @param paramMap
 	 * @return
 	 */
-	List<Board> selectSupportList(Map<String, Object> paramMap);
+	List<AdminSupport> selectSupportList(Map<String, Object> paramMap);
+
+	/** 고객지원 게시글 삭제/복구
+	 * @param paramMap
+	 * @return
+	 */
+	int updateSupportStatus(Map<String, Object> paramMap);
 
 }

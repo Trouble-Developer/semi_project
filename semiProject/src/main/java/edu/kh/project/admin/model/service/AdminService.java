@@ -46,6 +46,12 @@ public interface AdminService {
 	 */
 	Map<String, Object> selectSupportList(int cp, Map<String, Object> paramMap);
 
+	/** 고객지원 게시글 삭제/복구
+	 * @param paramMap
+	 * @return
+	 */
+	int updateSupportStatus(Map<String, Object> paramMap);
+
 	
 
 }

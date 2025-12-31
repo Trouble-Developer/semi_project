@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import edu.kh.project.admin.dto.AdminMember;
+import edu.kh.project.admin.dto.AdminSupport;
 import edu.kh.project.admin.model.service.AdminService;
 import edu.kh.project.board.model.dto.Board;
 import edu.kh.project.board.model.dto.Pagination;
@@ -176,7 +177,7 @@ public class AdminController {
     }
     
     
-    // 고객지원 게시글 관리 페이지
+    // 고객지원 - 게시글 관리 페이지
     @GetMapping("support")
     public String supportManage(
             // 현재 페이지 번호 (기본값 1)
@@ -213,7 +214,7 @@ public class AdminController {
 
         // 고객지원 게시글 목록
         model.addAttribute("supportList",
-                (List<Board>) resultMap.get("supportList"));
+                (List<AdminSupport>) resultMap.get("supportList"));
 
         // 페이지네이션 정보
         model.addAttribute("pagination",
@@ -222,6 +223,43 @@ public class AdminController {
         return "admin/adminLayout";
     }
     
+    // 고객지원 게시글 삭제 & 복구
+    @PostMapping("support/updateStatus")
+    public String updateSupportStatus(
+    				@RequestParam("boardNo") int boardNo,
+    				@RequestParam("boardDelFl") String boardDelFl,
+    				HttpSession session,
+    				RedirectAttributes ra) {
+    	
+    	// 관지라 외 접근 제한
+    	if (!isAdmin(session, ra)) {
+            return "redirect:/";
+        }
+    	
+    	Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("boardNo", boardNo);
+        paramMap.put("boardDelFl", boardDelFl);
+        
+        int result = adminService.updateSupportStatus(paramMap);
+        
+        String message = "";
+        
+        if (result > 0) {
+            if ("Y".equals(boardDelFl)) { // 게시글 상태가 없는 상태
+                message = "게시글이 삭제되었습니다.";
+            
+            } else { // 게시글이 있는 상태
+            	message = "게시글이 복구되었습니다.";
+            }
+            
+        } else {
+        	message = "게시글 변경 실패";
+        }
+    	
+        ra.addFlashAttribute("message", message);
+    	
+    	return "redirect:/admin/support";
+    }
    
     
     
