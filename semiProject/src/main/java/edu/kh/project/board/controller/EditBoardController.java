@@ -106,7 +106,14 @@ public class EditBoardController {
 	public String insertForm(@PathVariable("boardCode") int boardCode,
 			@SessionAttribute(value = "loginMember", required = false) Member loginMember, RedirectAttributes ra,
 			Model model) {
+		String message = null;
 
+		if(boardCode == 4 && loginMember.getAuthority() == 1) {
+			message = "공지사항은 관리자만이 작성할 수 있습니다.";
+			ra.addFlashAttribute("message", message);
+			
+			return "redirect:/";
+		}
 		if (loginMember == null) {
 			ra.addFlashAttribute("message", "로그인 후 이용해주세요");
 			return "redirect:/member/login";
@@ -128,14 +135,15 @@ public class EditBoardController {
 	@PostMapping("{boardCode:[0-9]+}/insert")
 	public String boardInsert(@PathVariable("boardCode") int boardCode, @RequestParam Map<String, Object> paramMap,
 			@SessionAttribute(value = "loginMember", required = false) Member loginMember, RedirectAttributes ra) {
+		String message = null;
 
+		
 		paramMap.put("content", paramMap.get("editordata"));
 		paramMap.put("memberNo", loginMember.getMemberNo());
 		String boardLock = (paramMap.get("checkbox") != null && paramMap.get("checkbox").equals("on")) ? "Y" : "N";
 		paramMap.put("boardLock", boardLock);
 
 		int result = service.boardInsert(paramMap);
-		String message = null;
 
 		if (result > 0) {
 			message = "게시글이 등록되었습니다.";
