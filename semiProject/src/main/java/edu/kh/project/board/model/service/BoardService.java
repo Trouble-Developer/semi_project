@@ -29,4 +29,6 @@ public interface BoardService {
 	BoardReport getReport(Map<String, Object> report);
 
 	int updateReadCount(int boardNo);
+
+	int checkBoardPw(Board board);
 }

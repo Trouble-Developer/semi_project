@@ -132,7 +132,7 @@ public class BoardController {
 					long secondsUntilNextDay = Duration.between(now, nextDayMidnight).getSeconds();
 
 					c.setMaxAge((int) secondsUntilNextDay);
-					
+
 					resp.addCookie(c);
 					selectedBoard.setReadCount(result);
 				}
@@ -146,7 +146,7 @@ public class BoardController {
 			if (board.getBoardCode() == 4) {
 				selectedBoard.setCommentList(new java.util.ArrayList<>());
 			}
-			
+
 			model.addAttribute("prevBoard", prevBoard);
 			model.addAttribute("nextBoard", nextBoard);
 			model.addAttribute("boardInfo", selectedBoard);
@@ -223,6 +223,20 @@ public class BoardController {
 		}
 
 		return result;
+	}
+
+	@ResponseBody
+	@PostMapping("checkPw")
+	public int checkBoardPw(@RequestBody Map<String, Object> map) {
+		Board board = new Board();
+		int boardNo = Integer.parseInt(String.valueOf(map.get("boardNo")));
+		int boardCode = Integer.parseInt(String.valueOf(map.get("boardCode")));
+		String boardPw = (String) map.get("boardPw");
+
+		board.setBoardNo(boardNo);
+		board.setBoardCode(boardCode);
+		board.setBoardPw(boardPw);
+		return service.checkBoardPw(board);
 	}
 
 }

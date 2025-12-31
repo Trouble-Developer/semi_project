@@ -132,7 +132,8 @@
                       th:text="${boardCode == 5 and #strings.equals(freeBoard.boardLock, 'Y') and (session.loginMember == null or (session.loginMember?.memberNo != freeBoard.memberNo and session.loginMember.authority != 2))} ? '🔒 비밀글입니다' : *{boardTitle}"
                       class="board-link"
                       th:data-lock="*{boardLock}"
-                      th:data-writer="${memberNo == session.loginMember?.memberNo}"
+                      th:data-writer="${freeBoard.memberNo == session.loginMember?.memberNo}"
+                      th:data-board-no="*{boardNo}"
                     >
                       게시판 제목
                     </a>
