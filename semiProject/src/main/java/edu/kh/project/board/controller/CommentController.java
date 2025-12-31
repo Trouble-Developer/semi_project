@@ -72,21 +72,6 @@ public class CommentController {
     /**
      * 댓글 수정 (AJAX)
      * 
-     * <p><b>요청 URL:</b> PUT /comment</p>
-     * <p><b>요청 본문:</b> 수정할 댓글 정보 (commentNo, commentContent)</p>
-     * 
-     * <pre>
-     * [요청 예시]
-     * PUT /comment
-     * Content-Type: application/json
-     * Body: {
-     *   "commentNo": 123,
-     *   "commentContent": "수정된 댓글 내용"
-     * }
-     * 
-     * [응답]
-     * 1 (성공) 또는 0 (실패)
-     * </pre>
      * 
      * @param comment : 수정할 댓글 정보 (commentNo, commentContent 필수)
      * @return result : 수정된 행의 수 (1: 성공, 0: 실패)
