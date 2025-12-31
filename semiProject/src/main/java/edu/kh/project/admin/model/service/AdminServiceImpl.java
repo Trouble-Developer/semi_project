@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import edu.kh.project.admin.dto.AdminMember;
+import edu.kh.project.admin.dto.AdminNotice;
 import edu.kh.project.admin.dto.AdminSupport;
 import edu.kh.project.admin.model.mapper.AdminMapper;
 import edu.kh.project.board.model.dto.Board;
@@ -59,7 +60,7 @@ public class AdminServiceImpl implements AdminService{
         paramMap.put("limit", pagination.getLimit());
 
         // 4. 공지사항 목록 조회
-        List<Board> freeBoardList =
+        List<AdminNotice> freeBoardList =
                 mapper.selectNoticeList(paramMap);
 
         // 5. Controller로 반환할 Map 구성
@@ -70,11 +71,13 @@ public class AdminServiceImpl implements AdminService{
         return resultMap;
     }
     
-    // 공지사항 삭제
+    // 공지사항 삭제/복구
     @Override
-    public int deleteNotice(int boardNo) {
-    	return mapper.deleteNotice(boardNo);
+    public int updateNoticeStatus(Map<String, Object> paramMap) {
+    	return mapper.updateNoticeStatus(paramMap);
     }
+    
+    
     
     // 고객지원 게시글 목록 조회
     @Override
