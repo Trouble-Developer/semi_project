@@ -46,20 +46,20 @@
 /* textarea 포커스 시 스타일 */
 .comment-write-area > textarea:focus {
     outline: none;              /* 기본 아웃라인 제거 */
-    border-color: #455ba8;      /* 테두리 색상 변경 */
+    border-color: #FFB347;      /* 테두리 색상 변경 */
     box-shadow: 0 0 5px rgba(69, 91, 168, 0.3);  /* 그림자 효과 */
 }
 
 /**
  * 댓글 등록 버튼
- * - KH학원 메인 컬러(#455ba8) 적용
+ * - 메인 페이지와 비슷한 색깔적용
  */
 .comment-write-area > button {
     flex-basis: 7%;             /* 너비 비율 */
     height: 85px;               /* 높이 고정 */
     font-weight: bold;          /* 글자 굵게 */
     border: 0;                  /* 테두리 없음 */
-    background-color: #455ba8;  /* KH학원 메인 컬러 */
+    background-color: #ffb347;  /* 메인 컬러 */
     color: white;               /* 글자색 흰색 */
     cursor: pointer;            /* 마우스 포인터 */
     border-radius: 5px;         /* 모서리 둥글게 */
@@ -68,7 +68,7 @@
 
 /* 등록 버튼 호버 효과 */
 .comment-write-area > button:hover {
-    background-color: #364a8c;  /* 진한 색상으로 변경 */
+    background-color: #FF9E2C;  /* 진한 색상으로 변경 */
 }
 
 
@@ -187,8 +187,8 @@
     height: 30px;               /* 버튼 높이 */
     margin-left: 10px;          /* 버튼 간 간격 */
     font-weight: bold;          /* 글자 굵게 */
-    border: 2px solid #455ba8;  /* 테두리 */
-    background-color: #455ba8;  /* 배경색 */
+    border: 2px solid #FFB347;  /* 테두리 */
+    background-color: #FFB347;  /* 배경색 */
     color: white;               /* 글자색 */
     cursor: pointer;            /* 마우스 포인터 */
     border-radius: 3px;         /* 모서리 둥글게 */
