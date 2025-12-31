@@ -30,10 +30,17 @@
 			<nav id="nav">
 				<ul id="navigation">
 					<th:block th:each="boardType : ${application.boardTypeList}">
-						<!-- 일반 게시판 -->
-						<li class="navList" th:if="${boardType.boardCode != 6}"><a
-							th:href="@{/board/{boardCode}(boardCode=${boardType.boardCode})}"
-							th:text="${boardType.boardName}"> </a></li>
+
+					<!-- 정보게시판 -->
+					<li class="navList" th:if="${boardType.boardCode == 2}">
+						<a th:href="@{/info/list}" th:text="${boardType.boardName}"></a>
+					</li>
+
+					<!-- 일반 게시판 -->
+					<li class="navList" th:if="${boardType.boardCode != 2 and boardType.boardCode != 6}">
+						<a th:href="@{/board/{boardCode}(boardCode=${boardType.boardCode})}"
+						th:text="${boardType.boardName}"></a>
+					</li>
 
 						<!-- 관리자 게시판 -->
 						<li class="navList"
