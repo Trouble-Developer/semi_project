@@ -123,46 +123,64 @@
     <th:block th:replace="~{common/footer}"></th:block>
     <script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-element-bundle.min.js"></script>
 
-    <script>
-      const swiperEl = document.querySelector("swiper-container");
-      const swiper = swiperEl.swiper;
+    <script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-element-bundle.min.js"></script>
 
-      var appendNumber = 4;
-      var prependNumber = 1;
-      document
-        .querySelector(".prepend-2-slides")
-        .addEventListener("click", function (e) {
-          e.preventDefault();
-          swiper.prependSlide([
-            "<swiper-slide>Slide " + --prependNumber + "</swiper-slide>",
-            "<swiper-slide>Slide " + --prependNumber + "</swiper-slide>",
-          ]);
-        });
-      document
-        .querySelector(".prepend-slide")
-        .addEventListener("click", function (e) {
-          e.preventDefault();
-          swiper.prependSlide(
-            "<swiper-slide>Slide " + --prependNumber + "</swiper-slide>"
-          );
-        });
-      document
-        .querySelector(".append-slide")
-        .addEventListener("click", function (e) {
-          e.preventDefault();
-          swiper.appendSlide(
-            "<swiper-slide>Slide " + ++appendNumber + "</swiper-slide>"
-          );
-        });
-      document
-        .querySelector(".append-2-slides")
-        .addEventListener("click", function (e) {
-          e.preventDefault();
-          swiper.appendSlide([
-            "<swiper-slide>Slide " + ++appendNumber + "</swiper-slide>",
-            "<swiper-slide>Slide " + ++appendNumber + "</swiper-slide>",
-          ]);
-        });
+    <script>
+      // 1. 스와이퍼 컨테이너가 있는지 먼저 확인
+      const swiperEl = document.querySelector("swiper-container");
+
+      // swiperEl이 존재할 때만 내부 로직 실행
+      if (swiperEl) {
+        // 2. 스와이퍼 객체 참조 (객체가 생성될 때까지 잠시 기다려야 할 수도 있음)
+        const swiper = swiperEl.swiper;
+
+        let appendNumber = 4;
+        let prependNumber = 1;
+
+        // 3. 각 버튼 존재 여부를 확인하며 이벤트 리스너 등록
+
+        // 두 개 앞에 추가 버튼
+        document
+          .querySelector(".prepend-2-slides")
+          ?.addEventListener("click", function (e) {
+            e.preventDefault();
+            swiper.prependSlide([
+              "<swiper-slide>Slide " + --prependNumber + "</swiper-slide>",
+              "<swiper-slide>Slide " + --prependNumber + "</swiper-slide>",
+            ]);
+          });
+
+        // 한 개 앞에 추가 버튼
+        document
+          .querySelector(".prepend-slide")
+          ?.addEventListener("click", function (e) {
+            e.preventDefault();
+            swiper.prependSlide(
+              "<swiper-slide>Slide " + --prependNumber + "</swiper-slide>"
+            );
+          });
+
+        // 한 개 뒤에 추가 버튼
+        document
+          .querySelector(".append-slide")
+          ?.addEventListener("click", function (e) {
+            e.preventDefault();
+            swiper.appendSlide(
+              "<swiper-slide>Slide " + ++appendNumber + "</swiper-slide>"
+            );
+          });
+
+        // 두 개 뒤에 추가 버튼
+        document
+          .querySelector(".append-2-slides")
+          ?.addEventListener("click", function (e) {
+            e.preventDefault();
+            swiper.appendSlide([
+              "<swiper-slide>Slide " + ++appendNumber + "</swiper-slide>",
+              "<swiper-slide>Slide " + ++appendNumber + "</swiper-slide>",
+            ]);
+          });
+      }
     </script>
   </body>
 </html>

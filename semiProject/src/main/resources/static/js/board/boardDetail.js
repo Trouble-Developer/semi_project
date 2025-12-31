@@ -99,11 +99,12 @@ if (scrapBtn) {
 }
 
 const reportBtn = document.querySelector("#report-btn");
+if (reportBtn !== null) {
+  reportBtn.addEventListener("click", () => {
+    const url = location.pathname + "/report";
+    // /board/2/1997?cp=1
 
-reportBtn.addEventListener("click", () => {
-  const url = location.pathname + "/report";
-  // /board/2/1997?cp=1
-
-  const queryString = location.search; // ? cp=1
-  location.href = url + queryString;
-});
+    const queryString = location.search; // ? cp=1
+    location.href = url + queryString;
+  });
+}
