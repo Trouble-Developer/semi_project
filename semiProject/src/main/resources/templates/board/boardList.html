@@ -67,10 +67,11 @@
                   th:href="@{/board/{boardCode}/{boardNo}(boardCode=${boardCode}, boardNo=*{boardNo}, cp=${pagination.currentPage})}"
                 >
                   <img
-                    th:src="${board.thumbnailPath != null 
-           ? board.thumbnailPath
-           : '/images/volunteer.jpeg'}"
+                    th:src="${board.imgRename != null 
+                                 ? board.imgPath + board.imgRename 
+                                 : '/images/volunteer.jpeg'}"
                     id="content-img-info"
+                    alt="썸네일"
                   />
                 </a>
               </div>
@@ -132,7 +133,8 @@
                       th:text="${boardCode == 5 and #strings.equals(freeBoard.boardLock, 'Y') and (session.loginMember == null or (session.loginMember?.memberNo != freeBoard.memberNo and session.loginMember.authority != 2))} ? '🔒 비밀글입니다' : *{boardTitle}"
                       class="board-link"
                       th:data-lock="*{boardLock}"
-                      th:data-writer="${memberNo == session.loginMember?.memberNo}"
+                      th:data-writer="${freeBoard.memberNo == session.loginMember?.memberNo}"
+                      th:data-board-no="*{boardNo}"
                     >
                       게시판 제목
                     </a>
@@ -289,7 +291,9 @@
       const loginMemberNo =
         /*[[${session.loginMember?.memberNo}]]*/ "로그인한 회원 번호";
       const boardList = /*[[${freeBoardList}]]*/ "보드 정보";
-      console.log(`보드 리스트 : ${JSON.stringify(boardList)}`);
+      const loginMemberAuthority =
+        /*[[${session.loginMember?.authority}]]*/
+        console.log(`보드 리스트 : ${JSON.stringify(boardList)}`);
       // {"boardNo":2067,"boardTitle":"1234","boardContent":null,"boardWriteDate":"15분 전","boardUpdateDate":null,"readCount":1,"boardDelFl":"\u0000","boardPw":null,"boardLock":"Y","boardCode":0,"memberNo":0,"imgPath":null,"imgRename":null,"memberNickname":"제누요","likeCount":0,"likeCheck":0,"scrapCheck":0,"thumbnailPath":null}
     </script>
   </body>
