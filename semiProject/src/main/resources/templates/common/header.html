@@ -30,7 +30,6 @@
 			<nav id="nav">
 				<ul id="navigation">
 					<th:block th:each="boardType : ${application.boardTypeList}">
-
 						<!-- 일반 게시판 -->
 						<li class="navList" th:if="${boardType.boardCode != 6}"><a
 							th:href="@{/board/{boardCode}(boardCode=${boardType.boardCode})}"
