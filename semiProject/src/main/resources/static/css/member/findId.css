@@ -78,39 +78,6 @@ input:focus {
 }
 
 
-/* ===== 5. 주민번호 입력 레이아웃 ===== */
-
-/* 주민번호는 앞자리 - 뒷자리 구조 */
-.rrn-box {
-    display: flex;          /* flexbox 사용 */
-    align-items: center;    /* 세로 가운데 정렬 */
-    gap: 10px;              /* 각 요소 사이 간격 */
-}
-
-/* 주민번호 입력칸은 가운데 정렬 */
-.rrn-box input {
-    flex: 1;            /* 비율 1 */
-    text-align: center; /* 텍스트 가운데 정렬 */
-}
-
-/* 주민번호 뒷자리는 좁게 (1자리만 입력하니까) */
-.rrn-box input:last-of-type {
-    flex: 0.2;  /* 비율 0.2 (앞자리보다 훨씬 좁음) */
-}
-
-/* 대시(-) 기호 */
-.dash {
-    font-weight: bold;  /* 굵게 */
-    font-size: 20px;    /* 크게 */
-}
-
-/* 성별 기호 (⚥) */
-.gender-symbol {
-    font-size: 20px;    /* 크게 */
-    color: #999;        /* 연한 회색 */
-    margin-left: 5px;   /* 왼쪽 여백 */
-}
-
 
 /* ===== 6. 버튼 스타일 ===== */
 
