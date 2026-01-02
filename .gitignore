@@ -1,4 +1,7 @@
 /.metadata/
 
 config.properties
+.DS_Store.metadata/
 .DS_Store
+Thumbs.db
+.recommenders/
