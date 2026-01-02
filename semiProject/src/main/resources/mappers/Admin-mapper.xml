@@ -224,5 +224,106 @@
 
 
 
+  <!-- =========================================================
+       신고글 전체 개수 조회
+       ========================================================= -->
+  <select id="getReportCount"
+        parameterType="map"
+        resultType="int">
+
+  SELECT COUNT(*)
+  FROM (
+    -- 게시글 신고
+    SELECT BR.REPORT_NO
+    FROM BOARD_REPORT BR
+    JOIN BOARD B
+      ON BR.BOARD_NO = B.BOARD_NO
+
+    UNION ALL
+
+    -- 댓글 신고
+    SELECT CR.REPORT_NO
+    FROM COMMENT_REPORT CR
+    JOIN "COMMENT" C
+      ON CR.COMMENT_NO = C.COMMENT_NO
+    JOIN BOARD B
+      ON C.BOARD_NO = B.BOARD_NO
+  ) R  <!-- ★ Oracle 필수 alias -->
+
+</select>
+
+  <!-- =========================================================
+       신고글 목록 조회
+       ========================================================= -->
+<select id="selectReportList"
+        parameterType="map"
+        resultType="edu.kh.project.admin.dto.Report">
+
+  SELECT
+    reportNo,
+    reportType,
+    reportReason,
+    reportDate,
+    processYn,
+    boardNo,
+    boardTitle,
+    reporterNickname
+  FROM (
+    SELECT
+      ROW_NUMBER() OVER (ORDER BY reportDate DESC) AS RN,
+      R.*
+    FROM (
+
+      /* ===============================
+         게시글 신고
+         =============================== */
+      SELECT
+        BR.REPORT_NO           AS reportNo,
+        'BOARD'                AS reportType,
+        BR.REPORT_REASON       AS reportReason,
+        BR.REPORT_DATE         AS reportDate,
+        BR.PROCESS_YN          AS processYn,
+        B.BOARD_NO             AS boardNo,
+        B.BOARD_TITLE          AS boardTitle,
+        M.MEMBER_NICKNAME      AS reporterNickname
+      FROM BOARD_REPORT BR
+      JOIN BOARD B
+        ON BR.BOARD_NO = B.BOARD_NO
+      JOIN MEMBER M
+        ON BR.MEMBER_NO = M.MEMBER_NO
+
+      UNION ALL
+
+      /* ===============================
+         댓글 신고
+         =============================== */
+      SELECT
+        CR.REPORT_NO           AS reportNo,
+        'COMMENT'              AS reportType,
+        CR.REPORT_REASON       AS reportReason,
+        CR.REPORT_DATE         AS reportDate,
+        CR.PROCESS_YN          AS processYn,
+        B.BOARD_NO             AS boardNo,
+        B.BOARD_TITLE          AS boardTitle,
+        M.MEMBER_NICKNAME      AS reporterNickname
+      FROM COMMENT_REPORT CR
+      JOIN "COMMENT" C
+        ON CR.COMMENT_NO = C.COMMENT_NO
+      JOIN BOARD B
+        ON C.BOARD_NO = B.BOARD_NO
+      JOIN MEMBER M
+        ON CR.MEMBER_NO = M.MEMBER_NO
+
+    ) R
+  )
+  WHERE RN BETWEEN #{offset} + 1 AND #{offset} + #{limit}
+
+</select>
+
+
+
+
+
+
 
 </mapper>

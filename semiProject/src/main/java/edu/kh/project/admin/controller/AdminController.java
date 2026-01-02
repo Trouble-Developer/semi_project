@@ -46,7 +46,7 @@ public class AdminController {
     	return true;
     }
     
-    // 회원 관리 페이지
+ // 회원 관리 페이지
     @GetMapping("member")
     public String memberManage(
             @RequestParam(value = "cp", defaultValue = "1") int cp,
@@ -56,35 +56,75 @@ public class AdminController {
             HttpSession session,
             RedirectAttributes ra) {
 
-    	if (!isAdmin(session, ra)) {
+        // 관리자 체크
+        if (!isAdmin(session, ra)) {
             return "redirect:/";
         }
-    	
-        // 검색 파라미터 Map (mapper가 매개변수를 하나밖에 못 받아서)
-        Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("key", key);
-        paramMap.put("query", query);
 
-        // 회원 수 조회
+        // 1️. 검색 여부 판단
+        boolean isSearch = key != null && query != null && !query.trim().isEmpty();
+
+        // 검색 파라미터 Map
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("key", isSearch ? key : null);
+        paramMap.put("query", isSearch ? query : null);
+
+        // 2️. 회원번호 검색 + 문자열 방어
+        if (isSearch && "memberNo".equals(key)) {
+
+            boolean isNumber = true;
+
+            for (int i = 0; i < query.length(); i++) {
+                if (!Character.isDigit(query.charAt(i))) {
+                    isNumber = false;
+                    break;
+                }
+            }
+
+            // 숫자가 아니면 → 결과 없음 처리
+            if (!isNumber) {
+
+                model.addAttribute("content", "admin/memberManage");
+                model.addAttribute("pageTitle", "회원 관리");
+                model.addAttribute("menu", "member");
+                model.addAttribute("memberList", List.of());
+                model.addAttribute("pagination", null);
+
+                return "admin/adminLayout";
+            }
+        }
+
+        // 3️. 회원 수 조회
         int memberCount = adminService.getMemberCount(paramMap);
 
-        // 페이지네이션
+        // 4️. 검색 결과 없는 경우
+        if (memberCount == 0) {
+
+            model.addAttribute("content", "admin/memberManage");
+            model.addAttribute("pageTitle", "회원 관리");
+            model.addAttribute("menu", "member");
+            model.addAttribute("memberList", List.of());
+            model.addAttribute("pagination", null);
+
+            return "admin/adminLayout";
+        }
+
+        // 5️. 페이지네이션 생성
         Pagination pagination = new Pagination(cp, memberCount);
 
         paramMap.put("offset",
                 (pagination.getCurrentPage() - 1) * pagination.getLimit());
         paramMap.put("limit", pagination.getLimit());
 
-        // 회원 목록 조회
+        // 6️. 회원 목록 조회
         List<AdminMember> memberList =
                 adminService.selectMemberList(paramMap);
 
-        // layout에 전달할 값
         model.addAttribute("content", "admin/memberManage");
         model.addAttribute("pageTitle", "회원 관리");
         model.addAttribute("menu", "member");
-        model.addAttribute("pagination", pagination);
         model.addAttribute("memberList", memberList);
+        model.addAttribute("pagination", pagination);
 
         return "admin/adminLayout";
     }
@@ -269,7 +309,49 @@ public class AdminController {
     }
    
     
-    
+    // 신고글 목록
+    @GetMapping("report")
+    public String reportManage(
+            @RequestParam(value = "cp", defaultValue = "1") int cp,
+            @RequestParam(value = "reportType", defaultValue = "all") String reportType,
+            @RequestParam(value = "key", required = false) String key,
+            @RequestParam(value = "query", required = false) String query,
+            Model model,
+            HttpSession session,
+            RedirectAttributes ra) {
+
+        // 관리자 외 접근 제한
+        if (!isAdmin(session, ra)) {
+            return "redirect:/";
+        }
+
+        // Service로 전달할 파라미터 Map 구성
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("cp", cp);
+        paramMap.put("reportType", reportType);
+        paramMap.put("key", key);
+        paramMap.put("query", query);
+
+        // 신고글 목록 조회
+        Map<String, Object> resultMap
+            = adminService.selectReportList(paramMap);
+
+        model.addAttribute("reportList", resultMap.get("reportList"));
+        model.addAttribute("pagination", resultMap.get("pagination"));
+
+        // 검색 / 분류 상태 유지
+        model.addAttribute("reportType", reportType);
+        model.addAttribute("key", key);
+        model.addAttribute("query", query);
+
+        // adminLayout 전달 값
+        model.addAttribute("pageTitle", "신고글 관리");
+        model.addAttribute("menu", "report");
+        
+        model.addAttribute("content", "admin/reportManage");
+
+        return "admin/adminLayout";
+    }
     
     
     

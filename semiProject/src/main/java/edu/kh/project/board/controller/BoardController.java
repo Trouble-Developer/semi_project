@@ -152,6 +152,14 @@ public class BoardController {
 			model.addAttribute("boardInfo", selectedBoard);
 			model.addAttribute("boardCode", board.getBoardCode());
 			model.addAttribute("cp", cp);
+			
+			// 관리자 여부 판단 - 현동근
+			boolean isAdminView =
+			        loginMember != null && loginMember.getAuthority() == 2;
+
+			// View에 관리자 관점 여부 전달 - 현동근
+			model.addAttribute("isAdminView", isAdminView);
+			
 			log.debug("memberNo = " + selectedBoard.getMemberNo());
 
 			log.debug("board = " + selectedBoard);

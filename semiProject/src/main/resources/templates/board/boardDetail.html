@@ -107,10 +107,22 @@
           </th:block>
         </div>
       </div>
-      <div id="list-btn">
-        <a th:href="@{/board/{boardCode}(boardCode = ${boardCode}, cp=${cp})}"
-          >목록</a
-        >
+      <div id="list-btn"> <!-- 목록 버튼 클릭 시 관리자면 해당 관리자 게시판으로, 일반 사용자면 해당 게시판으로 - 현동근 -->
+        <!-- 관리자 관점일 때 -->
+        <a th:if="${isAdminView}"
+          th:href="
+            ${boardCode == 4} ? '/admin/notice' :
+            (${boardCode == 5} ? '/admin/support' :
+            (${boardCode == 6} ? '/admin/report' : '/'))">
+            목록
+        </a>
+
+        <!-- 일반 사용자 관점일 때 -->
+        <a th:if="${!isAdminView}"
+          th:href="@{/board/{boardCode}(boardCode=${boardCode}, cp=${cp})}">
+          목록
+        </a>
+
       </div>
 
       <!-- ===== 댓글 영역 ===== -->
