@@ -11,7 +11,7 @@
 		SELECT COUNT(*)
 		FROM BOARD
 		WHERE BOARD_CODE =
-		#{boardCode}
+		#{boardCode} AND BOARD_DEL_FL = 'N'
 	</select>
 	<select id="getBoardList">
 		SELECT

@@ -17,9 +17,11 @@ import edu.kh.project.board.model.mapper.BoardMapper;
 // ⭐⭐⭐ 추가 1: import 2줄 추가 ⭐⭐⭐
 import edu.kh.project.board.model.dto.Comment;
 import edu.kh.project.board.model.mapper.CommentMapper;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
+@Slf4j
 public class BoardServiceImpl implements BoardService {
 
 	@Autowired
@@ -42,48 +44,54 @@ public class BoardServiceImpl implements BoardService {
 	/**
 	 * dev. 안재훈 자유게시판 list 가져오기
 	 */
+	/**
+	 * 게시판 목록 조회
+	 */
 	@Override
 	public Map<String, Object> getBoardList(int boardCode, int cp) {
+		// 1. 해당 게시판의 전체 게시글 수 조회
 		int listCount = mapper.getBoardListCount(boardCode);
 
-		Pagination pagination = new Pagination(cp, listCount);
+		// 2. 게시판 타입별 limit 먼저 결정
+		// 봉사후기(3번)는 8개, 나머지는 10개
+		int limit = (boardCode == 3) ? 8 : 10;
 
-		int limit = 0;
+		// 3. 결정된 limit를 생성자에 직접 전달하여 Pagination 객체 생성
+		// 이렇게 해야 내부 calculate() 메서드가 정확한 maxPage를 산출합니다.
+		Pagination pagination = new Pagination(cp, listCount, limit, 10);
 
-		// 봉사후기일 때 8개로
-		if (boardCode == 3) {
-			limit = 8;
-		} else {
-			limit = pagination.getLimit();
-		}
+		
+		// 4. MyBatis RowBounds 설정 (DTO와 동일한 limit 사용)
 		int offset = (cp - 1) * limit;
-
 		RowBounds rowBounds = new RowBounds(offset, limit);
 
 		List<Board> boardList = mapper.getBoardList(boardCode, rowBounds);
 
 		Map<String, Object> map = new HashMap<>();
-
 		map.put("pagination", pagination);
 		map.put("freeBoardList", boardList);
+
+		log.debug("목록 개수(listCount): " + listCount);
+		log.debug("페이지당 게시글 수(limit): " + limit);
+		log.debug("계산된 마지막 페이지(maxPage): " + pagination.getMaxPage());
 		return map;
 	}
 
+	/**
+	 * 게시판 검색 목록 조회
+	 */
 	@Override
 	public Map<String, Object> searchBoardList(Map<String, Object> paramMap, int cp) {
 		int listCount = mapper.getSearchCount(paramMap);
 
-		Pagination pagination = new Pagination(cp, listCount);
+		// 검색 시에도 boardCode를 확인하여 동일한 limit 적용
+		int boardCode = Integer.parseInt(String.valueOf(paramMap.get("boardCode")));
+		int limit = (boardCode == 3) ? 8 : 10;
 
-		// 봉사후기일 때 8개로
-		int limit = 0;
-		if ((int) paramMap.get("boardCode") == 3) {
-			limit = 8;
-		} else {
-			limit = pagination.getLimit();
-		}
+		// 생성 시점에 정확한 limit 주입
+		Pagination pagination = new Pagination(cp, listCount, limit, 10);
+
 		int offset = (cp - 1) * limit;
-
 		RowBounds rowBounds = new RowBounds(offset, limit);
 
 		List<Board> freeBoardList = mapper.getFreeList(paramMap, rowBounds);
@@ -177,7 +185,7 @@ public class BoardServiceImpl implements BoardService {
 
 		if (bcrypt.matches(board.getBoardPw(), selectedBoard.getBoardPw())) {
 			return 1;
-		} 
+		}
 		return 0;
 	}
 }
