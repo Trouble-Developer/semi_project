@@ -4,7 +4,6 @@ const boardTypeSelect = document.querySelector("#board-type");
 
 form.addEventListener("submit", (e) => {
   const boardTitle = document.querySelector("#board-title");
-  const summernote = document.querySelector("#summernote");
   const secretCheck = document.querySelector("#checkbox");
   const boardPw = document.querySelector("#board-pw");
 
@@ -29,7 +28,9 @@ form.addEventListener("submit", (e) => {
   }
 });
 function toggleSecret() {
-  if (boardTypeSelect.value === "5") {
+  // boardCode는 타임리프 인라인 스크립트에서 전역 변수로 이미 선언되어 있어야 합니다.
+  if (boardCode == 5) {
+    // 고객지원 게시판인 경우
     secretWrapper.style.display = "block";
   } else {
     secretWrapper.style.display = "none";

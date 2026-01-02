@@ -12,4 +12,10 @@ public interface MainMapper {
 
 	List<Board> getVolunteerList(int boardNo);
 
+	List<Board> getNoticeBoardList();
+
+	List<Board> getFreeBoardList();
+
+	Board getReviewBestUser();
+
 }

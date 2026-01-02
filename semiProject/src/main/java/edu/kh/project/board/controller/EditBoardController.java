@@ -122,7 +122,6 @@ public class EditBoardController {
 		model.addAttribute("boardCode", boardCode);
 		return "board/boardWrite";
 	}
-
 	/**
 	 * 글 등록
 	 * 
@@ -137,6 +136,7 @@ public class EditBoardController {
 			@SessionAttribute(value = "loginMember", required = false) Member loginMember, RedirectAttributes ra) {
 		String message = null;
 
+		paramMap.put("boardCode", boardCode);
 		paramMap.put("content", paramMap.get("editordata"));
 		paramMap.put("memberNo", loginMember.getMemberNo());
 		String boardLock = (paramMap.get("checkbox") != null && paramMap.get("checkbox").equals("on")) ? "Y" : "N";

@@ -11,14 +11,15 @@
 }
 #mainLogoImg {
   width: 100%;
+  margin-bottom: 40px;
 }
 #mainContent {
   display: flex;
   justify-content: center;
   width: 1000px;
-  height: 788px;
   gap: 74px;
   flex-wrap: wrap;
+  margin-bottom: 20px;
 }
 #boardContentType {
   background-color: white;
@@ -104,4 +105,130 @@
 }
 #volun-title:hover {
   text-decoration: underline;
+}
+
+/* ------------ */
+/* 3열 그리드 */
+.board-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-bottom: 40px;
+}
+.board-section {
+  background: #fff;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+/* 리스트 스타일 */
+.board-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.board-list li {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+.rank {
+  font-weight: bold;
+  color: #ff8787;
+  margin-right: 10px;
+  width: 20px;
+}
+.board-list a {
+  text-decoration: none;
+  color: #333;
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.info {
+  font-size: 0.85rem;
+  margin-left: 10px;
+}
+.info.hot {
+  color: #ff5252;
+}
+.info.views {
+  color: #868e96;
+}
+
+/* 봉사후기 카드 */
+.review-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.review-card .thumb {
+  height: 80px;
+  border-radius: 8px;
+  background-size: cover;
+  margin-bottom: 5px;
+}
+.review-card p {
+  font-size: 0.9rem;
+  margin: 5px 0;
+  font-weight: bold;
+}
+.review-card span {
+  font-size: 0.75rem;
+  color: #adb5bd;
+}
+
+/* 이달의 봉사왕 */
+.volunteer-king-section {
+  background: linear-gradient(135deg, #fff9db 0%, #fff3bf 100%);
+  border-radius: 20px;
+  padding: 30px;
+  border: 2px solid #fab005;
+}
+.king-card {
+  position: relative;
+}
+.king-badge {
+  position: absolute;
+  top: -45px;
+  left: 20px;
+  background: #fab005;
+  color: #fff;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-weight: bold;
+}
+.king-content {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+.king-profile img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 5px solid #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+.king-info h4 {
+  font-size: 1.5rem;
+  margin: 0 0 10px 0;
+}
+.king-info p {
+  margin: 5px 0;
+  font-size: 1.1rem;
+}
+.king-message {
+  margin-top: 10px;
+  font-style: italic;
+  color: #f08c00;
 }
