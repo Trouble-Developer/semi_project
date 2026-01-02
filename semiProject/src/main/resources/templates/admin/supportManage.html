@@ -1,8 +1,6 @@
 <section class="admin-main">
 
-  <!-- ===============================
-       페이지 제목
-       =============================== -->
+  <!-- 페이지 제목 -->
   <h1 class="admin-page-title">고객지원</h1>
   <hr>
 
@@ -23,13 +21,10 @@
     <tbody>
       <!-- ===============================
            고객지원 게시글 목록
-           supportList : Controller에서 내려준 게시글 목록
            =============================== -->
       <tr th:each="s : ${supportList}">
-        <!-- 게시글 번호 -->
         <td th:text="${s.boardNo}">1</td>
 
-        <!-- 게시글 제목 (상세 페이지 이동) -->
         <td>
           <a th:href="@{/board/5/{boardNo}(boardNo=${s.boardNo}, cp=${pagination.currentPage})}"
              th:text="${s.boardTitle}">
@@ -37,17 +32,10 @@
           </a>
         </td>
 
-        <!-- 작성자 닉네임 -->
         <td th:text="${s.memberNickname}">닉네임</td>
-
-        <!-- 작성일 -->
         <td th:text="${s.boardWriteDate}">2025-12-15</td>
 
-        <!-- ===============================
-             삭제 / 복구 버튼 영역
-             ✔ 하나의 form으로 삭제/복구를 모두 처리
-             ✔ boardDelFl 값을 hidden input으로 넘겨서 상태 토글
-             =============================== -->
+        <!-- 삭제 / 복구 -->
         <td>
           <form th:action="@{/admin/support/updateStatus}"
                 method="post"
@@ -55,22 +43,21 @@
 
             <input type="hidden" name="boardNo" th:value="${s.boardNo}">
 
-            <!-- 현재가 Y(삭제)면 N(복구)로, 현재가 N이면 Y로 -->
-            <input type="hidden" name="boardDelFl"
-                  th:value="${s.boardDelFl == 'Y' ? 'N' : 'Y'}">
+            <!-- 상태 토글 -->
+            <input type="hidden"
+                   name="boardDelFl"
+                   th:value="${s.boardDelFl == 'Y' ? 'N' : 'Y'}">
 
             <button type="submit"
                     class="btn-outline"
                     th:text="${s.boardDelFl == 'Y' ? '복구' : '삭제'}"
-                    th:classappend="${s.boardDelFl == 'Y'} ? ' restore-btn' : ' danger'"> <!-- 삭제는 주황색, 복구는 초록색 css를 받도록 만듬. -->
+                    th:classappend="${s.boardDelFl == 'Y'} ? ' restore-btn' : ' danger'">
             </button>
           </form>
         </td>
       </tr>
 
-      <!-- ===============================
-           게시글이 하나도 없을 경우
-           =============================== -->
+      <!-- 게시글 없음 -->
       <tr th:if="${#lists.isEmpty(supportList)}">
         <td colspan="5">고객지원 게시글이 없습니다.</td>
       </tr>
@@ -80,7 +67,7 @@
   <!-- ===============================
        페이지네이션 (검색 X)
        =============================== -->
-  <div id="page" th:unless="${param.key}">
+  <div id="page" th:if="${pagination != null and param.key == null}">
     <ul>
       <li>
         <a th:href="@{/admin/support(cp=1)}" class="page-btn">&lt;&lt;</a>
@@ -116,38 +103,36 @@
   <!-- ===============================
        페이지네이션 (검색 O)
        =============================== -->
-  <div id="page" th:if="${param.key}">
+  <div id="page" th:if="${pagination != null and param.key != null}">
     <ul>
       <li>
         <a th:href="@{/admin/support(cp=1, key=${param.key}, query=${param.query})}"
-          class="page-btn">&lt;&lt;</a>
+           class="page-btn">&lt;&lt;</a>
       </li>
 
       <li>
         <a th:href="@{/admin/support(cp=${pagination.prevPage}, key=${param.key}, query=${param.query})}"
-          class="page-btn">&lt;</a>
+           class="page-btn">&lt;</a>
       </li>
 
-      <th:block th:each="i : ${#numbers.sequence(
-          pagination.startPage,
-          pagination.endPage)}">
+      <th:block th:each="i : ${#numbers.sequence(pagination.startPage, pagination.endPage)}">
         <li>
           <a th:href="@{/admin/support(cp=${i}, key=${param.key}, query=${param.query})}"
-            th:text="${i}"
-            class="page-btn"
-            th:classappend="${i == pagination.currentPage} ? ' curr-page' : ''">
+             th:text="${i}"
+             class="page-btn"
+             th:classappend="${i == pagination.currentPage} ? ' curr-page' : ''">
           </a>
         </li>
       </th:block>
 
       <li>
         <a th:href="@{/admin/support(cp=${pagination.nextPage}, key=${param.key}, query=${param.query})}"
-          class="page-btn">&gt;</a>
+           class="page-btn">&gt;</a>
       </li>
 
       <li>
         <a th:href="@{/admin/support(cp=${pagination.maxPage}, key=${param.key}, query=${param.query})}"
-          class="page-btn">&gt;&gt;</a>
+           class="page-btn">&gt;&gt;</a>
       </li>
     </ul>
   </div>

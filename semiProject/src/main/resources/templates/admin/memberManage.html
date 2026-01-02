@@ -69,74 +69,40 @@
     </tbody>
   </table>
 
-  <!-- ================= 페이지네이션 (검색 X) ================= -->
-  <div id="page" th:unless="${param.key}">
-    <ul>
+<!-- ================= 페이지네이션 ================= -->
+<div id="page" th:if="${pagination != null}">
+  <ul>
+    <li>
+      <a th:href="@{/admin/member(cp=1, key=${param.key}, query=${param.query})}"
+         class="page-btn">&lt;&lt;</a>
+    </li>
+
+    <li>
+      <a th:href="@{/admin/member(cp=${pagination.prevPage}, key=${param.key}, query=${param.query})}"
+         class="page-btn">&lt;</a>
+    </li>
+
+    <th:block th:each="i : ${#numbers.sequence(pagination.startPage, pagination.endPage)}">
       <li>
-        <a th:href="@{/admin/member(cp=1)}" class="page-btn">&lt;&lt;</a>
+        <a th:href="@{/admin/member(cp=${i}, key=${param.key}, query=${param.query})}"
+           th:text="${i}"
+           class="page-btn"
+           th:classappend="${i == pagination.currentPage} ? ' curr-page' : ''">
+        </a>
       </li>
+    </th:block>
 
-      <li>
-        <a th:href="@{/admin/member(cp=${pagination.prevPage})}"
-           class="page-btn">&lt;</a>
-      </li>
+    <li>
+      <a th:href="@{/admin/member(cp=${pagination.nextPage}, key=${param.key}, query=${param.query})}"
+         class="page-btn">&gt;</a>
+    </li>
 
-      <th:block th:each="i : ${#numbers.sequence(pagination.startPage, pagination.endPage)}">
-        <li>
-          <a th:href="@{/admin/member(cp=${i})}"
-             th:text="${i}"
-             class="page-btn"
-             th:classappend="${i == pagination.currentPage} ? ' curr-page' : ''">
-          </a>
-        </li>
-      </th:block>
-
-      <li>
-        <a th:href="@{/admin/member(cp=${pagination.nextPage})}"
-           class="page-btn">&gt;</a>
-      </li>
-
-      <li>
-        <a th:href="@{/admin/member(cp=${pagination.maxPage})}"
-           class="page-btn">&gt;&gt;</a>
-      </li>
-    </ul>
-  </div>
-
-  <!-- ================= 페이지네이션 (검색 O) ================= -->
-  <div id="page" th:if="${param.key}" th:object="${pagination}">
-    <ul>
-      <li>
-        <a th:href="@{/admin/member(cp=1, key=${param.key}, query=${param.query})}"
-           class="page-btn">&lt;&lt;</a>
-      </li>
-
-      <li>
-        <a th:href="@{/admin/member(cp=*{prevPage}, key=${param.key}, query=${param.query})}"
-           class="page-btn">&lt;</a>
-      </li>
-
-      <th:block th:each="i : ${#numbers.sequence(pagination.startPage, pagination.endPage)}"> <!-- 여기가 실수 -->
-        <li>
-          <a th:href="@{/admin/member(cp=${i}, key=${param.key}, query=${param.query})}"
-             th:text="${i}"
-             class="page-btn"
-             th:classappend="${i == currentPage} ? ' curr-page' : ''">
-          </a>
-        </li>
-      </th:block>
-
-      <li>
-        <a th:href="@{/admin/member(cp=*{nextPage}, key=${param.key}, query=${param.query})}"
-           class="page-btn">&gt;</a>
-      </li>
-
-      <li>
-        <a th:href="@{/admin/member(cp=*{maxPage}, key=${param.key}, query=${param.query})}"
-           class="page-btn">&gt;&gt;</a>
-      </li>
-    </ul>
-  </div>
+    <li>
+      <a th:href="@{/admin/member(cp=${pagination.maxPage}, key=${param.key}, query=${param.query})}"
+         class="page-btn">&gt;&gt;</a>
+    </li>
+  </ul>
+</div>
 
   <!-- ================= 검색 ================= -->
   <div class="search-area">

@@ -1,5 +1,6 @@
 package edu.kh.project.admin.model.service;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import edu.kh.project.admin.dto.AdminMember;
 import edu.kh.project.admin.dto.AdminNotice;
 import edu.kh.project.admin.dto.AdminSupport;
+import edu.kh.project.admin.dto.Report;
 import edu.kh.project.admin.model.mapper.AdminMapper;
 import edu.kh.project.board.model.dto.Board;
 import edu.kh.project.board.model.dto.Pagination;
@@ -83,9 +85,26 @@ public class AdminServiceImpl implements AdminService{
     @Override
     public Map<String, Object> selectSupportList(int cp, Map<String, Object> paramMap) {
     	
+    	// 검색 파라미터 정리
+        String key = (String) paramMap.get("key");
+        String query = (String) paramMap.get("query");
+
+        if (query == null || query.trim().isEmpty()) {
+            // 검색어가 없으면 검색 조건 자체를 제거
+            paramMap.put("key", null);
+            paramMap.put("query", null);
+        }
+        
         // 1. 고객지원 게시글 전체 개수 조회
         //    (검색 조건이 있다면 함께 적용)
         int supportCount = mapper.getSupportCount(paramMap);
+        
+        if (supportCount == 0) {
+            Map<String, Object> resultMap = new HashMap<>();
+            resultMap.put("supportList", Collections.emptyList());
+            resultMap.put("pagination", null); // 검색 결과 없으면 페이지네이션 없음 
+            return resultMap;
+        }
 
         // 2. 전체 개수를 기반으로 Pagination 객체 생성
         Pagination pagination = new Pagination(cp, supportCount);
@@ -115,6 +134,53 @@ public class AdminServiceImpl implements AdminService{
     public int updateSupportStatus(Map<String, Object> paramMap) {
     	return mapper.updateSupportStatus(paramMap);
     }
+    
+    @Override
+    public Map<String, Object> selectReportList(Map<String, Object> paramMap) {
+
+        int cp = (int) paramMap.get("cp");
+
+        // 검색 파라미터 정리
+        String key = (String) paramMap.get("key");
+        String query = (String) paramMap.get("query");
+
+        if (query == null || query.trim().isEmpty()) {
+            paramMap.put("key", null);
+            paramMap.put("query", null);
+        }
+
+        // 1. 신고글 전체 개수 조회
+        int reportCount = mapper.getReportCount(paramMap);
+
+        if (reportCount == 0) {
+            Map<String, Object> resultMap = new HashMap<>();
+            resultMap.put("reportList", Collections.emptyList());
+            resultMap.put("pagination", null);
+            return resultMap;
+        }
+
+        // 2. 페이지네이션 생성
+        Pagination pagination = new Pagination(cp, reportCount);
+
+        // 3. offset / limit 계산
+        paramMap.put(
+            "offset",
+            (pagination.getCurrentPage() - 1) * pagination.getLimit()
+        );
+        paramMap.put("limit", pagination.getLimit());
+
+        // 4. 신고글 목록 조회
+        List<Report> reportList
+            = mapper.selectReportList(paramMap);
+
+        // 5. 반환 Map 구성
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("reportList", reportList);
+        resultMap.put("pagination", pagination);
+
+        return resultMap;
+    }
+
     
 	
 }
