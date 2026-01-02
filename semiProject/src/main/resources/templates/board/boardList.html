@@ -119,7 +119,12 @@
                 <th th:if="${boardCode != 4 && boardCode != 5}">좋아요</th>
               </tr>
             </thead>
-
+            <th
+              th:if="${freeBoardList == null or #lists.isEmpty(freeBoardList)}"
+              class="empty-message"
+            >
+              게시글이 존재하지 않습니다.
+            </th>
             <tbody id="free-board-body">
               <th:block
                 th:each="freeBoard : ${freeBoardList}"

@@ -1,11 +1,23 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
 /* 기본 스타일 */
 .policy-container {
+  flex: 1;
   max-width: 800px;
   margin: 60px auto;
   padding: 0 20px;
   font-family: "Pretendard", sans-serif;
   line-height: 1.8;
   color: #333;
+  width: 100%;
 }
 
 .policy-container h1 {
