@@ -17,6 +17,7 @@
   padding: 0px 37px;
   display: flex;
   margin: auto;
+  margin-top: 20px;
   flex-direction: column;
 }
 #board-info {

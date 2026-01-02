@@ -58,9 +58,9 @@ public class MyPageController {
         if(memberAddress != null) {
             String[] arr = memberAddress.split(",,");
             
-            model.addAttribute("postcode", arr[0]);
-            model.addAttribute("address", arr[1]);
-            model.addAttribute("detailAddress", arr[2]);
+            if(arr.length > 0) model.addAttribute("postcode", arr[0]);
+            if(arr.length > 1) model.addAttribute("address", arr[1]);
+            if(arr.length > 2) model.addAttribute("detailAddress", arr[2]);
         }
         
         return "mypage/profile";

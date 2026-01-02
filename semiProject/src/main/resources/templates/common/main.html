@@ -80,6 +80,140 @@
     <div id="container">
       <img src="images/mainLogo.jpg" alt="메인로고" id="mainLogoImg" />
       <div>
+        <section class="board-grid">
+          <article class="board-section">
+            <div class="section-header">
+              <h3>
+                자유게시판
+                <i class="fa-solid fa-fire" style="color: #ff4d4d"></i>
+              </h3>
+              <a href="/board/1" class="more-btn">더보기</a>
+            </div>
+            <th:block
+              th:each="freeBoard, iterStatus : ${freeBoardList}"
+              th:object="${freeBoard}"
+            >
+              <ul class="board-list">
+                <li>
+                  <span class="rank" th:text="${iterStatus.count}">순위</span>
+                  <a
+                    th:href="@{/board/{boardCode}/{boardNo}(boardCode=*{boardCode}, boardNo=*{boardNo})}"
+                    th:text="*{boardTitle}"
+                    >자유게시판 제목</a
+                  >
+                  <span class="info hot" th:text="*{likeCount}">좋아요 수</span>
+                </li>
+              </ul>
+            </th:block>
+          </article>
+
+          <article class="board-section">
+            <div class="section-header">
+              <h3>
+                정보게시판
+                <i class="fa-solid fa-chart-line" style="color: #4dabf7"></i>
+              </h3>
+              <a href="/board/2" class="more-btn">더보기</a>
+            </div>
+            <ul class="board-list">
+              <li>
+                <a href="#">[필독] 2025년 봉사 시간 관리법</a>
+                <span class="info views"
+                  ><i class="fa-solid fa-eye"></i> 2.1k</span
+                >
+              </li>
+              <li>
+                <a href="#">우수 봉사자 혜택 총정리</a>
+                <span class="info views"
+                  ><i class="fa-solid fa-eye"></i> 1.8k</span
+                >
+              </li>
+              <li>
+                <a href="#">겨울철 야외 봉사 주의사항</a>
+                <span class="info views"
+                  ><i class="fa-solid fa-eye"></i> 1.5k</span
+                >
+              </li>
+              <li>
+                <a href="#">VMS와 1365 연동하는 방법</a>
+                <span class="info views"
+                  ><i class="fa-solid fa-eye"></i> 1.2k</span
+                >
+              </li>
+            </ul>
+          </article>
+
+          <article class="board-section">
+            <div class="section-header">
+              <h3>
+                공지사항
+                <i class="fa-solid fa-chart-line" style="color: #4dabf7"></i>
+              </h3>
+              <a href="/board/4" class="more-btn">더보기</a>
+            </div>
+            <th:block
+              th:each="noticeBoard : ${noticeBoardList}"
+              th:object="${noticeBoard}"
+            >
+              <ul class="board-list">
+                <li>
+                  <a
+                    th:href="@{/board/{boardCode}/{boardNo}(boardCode=*{boardCode}, boardNo=*{boardNo})}"
+                    th:text="*{boardTitle}"
+                    >공지사항 제목</a
+                  >
+                  <span class="info views" th:text="*{readCount}">조회수</span>
+                </li>
+              </ul>
+            </th:block>
+          </article>
+        </section>
+
+        <section
+          class="volunteer-king-section"
+          th:if="${reviewBestUser != null}"
+        >
+          <div class="king-card">
+            <div class="king-badge">이달의 봉사왕 🏆</div>
+            <div class="king-content">
+              <div class="king-profile">
+                <img
+                  th:src="${reviewBestUser.profileImg != null and reviewBestUser.profileImg != '' 
+                             ? reviewBestUser.profileImg 
+                             : '/images/default_profile.png'}"
+                  alt="봉사왕 프로필"
+                />
+              </div>
+              <div class="king-info">
+                <h4>
+                  봉사마스터
+                  <span th:text="|(${reviewBestUser.memberNickname} 님)|"
+                    >(유저 이름)</span
+                  >
+                </h4>
+                <p>
+                  이번 달 총
+                  <strong th:text="${reviewBestUser.postCount}">0</strong>회의
+                  따뜻한 봉사 후기를 공유해 주셨습니다!
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section
+          class="volunteer-king-section"
+          th:if="${reviewBestUser == null}"
+          style="
+            text-align: center;
+            padding: 30px;
+            background: #f9f9f9;
+            border-radius: 20px;
+          "
+        >
+          <p>아직 이번 달 봉사왕이 없습니다. 첫 주인공이 되어보세요! 🏅</p>
+        </section>
+
         <p id="volunteer-title-text">자원봉사 이야기</p>
         <div id="mainContent">
           <swiper-container
