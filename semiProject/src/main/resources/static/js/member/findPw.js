@@ -201,10 +201,10 @@ const validateNewPw = () => {
         return false;
     }
     
-    const regExp = /^[a-zA-Z0-9!@#$%^&*]{8,20}$/;
+    const regExp = /^[a-zA-Z0-9!@#$%^&*]{6,20}$/;
     
     if(!regExp.test(pwValue)) {
-        newPwMessage.innerText = "영문, 숫자, 특수문자 포함 8~20자로 입력해주세요.";
+        newPwMessage.innerText = "영문, 숫자, 특수문자 포함 6~20자로 입력해주세요.";
         newPwMessage.classList.add("error");
         newPwMessage.classList.remove("confirm");
         pwValidCheck = false;
@@ -329,6 +329,8 @@ function verifyMember() {
         } else {
             console.log("❌ 일치하는 회원 없음");
             alert("입력하신 정보와 일치하는 회원이 없습니다.");
+            // 비밀번호 찾기 초기화면으로 이동
+            location.href = "/member/findPw";
         }
     })
     .catch(err => {
