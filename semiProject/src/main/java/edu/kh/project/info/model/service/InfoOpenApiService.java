@@ -1,93 +1,100 @@
 package edu.kh.project.info.model.service;
 
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
+import org.springframework.web.client.RestTemplate;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.kh.project.info.model.dto.InfoBoard;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @PropertySource("classpath:/config.properties")
 public class InfoOpenApiService {
 
     @Value("${public.api.serviceKey}")
-    private String serviceKey; // OpenAPI 인증키
+    private String serviceKey;
+
+    private final String API_URL = "http://openapi.1365.go.kr/openapi/service/rest/VolunteerPartcptnService/getVltrPartcptnItem";
 
     /**
-     * 1365 공공데이터 API 호출 후 XML 파싱 → InfoBoard 리스트 반환
+     * [기능] 1365 API를 호출하여 최신 봉사 데이터를 수집합니다.
      */
-    public List<InfoBoard> request1365(String keyword) throws Exception {
+    public List<InfoBoard> requestBatch() {
+        log.info(">>> [API] 최신 데이터 수집 시도 (1~5페이지)...");
+        
+        for (int i = 1; i <= 5; i++) {
+            try {
+                String fullUrl = API_URL + "?serviceKey=" + serviceKey 
+                               + "&numOfRows=100" 
+                               + "&pageNo=" + i 
+                               + "&_type=json";
 
-        StringBuilder urlBuilder = new StringBuilder(
-            "http://openapi.1365.go.kr/openapi/service/rest/VolunteerPartcptnService/getVltrSearchWordList"
-        );
-        urlBuilder.append("?serviceKey=").append(URLEncoder.encode(serviceKey, "UTF-8"));
-        urlBuilder.append("&SchCateGu=prgrmSj"); // 봉사분야 기준
-        urlBuilder.append("&keyword=").append(URLEncoder.encode(keyword, "UTF-8"));
-        urlBuilder.append("&numOfRows=20");
-        urlBuilder.append("&pageNo=1");
+                RestTemplate restTemplate = new RestTemplate();
+                String rawResponse = restTemplate.getForObject(fullUrl, String.class);
+                
+                if (rawResponse == null || rawResponse.contains("<response>")) continue;
 
-        URL url = new URL(urlBuilder.toString());
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("GET");
+                ObjectMapper mapper = new ObjectMapper();
+                Map<String, Object> responseMap = mapper.readValue(rawResponse, Map.class);
+                Map<String, Object> responseNode = (Map<String, Object>) responseMap.get("response");
+                Map<String, Object> bodyNode = (Map<String, Object>) responseNode.get("body");
+                
+                Object itemsObj = bodyNode.get("items");
+                if (itemsObj == null || !(itemsObj instanceof Map)) {
+                    log.warn(">>> [알림] {}페이지에 데이터가 없습니다.", i);
+                    continue;
+                }
 
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        Document doc = builder.parse(conn.getInputStream());
+                Map<String, Object> itemsMap = (Map<String, Object>) itemsObj;
+                Object itemObj = itemsMap.get("item");
+                if (itemObj == null) continue;
 
-        NodeList itemList = doc.getElementsByTagName("item");
-        List<InfoBoard> list = new ArrayList<>();
+                List<InfoBoard> boardList = new ArrayList<>();
 
-        for (int i = 0; i < itemList.getLength(); i++) {
-            Element item = (Element) itemList.item(i);
-            InfoBoard board = new InfoBoard();
+                if (itemObj instanceof List) {
+                    for (Map<String, Object> map : (List<Map<String, Object>>) itemObj) {
+                        boardList.add(mapToDto(map));
+                    }
+                } else if (itemObj instanceof Map) {
+                    boardList.add(mapToDto((Map<String, Object>) itemObj));
+                }
+                
+                log.info(">>> [성공] {}페이지에서 {}건 확보!", i, boardList.size());
+                return boardList;
 
-            // OpenAPI 태그 ↔ DTO 필드 매핑
-            board.setSchSido(getText(item, "sidoCd"));
-            board.setSchSign(getText(item, "gugunCd"));
-            board.setProgrmBgnde(getText(item, "progrmBgnde"));
-            board.setProgrmEndde(getText(item, "progrmEndde"));
-            board.setAdultPosblAt(getText(item, "adultPosblAt"));
-            board.setYngBgsPosblAt(getText(item, "yngbgsPosblAt"));
-            board.setActBeginTm(parseInt(getText(item, "actBeginTm")));
-            board.setActEndTm(parseInt(getText(item, "actEndTm")));
-            board.setNoticeBgnDe(getText(item, "noticeBgnde"));
-            board.setNoticeEndDe(getText(item, "noticeEndde"));
-            board.setActPlace(getText(item, "actPlace"));
-            board.setNanmmByNm(getText(item, "nanmmbyNm"));
-            board.setUrl(getText(item, "url"));
-            board.setProgrmNm(getText(item, "progrmNm")); 
-            board.setActRm(getText(item, "actRm")); 
-
-            list.add(board);
+            } catch (Exception e) {
+                log.error(">>> [에러] {}페이지 수집 중 문제: {}", i, e.getMessage());
+            }
         }
-
-        return list;
+        return null;
     }
 
-    private String getText(Element e, String tag) {
-        NodeList nl = e.getElementsByTagName(tag);
-        if (nl.getLength() == 0) return null;
-        return nl.item(0).getTextContent();
-    }
-
-    private int parseInt(String value) {
-        try {
-            return Integer.parseInt(value);
-        } catch (Exception e) {
-            return 0;
-        }
+    /** * [기능] API 응답 데이터를 새 DTO 구조에 맞춰 매핑 
+     * DB 컬럼과 일치하도록 모든 필드를 매칭했습니다.
+     */
+    private InfoBoard mapToDto(Map<String, Object> map) {
+        return InfoBoard.builder()
+                .progrmNm(String.valueOf(map.getOrDefault("progrmSj", "제목없음")))
+                .progrmCn(String.valueOf(map.getOrDefault("progrmCn", "")))
+                .nanmmByNm(String.valueOf(map.getOrDefault("nanmmbyNm", "")))
+                .progrmBgnde(String.valueOf(map.getOrDefault("progrmBgnde", "")))
+                .progrmEndde(String.valueOf(map.getOrDefault("progrmEndde", "")))
+                .noticeBgnDe(String.valueOf(map.getOrDefault("noticeBgnde", ""))) // 추가
+                .noticeEndDe(String.valueOf(map.getOrDefault("noticeEndde", "")))
+                .actBeginTm(String.valueOf(map.getOrDefault("actBeginTm", "0")))  // 추가
+                .actEndTm(String.valueOf(map.getOrDefault("actEndTm", "0")))      // 추가
+                .actPlace(String.valueOf(map.getOrDefault("actPlace", "")))
+                .actRm(String.valueOf(map.getOrDefault("srvcClCode", "")))       // 추가 (분류코드)
+                .schSido(String.valueOf(map.getOrDefault("schSido", "")))        // 추가
+                .schSign(String.valueOf(map.getOrDefault("schSign", "")))        // 추가
+                .adultPosblAt(String.valueOf(map.getOrDefault("adultPosblAt", "N"))) // 추가
+                .yngBgsPosblAt(String.valueOf(map.getOrDefault("yngBgsPosblAt", "N"))) // 추가
+                .url("https://www.1365.go.kr/vols/P9210/partcptn/volsDetail.do?progrmRegistNo=" + map.get("progrmRegistNo"))
+                .build();
     }
 }

@@ -1,17 +1,20 @@
 package edu.kh.project.info.model.service;
 
-import java.util.List;
+import java.util.Map;
 import edu.kh.project.info.model.dto.InfoBoard;
 
 public interface InfoService {
 
-    /** 공공데이터 OpenAPI를 통해 DB 동기화 */
-    int syncFrom1365(String keyword) throws Exception;
+    /** 1365 데이터 수집 (성공 건수 반환)  */
+    int syncFrom1365() throws Exception;
 
-    /** 정보게시판 목록 조회 (검색/필터 적용 가능) */
-    List<InfoBoard> selectInfoList(String schSido, String actRm, String progrmNm,
-                                   String adultPosblAt, String yngBgsPosblAt, String noticeStatus);
+    /** * 봉사 목록 조회 (페이지네이션 적용) 
+     * @param cp : 현재 페이지 번호
+     * @param map : 검색 조건
+     * @return : pagination(계산기) + infoList(10개 게시글) 가 담긴 Map
+     */
+    Map<String, Object> selectInfoList(int cp, Map<String, Object> map);
 
-    /** 게시글 상세 조회 */
+    /** 상세 조회  */
     InfoBoard selectInfoBoard(int infoBoardNo);
 }

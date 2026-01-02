@@ -1,86 +1,74 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper
-  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="edu.kh.project.info.model.mapper.InfoMapper">
 
-    <insert id="mergeInfoBoard">
-        MERGE INTO INFO_BOARD T
-        USING (
-            SELECT
-                #{actPlace} AS ACT_PLACE,
-                #{progrmBgnde} AS PROGRM_BGNDE,
-                #{progrmEndde} AS PROGRM_ENDDE
-            FROM DUAL
-        ) S
-        ON (
-            T.ACT_PLACE = S.ACT_PLACE
-            AND T.PROGRM_BGNDE = S.PROGRM_BGNDE
-            AND T.PROGRM_ENDDE = S.PROGRM_ENDDE
-        )
-        WHEN MATCHED THEN
-        UPDATE SET
-            SCH_SIDO = #{schSido},
-            SCH_SIGN = #{schSign},
-            ADULT_POSBL_AT = #{adultPosblAt},
-            YNG_BGS_POSBL_AT = #{yngBgsPosblAt},
-            ACT_BEGIN_TM = #{actBeginTm},
-            ACT_END_TM = #{actEndTm},
-            NOTICE_BGN_DE = #{noticeBgnDe},
-            NOTICE_END_DE = #{noticeEndDe},
-            NANMM_BY_NM = #{nanmmByNm},
-            URL = #{url},
-            PROGRM_NM = #{progrmNm},
-            ACT_RM = #{actRm}
-        WHEN NOT MATCHED THEN
-        INSERT (
-            INFO_BOARD_NO,
-            SCH_SIDO,
-            SCH_SIGN,
-            PROGRM_BGNDE,
-            PROGRM_ENDDE,
-            ADULT_POSBL_AT,
-            YNG_BGS_POSBL_AT,
-            ACT_BEGIN_TM,
-            ACT_END_TM,
-            NOTICE_BGN_DE,
-            NOTICE_END_DE,
-            ACT_PLACE,
-            NANMM_BY_NM,
-            URL,
-            PROGRM_NM,
-            ACT_RM
-        )
-        VALUES (
-            INFO_BOARD_SEQ.NEXTVAL,
-            #{schSido},
-            #{schSign},
-            #{progrmBgnde},
-            #{progrmEndde},
-            #{adultPosblAt},
-            #{yngBgsPosblAt},
-            #{actBeginTm},
-            #{actEndTm},
-            #{noticeBgnDe},
-            #{noticeEndDe},
-            #{actPlace},
-            #{nanmmByNm},
-            #{url},
-            #{progrmNm},
-            #{actRm}
-        )
-    </insert>
-
-    <select id="selectInfoList" resultType="edu.kh.project.info.model.dto.InfoBoard">
-        SELECT *
-        FROM INFO_BOARD
-        ORDER BY INFO_BOARD_NO DESC
+    <select id="getListCount" resultType="_int">
+        SELECT COUNT(*) FROM INFO_BOARD
+        <where>
+            <if test="progrmNm != null and progrmNm != ''">
+                AND PROGRM_NM LIKE '%' || #{progrmNm} || '%'
+            </if>
+            <if test="actPlace != null and actPlace != ''">
+                AND ACT_PLACE LIKE '%' || #{actPlace} || '%'
+            </if>
+            <if test="schSido != null and schSido != ''">
+                AND SCH_SIDO = #{schSido}
+            </if>
+            <if test="actRm != null and actRm != ''">
+                AND ACT_RM = #{actRm}
+            </if>
+        </where>
     </select>
 
-    <select id="selectInfoBoard" parameterType="int" resultType="edu.kh.project.info.model.dto.InfoBoard">
-        SELECT *
-        FROM INFO_BOARD
+    <select id="selectInfoList" resultType="InfoBoard">
+        SELECT * FROM (
+            SELECT ROWNUM AS RNUM, A.*
+            FROM (
+                SELECT 
+                    INFO_BOARD_NO, SCH_SIDO, SCH_SIGN, PROGRM_NM,
+                    PROGRM_BGNDE, PROGRM_ENDDE, NOTICE_BGN_DE, NOTICE_END_DE,
+                    ACT_BEGIN_TM, ACT_END_TM, ACT_PLACE, NANMM_BY_NM, ACT_RM
+                FROM INFO_BOARD
+                <where>
+                    <if test="progrmNm != null and progrmNm != ''">
+                        AND PROGRM_NM LIKE '%' || #{progrmNm} || '%'
+                    </if>
+                    <if test="actPlace != null and actPlace != ''">
+                        AND ACT_PLACE LIKE '%' || #{actPlace} || '%'
+                    </if>
+                    <if test="schSido != null and schSido != ''">
+                        AND SCH_SIDO = #{schSido}
+                    </if>
+                    <if test="actRm != null and actRm != ''">
+                        AND ACT_RM = #{actRm}
+                    </if>
+                </where>
+                ORDER BY INFO_BOARD_NO DESC
+            ) A
+        )
+        WHERE RNUM BETWEEN #{offset} + 1 AND #{offset} + #{limit}
+    </select>
+
+    <insert id="mergeInfoBoard">
+        MERGE INTO INFO_BOARD B
+        USING DUAL ON (B.PROGRM_NM = #{progrmNm})
+        WHEN NOT MATCHED THEN
+            INSERT (
+                INFO_BOARD_NO, SCH_SIDO, SCH_SIGN, PROGRM_NM, 
+                PROGRM_BGNDE, PROGRM_ENDDE, NOTICE_BGN_DE, NOTICE_END_DE,
+                ADULT_POSBL_AT, YNG_BGS_POSBL_AT, ACT_BEGIN_TM, ACT_END_TM,
+                ACT_PLACE, NANMM_BY_NM, URL, ACT_RM, PROGRM_CN
+            ) VALUES (
+                INFO_BOARD_SEQ.NEXTVAL, #{schSido}, #{schSign}, #{progrmNm},
+                #{progrmBgnde}, #{progrmEndde}, #{noticeBgnDe}, #{noticeEndDe},
+                #{adultPosblAt}, #{yngBgsPosblAt}, #{actBeginTm}, #{actEndTm},
+                #{actPlace}, #{nanmmByNm}, #{url}, #{actRm}, #{progrmCn}
+            )
+    </insert>
+    
+    <select id="selectInfoBoard" resultType="InfoBoard">
+        SELECT * FROM INFO_BOARD 
         WHERE INFO_BOARD_NO = #{infoBoardNo}
     </select>
+
 </mapper>
