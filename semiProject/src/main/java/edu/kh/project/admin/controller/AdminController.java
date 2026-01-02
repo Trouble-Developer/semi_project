@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import edu.kh.project.admin.dto.AdminMember;
+import edu.kh.project.admin.dto.AdminNotice;
 import edu.kh.project.admin.dto.AdminSupport;
 import edu.kh.project.admin.model.service.AdminService;
 import edu.kh.project.board.model.dto.Board;
@@ -148,29 +149,35 @@ public class AdminController {
         model.addAttribute("pageTitle", "공지사항 관리");
         model.addAttribute("menu", "notice");
 
-        model.addAttribute("freeBoardList", (List<Board>) resultMap.get("freeBoardList"));
+        model.addAttribute("freeBoardList", (List<AdminNotice>) resultMap.get("freeBoardList"));
         model.addAttribute("pagination", (Pagination) resultMap.get("pagination"));
 
         return "admin/adminLayout";
     }
 
-    // 공지사항 삭제
-    @PostMapping("notice/delete")
-    public String deleteNotice(
-    		@RequestParam("boardNo") int boardNo,
+    // 공지사항 삭제/복구
+    @PostMapping("notice/updateStatus")
+    public String updateNoticeStatus(
+            @RequestParam("boardNo") int boardNo,
+            @RequestParam("boardDelFl") String boardDelFl,
             HttpSession session,
             RedirectAttributes ra) {
 
         if (!isAdmin(session, ra)) {
-            return "redirect:/";
+        	return "redirect:/";
         }
-    	
-        int result = adminService.deleteNotice(boardNo);
+
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("boardNo", boardNo);
+        paramMap.put("boardDelFl", boardDelFl);
+
+        int result = adminService.updateNoticeStatus(paramMap);
 
         if (result > 0) {
-            ra.addFlashAttribute("message", "공지사항이 삭제되었습니다.");
-        } else {
-            ra.addFlashAttribute("message", "공지사항 삭제에 실패했습니다.");
+            ra.addFlashAttribute("message",
+                "Y".equals(boardDelFl)
+                    ? "공지사항이 삭제되었습니다."
+                    : "공지사항이 복구되었습니다.");
         }
 
         return "redirect:/admin/notice";

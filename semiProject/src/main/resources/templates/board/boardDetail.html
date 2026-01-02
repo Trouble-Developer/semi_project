@@ -47,9 +47,10 @@
       </div>
       <div id="btn">
         <!-- 로그인 했을 때만 활성화 -->
+
         <button
           id="report-btn"
-          th:if="${session.loginMember != null and session.loginMember.memberNo != boardInfo.memberNo}"
+          th:if="${session.loginMember != null and session.loginMember.memberNo != boardInfo.memberNo and boardCode != 4}"
         >
           신고
         </button>
@@ -75,7 +76,7 @@
         </button>
         <button
           id="delete-btn"
-          th:if="${session.loginMember != null and session.loginMember.memberNo == boardInfo.memberNo}"
+          th:if="${session.loginMember != null and (session.loginMember.authority == 2 or session.loginMember.memberNo == boardInfo.memberNo)}"
         >
           삭제
         </button>

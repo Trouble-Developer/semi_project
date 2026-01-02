@@ -82,7 +82,7 @@ public class EditBoardController {
 		Board selectedBoard = boardService.freeBoardDetil(board);
 
 		// 본인이 작성한 글만 삭제 가능
-		if (loginMember != null && (loginMember.getMemberNo() != selectedBoard.getMemberNo())) {
+		if (loginMember != null && (loginMember.getMemberNo() != selectedBoard.getMemberNo()) && loginMember.getAuthority() == 1) {
 			message = "본인이 작성한 글만 삭제할 수 있습니다.";
 			ra.addFlashAttribute("message", message);
 			return "redirect:/board/" + board.getBoardCode() + "?cp=" + cp;
@@ -108,10 +108,10 @@ public class EditBoardController {
 			Model model) {
 		String message = null;
 
-		if(boardCode == 4 && loginMember.getAuthority() == 1) {
+		if (boardCode == 4 && loginMember.getAuthority() == 1) {
 			message = "공지사항은 관리자만이 작성할 수 있습니다.";
 			ra.addFlashAttribute("message", message);
-			
+
 			return "redirect:/";
 		}
 		if (loginMember == null) {
@@ -137,7 +137,6 @@ public class EditBoardController {
 			@SessionAttribute(value = "loginMember", required = false) Member loginMember, RedirectAttributes ra) {
 		String message = null;
 
-		
 		paramMap.put("content", paramMap.get("editordata"));
 		paramMap.put("memberNo", loginMember.getMemberNo());
 		String boardLock = (paramMap.get("checkbox") != null && paramMap.get("checkbox").equals("on")) ? "Y" : "N";

@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 @Transactional(rollbackFor = Exception.class)
+@Slf4j
 public class MemberServiceImpl implements MemberService {
 
     private final MemberMapper mapper;
@@ -24,12 +25,10 @@ public class MemberServiceImpl implements MemberService {
     public int signup(Member inputMember) {
         
         // 1. 비밀번호 암호화 (평문 -> 암호문)
-        // 사용자가 입력한 "1234"를 "$2a$10$..." 이런 식으로 바꿔서 세팅
         String encPw = bcrypt.encode(inputMember.getMemberPw());
         inputMember.setMemberPw(encPw);
         
-        // 2. 주민번호 합치기 (123456 - 1234567)
-        // HTML에서 memberRrn1, memberRrn2로 따로 들어옴 -> DB에는 MEMBER_RRN 하나로 저장
+        // 2. 주민번호 합치기
         if(inputMember.getMemberRrn1() != null && inputMember.getMemberRrn2() != null) {
             String rrn = inputMember.getMemberRrn1() + "-" + inputMember.getMemberRrn2();
             inputMember.setMemberRrn(rrn);
@@ -39,14 +38,11 @@ public class MemberServiceImpl implements MemberService {
         return mapper.signup(inputMember);
     }
     
-    // ----------------------------------------------------------------
-    // [로그인 서비스 구현]
-    // ----------------------------------------------------------------
+    // 로그인
     @Override
     public Member login(Member inputMember) {
         
-        // 1. 아이디를 이용해서 DB에서 회원 정보 조회
-        // (비밀번호 비교를 위해 DB에 저장된 암호화된 비밀번호가 필요함)
+        // 1. 아이디로 회원 정보 조회
         Member loginMember = mapper.login(inputMember.getMemberId());
 
         // 2. 일치하는 아이디가 없으면 null 리턴
@@ -55,17 +51,13 @@ public class MemberServiceImpl implements MemberService {
         }
 
         // 3. 비밀번호 비교
-        // DB에 저장된 비번(암호화O) vs 입력된 비번(암호화X)
-        // bcrypt.matches(평문, 암호문) -> 일치하면 true
         if (!bcrypt.matches(inputMember.getMemberPw(), loginMember.getMemberPw())) {
-            return null; // 비밀번호 틀림
+            return null;
         }
 
-        // 4. 로그인 성공 시, 보안을 위해 비밀번호 제거
-        // (세션에 비밀번호까지 둥둥 떠다니면 위험하니까)
+        // 4. 비밀번호 제거 (보안)
         loginMember.setMemberPw(null);
 
-        // 5. 최종 로그인 정보 리턴
         return loginMember;
     }
 
@@ -87,45 +79,65 @@ public class MemberServiceImpl implements MemberService {
         return mapper.checkEmail(memberEmail);
     }
     
-    // 아이디 찾기
+    /**
+     * 아이디 찾기 (이름 + 이메일)
+     * 
+     * @param memberName : 회원 이름
+     * @param memberEmail : 회원 이메일
+     * @return Member 객체 (아이디, 가입일자) 또는 null
+     */
     @Override
-    public Member findId(String memberName, String memberRrn1, String memberEmail) {
-        return mapper.findId(memberName, memberRrn1, memberEmail);
+    public Member findId(String memberName, String memberEmail) {  // ✅ memberRrn1 파라미터 제거
+        
+        // 입력값 검증
+        if(memberName == null || memberName.trim().isEmpty()) {
+            log.error("아이디 찾기 실패: 이름이 비어있음");
+            return null;
+        }
+        
+        if(memberEmail == null || memberEmail.trim().isEmpty()) {
+            log.error("아이디 찾기 실패: 이메일이 비어있음");
+            return null;
+        }
+        
+        // Mapper 호출하여 DB 조회 (이름 + 이메일만 전달)
+        return mapper.findId(memberName, memberEmail);  // ✅ memberRrn1 제거
     }
 
-	@Override
-	public Member findPw(String memberId, String memberName, String memberRrn1, String memberEmail) {
-		
-		// Mapper 호출해서 DB 조회
-		// - 4개의 파라미터가 모두 일치하는 회원 찾기 
-		Member findMember = mapper.findPw(memberId, memberName, memberRrn1, memberEmail);
-		
-		return findMember;
-		
-	}
-	
-		
-		/**
-		 * 비밀번호 재설정
-		 * 
-		 * @param memberId : 회원 아이디
-		 * @param newPw : 새 비밀번호 (평문)
-		 * @return result (1:성공, 0:실패)
-		 */
-		@Override
-		public int resetPw(String memberId, String newPw) {
-			
-			// 1. 새 비밀번호 암호화
-			// BCrypt를 사용하여 평문 비밀번호를 암호화
-			// 예: "1234" -> "$2a$10$abcd..."
-			String encPw = bcrypt.encode(newPw);
-			
-			// 2. Mapper 호출하여 DB 업데이트
-			int result = mapper.resetPw(memberId, encPw);
-		
-		
-		return result;
-	}
-
-	
+    /**
+     * 비밀번호 찾기 - 본인 확인
+     * 
+     * @param memberId : 회원 아이디
+     * @param memberName : 회원 이름
+     * @param memberRrn1 : 주민번호 앞자리
+     * @param memberEmail : 회원 이메일
+     * @return Member 객체 또는 null
+     */
+    @Override
+    public Member findPw(String memberId, String memberName, String memberRrn1, String memberEmail) {
+        
+        // Mapper 호출해서 DB 조회
+        Member findMember = mapper.findPw(memberId, memberName, memberRrn1, memberEmail);
+        
+        return findMember;
+    }
+    
+    /**
+     * 비밀번호 재설정
+     * 
+     * @param memberId : 회원 아이디
+     * @param newPw : 새 비밀번호 (평문)
+     * @return result (1:성공, 0:실패)
+     */
+    @Override
+    public int resetPw(String memberId, String newPw) {
+        
+        // 1. 새 비밀번호 암호화
+        String encPw = bcrypt.encode(newPw);
+        
+        // 2. Mapper 호출하여 DB 업데이트
+        int result = mapper.resetPw(memberId, encPw);
+        
+        return result;
+    }
 }

@@ -42,35 +42,8 @@
           <span class="error-msg" id="nameMessage"></span>
         </div>
 
-        <!-- ========== 2. 주민등록번호 입력 ========== -->
-        <div class="input-group">
-          <label>주민등록번호</label>
-          
-          <!-- 주민번호는 앞자리, 대시(-), 뒷자리로 구성 -->
-          <div class="rrn-box">
-            
-            <!-- 앞 6자리: 생년월일 (예: 950101) -->
-            <input type="text" name="memberRrn1" id="memberRrn1" 
-                   placeholder="생년월일 6자리" 
-                   maxlength="6" 
-                   autocomplete="off">
-            
-            <!-- 대시 기호 -->
-            <span class="dash">-</span>
-            
-            <!-- 뒤 1자리: 성별 (예: 1, 2, 3, 4) -->
-            <input type="text" name="memberRrn2" id="memberRrn2" 
-                   placeholder="뒤 1자리" 
-                   maxlength="1" 
-                   autocomplete="off">
-          
-          </div>
-          
-          <!-- 에러 메시지 표시 영역 -->
-          <span class="error-msg" id="rrnMessage"></span>
-        </div>
 
-        <!-- ========== 3. 이메일 입력 ========== -->
+        <!-- ========== 2. 이메일 입력 ========== -->
         <div class="input-group">
           <label for="memberEmail">이메일</label>
           
@@ -92,7 +65,7 @@
           <span class="error-msg" id="emailMessage"></span>
         </div>
 
-        <!-- ========== 4. 인증번호 입력 ========== -->
+        <!-- ========== 3. 인증번호 입력 ========== -->
         <div class="input-group">
           <label for="authKey">인증번호</label>
           
@@ -114,7 +87,7 @@
           <span class="error-msg" id="authKeyMessage"></span>
         </div>
 
-        <!-- ========== 5. 결과 표시 영역 ========== -->
+        <!-- ========== 4. 결과 표시 영역 ========== -->
         <!-- 
           처음엔 숨김 (style="display: none;")
           JavaScript에서 아이디 찾기 성공하면 보여줌 (style.display = "block")
