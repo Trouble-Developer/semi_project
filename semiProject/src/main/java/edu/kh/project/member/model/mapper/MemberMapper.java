@@ -7,69 +7,66 @@ import edu.kh.project.member.model.dto.Member;
 
 @Mapper
 public interface MemberMapper {
-
+    
     /**
      * 로그인
-     * @param memberId
+     * @param memberId : 회원 아이디
      * @return Member 객체
      */
     Member login(String memberId);
-
+    
     /**
      * 아이디 중복 검사
-     * @param memberId
-     * @return count
+     * @param memberId : 회원 아이디
+     * @return count (1:중복, 0:사용가능)
      */
     int checkId(String memberId);
-
+    
     /**
      * 닉네임 중복 검사
-     * @param memberNickname
-     * @return count
+     * @param memberNickname : 회원 닉네임
+     * @return count (1:중복, 0:사용가능)
      */
     int checkNickname(String memberNickname);
-
+    
     /**
      * 이메일 중복 검사
-     * @param memberEmail
-     * @return count
+     * @param memberEmail : 회원 이메일
+     * @return count (1:중복, 0:사용가능)
      */
     int checkEmail(String memberEmail);
-
+    
     /**
      * 회원가입
-     * @param inputMember
+     * @param inputMember : 입력받은 회원 정보
      * @return result (1: 성공, 0: 실패)
      */
     int signup(Member inputMember);
-
+    
     /**
      * 아이디 찾기 (이름 + 이메일)
      * @param memberName : 회원 이름
      * @param memberEmail : 회원 이메일
-     * @return Member 객체 (아이디, 가입일자)
+     * @return Member 객체 (아이디, 가입일자) 또는 null
      */
     Member findId(
         @Param("memberName") String memberName, 
         @Param("memberEmail") String memberEmail
-        // ✅ memberRrn1 파라미터 제거
     );
-
+    
     /**
-     * 비밀번호 찾기 - 본인 확인
+     * 비밀번호 찾기 - 본인 확인 (아이디 + 이름 + 이메일)
      * @param memberId : 회원 아이디
      * @param memberName : 회원 이름
-     * @param memberRrn1 : 주민번호 앞자리
      * @param memberEmail : 회원 이메일
-     * @return Member 객체
+     * @return Member 객체 또는 null
      */
     Member findPw(
         @Param("memberId") String memberId,
         @Param("memberName") String memberName,
-        @Param("memberRrn1") String memberRrn1,
         @Param("memberEmail") String memberEmail
     );
-
+    
     /**
      * 비밀번호 재설정
      * @param memberId : 회원 아이디

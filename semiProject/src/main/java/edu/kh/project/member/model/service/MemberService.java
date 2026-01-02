@@ -22,7 +22,7 @@ public interface MemberService {
      */
     Member findId(String memberName, String memberEmail);  
 
-    Member findPw(String memberId, String memberName, String memberRrn1, String memberEmail);
+    Member findPw(String memberId, String memberName, String memberEmail);
 
     int resetPw(String memberId, String newPw);
 
