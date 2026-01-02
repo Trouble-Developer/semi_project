@@ -5,3 +5,9 @@ config.properties
 .DS_Store
 Thumbs.db
 .recommenders/
+
+.metadata/
+.DS_Store
+.project
+.settings/
+.classpath
