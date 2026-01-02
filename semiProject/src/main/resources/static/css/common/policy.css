@@ -1,0 +1,45 @@
+/* 기본 스타일 */
+.policy-container {
+  max-width: 800px;
+  margin: 60px auto;
+  padding: 0 20px;
+  font-family: "Pretendard", sans-serif;
+  line-height: 1.8;
+  color: #333;
+}
+
+.policy-container h1 {
+  font-size: 28px;
+  margin-bottom: 40px;
+  text-align: center;
+  font-weight: 700;
+}
+
+.policy-section {
+  margin-bottom: 30px;
+}
+
+.policy-section h2 {
+  font-size: 20px;
+  margin-bottom: 15px;
+  color: #000;
+  border-left: 4px solid #3d444d; /* 푸터 배경색과 통일감 */
+  padding-left: 12px;
+}
+
+.policy-section p,
+.policy-section li {
+  font-size: 15px;
+  color: #555;
+}
+
+.policy-section ul {
+  padding-left: 20px;
+}
+
+/* 개인정보처리방침 강조 스타일 */
+.highlight-text {
+  font-weight: 700;
+  color: #d32f2f;
+  text-decoration: underline;
+}
