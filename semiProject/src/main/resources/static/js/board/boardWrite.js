@@ -1,4 +1,3 @@
-/* 바이트 계산 함수 (UTF-8 기준) */
 function getByteLength(s) {
   if (s == null || s.length === 0) return 0;
   return new TextEncoder().encode(s).length;
@@ -6,6 +5,16 @@ function getByteLength(s) {
 
 $(document).ready(function () {
   const MAX_BYTE = 4000;
+  const profileImg = document.getElementById("profileImg");
+  const imageInput = document.getElementById("imageInput");
+  const deleteImage = document.getElementById("deleteImage");
+  const defaultImageUrl = `/images/footer-logo.png`;
+
+  if (profileImg && deleteImage) {
+    if (profileImg.getAttribute("src") !== defaultImageUrl) {
+      deleteImage.style.display = "flex";
+    }
+  }
 
   $("#summernote").summernote({
     width: 1130,
@@ -15,7 +24,6 @@ $(document).ready(function () {
       onChange: function (contents) {
         const currentByte = getByteLength(contents);
         const $byteCounter = $("#current-byte");
-
         if ($byteCounter.length > 0) {
           $byteCounter.text(currentByte);
           $byteCounter.css("color", currentByte > MAX_BYTE ? "red" : "black");
@@ -53,11 +61,9 @@ $(document).ready(function () {
 
       const sdate = document.querySelector("#sdate");
       const edate = document.querySelector("#edate");
-
       if (sdate && edate) {
         const startVal = sdate.value.trim();
         const endVal = edate.value.trim();
-
         if (
           (startVal !== "" && endVal === "") ||
           (startVal === "" && endVal !== "")
@@ -70,26 +76,21 @@ $(document).ready(function () {
           else edate.focus();
           return false;
         }
-
-        if (startVal !== "" && endVal !== "") {
-          if (startVal > endVal) {
-            e.preventDefault();
-            alert("시작 날짜는 종료 날짜보다 빠르거나 같아야 합니다.");
-            sdate.focus();
-            return false;
-          }
+        if (startVal !== "" && endVal !== "" && startVal > endVal) {
+          e.preventDefault();
+          alert("시작 날짜는 종료 날짜보다 빠르거나 같아야 합니다.");
+          sdate.focus();
+          return false;
         }
       }
 
       const contents = $("#summernote").summernote("code");
       const currentByte = getByteLength(contents);
-
       if ($("#summernote").summernote("isEmpty")) {
         e.preventDefault();
         alert("내용을 입력해주세요!");
         return false;
       }
-
       if (currentByte > MAX_BYTE) {
         e.preventDefault();
         alert(
@@ -114,11 +115,6 @@ $(document).ready(function () {
   }
   toggleSecret();
 
-  const profileImg = document.getElementById("profileImg");
-  const imageInput = document.getElementById("imageInput");
-  const deleteImage = document.getElementById("deleteImage");
-  const defaultImageUrl = `/images/logo.jpg`;
-
   if (imageInput) {
     let previousImage = profileImg ? profileImg.src : defaultImageUrl;
     let previousFile = null;
@@ -127,12 +123,11 @@ $(document).ready(function () {
       const file = imageInput.files[0];
       if (file) {
         if (file.size <= 1024 * 1024 * 5) {
-          // 5MB 제한
           const newImageUrl = URL.createObjectURL(file);
           profileImg.src = newImageUrl;
           previousImage = newImageUrl;
           previousFile = file;
-          if (deleteImage) deleteImage.style.display = "inline";
+          if (deleteImage) deleteImage.style.display = "flex";
         } else {
           alert("5MB 이하의 이미지를 선택해주세요!");
           imageInput.value = "";
