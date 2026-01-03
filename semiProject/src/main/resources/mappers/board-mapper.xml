@@ -15,37 +15,22 @@
 		AND BOARD_DEL_FL = 'N'
 	</select>
 	<select id="getBoardList">
-		SELECT
-		B.BOARD_NO,
-		B.BOARD_TITLE,
-		M.MEMBER_NICKNAME,
-		B.READ_COUNT,
-		B.BOARD_LOCK,
-		B.MEMBER_NO,
-		(
-		SELECT
-		I.IMG_PATH || I.IMG_RENAME
-		FROM
-		BOARD_IMG I
-		WHERE I.BOARD_NO =
-		B.BOARD_NO
-		ORDER BY I.IMG_ORDER
-		FETCH FIRST
-		1 ROW ONLY
-		) AS
-		THUMBNAIL_PATH,
-
-		(SELECT COUNT(*)
-		FROM "COMMENT" C
-		WHERE
-		C.BOARD_NO =
-		B.BOARD_NO) COMMENT_COUNT,
-
-		(SELECT COUNT(*)
-		FROM
-		"BOARD_LIKE" L
-		WHERE
-		L.BOARD_NO = B.BOARD_NO) LIKE_COUNT,
+    SELECT
+        B.BOARD_NO,
+        B.BOARD_TITLE,
+        M.MEMBER_NICKNAME,
+        B.READ_COUNT,
+        B.BOARD_LOCK,
+        B.MEMBER_NO,
+        (
+            SELECT I.IMG_PATH || I.IMG_RENAME
+            FROM BOARD_IMG I
+            WHERE I.BOARD_NO = B.BOARD_NO
+            AND I.IMG_ORDER = 0
+        ) AS THUMBNAIL_PATH,
+        
+        (SELECT COUNT(*) FROM "COMMENT" C WHERE C.BOARD_NO = B.BOARD_NO) COMMENT_COUNT,
+        (SELECT COUNT(*) FROM "BOARD_LIKE" L WHERE L.BOARD_NO = B.BOARD_NO) LIKE_COUNT,
 
         <![CDATA[
         CASE
@@ -59,14 +44,12 @@
         END BOARD_WRITE_DATE
         ]]>
 
-		FROM BOARD B
-		JOIN MEMBER M ON B.MEMBER_NO = M.MEMBER_NO
-		WHERE
-		B.BOARD_DEL_FL = 'N'
-		AND B.BOARD_CODE = #{boardCode}
-		ORDER BY B.BOARD_NO
-		DESC
-	</select>
+    FROM BOARD B
+    JOIN MEMBER M ON B.MEMBER_NO = M.MEMBER_NO
+    WHERE B.BOARD_DEL_FL = 'N'
+    AND B.BOARD_CODE = #{boardCode}
+    ORDER BY B.BOARD_NO DESC
+</select>
 
 	<select id="getSearchCount">
 		SELECT COUNT(*)

@@ -24,7 +24,7 @@
   display: flex;
   flex-direction: column;
   width: 1127px;
-  gap: 10px; /* 요소간 간격 최소화 */
+  gap: 10px;
 }
 
 #board-write {
@@ -71,7 +71,7 @@
 
 #write {
   display: flex;
-  justify-content: center; /* 버튼을 중앙으로 */
+  justify-content: center;
   margin: 30px 0;
 }
 
@@ -152,4 +152,83 @@
   border: 1px solid #ddd;
   border-radius: 4px;
   padding: 5px;
+}
+/* 썸네일 */
+/* 썸네일 전체 섹션 */
+#thumbnail-section {
+  display: flex;
+  width: 100%;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  background-color: #fff;
+}
+
+/* 왼쪽 회색 라벨 */
+#thumbnail-section .v-label {
+  width: 120px;
+  background-color: #f5f5f5;
+  padding: 12px;
+  font-weight: bold;
+  text-align: center;
+  border-right: 1px solid #eee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 오른쪽 업로드 영역 */
+.thumbnail-upload-box {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 15px;
+  gap: 10px;
+}
+
+/* ★ 이미지 박스 크기 고정 (100x100) */
+.preview-area {
+  position: relative;
+  width: 400px; /* 100px 고정 */
+  height: 400px; /* 100px 고정 */
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden; /* ★ 이미지가 100px 밖으로 나가는 것 차단 */
+  background-color: #f9f9f9;
+}
+
+/* ★ 이미지 크기 고정 및 비율 유지 */
+#profileImg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* ★ 이미지가 박스에 꽉 차게 (찌그러짐 방지) */
+  display: block;
+}
+
+#deleteImage {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font-size: 12px;
+  z-index: 10;
+}
+
+.select-btn {
+  padding: 4px 12px;
+  border: 1px solid #333;
+  background-color: #fff;
+  cursor: pointer;
+  font-size: 12px;
+  border-radius: 4px;
 }

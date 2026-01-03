@@ -66,13 +66,11 @@
                 <a
                   th:href="@{/board/{boardCode}/{boardNo}(boardCode=${boardCode}, boardNo=*{boardNo}, cp=${pagination.currentPage})}"
                 >
-                  <img
-                    th:src="${board.imgRename != null 
-                                 ? board.imgPath + board.imgRename 
-                                 : '/images/volunteer.jpeg'}"
-                    id="content-img-info"
-                    alt="썸네일"
-                  />
+                <img th:src="${board.thumbnailPath != null 
+                  ? board.thumbnailPath 
+                  : '/images/footer-logo.png'}" 
+          id="content-img-info" 
+          alt="썸네일">
                 </a>
               </div>
 
