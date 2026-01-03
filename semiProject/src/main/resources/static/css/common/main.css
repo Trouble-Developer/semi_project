@@ -135,6 +135,7 @@
 .board-list li {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 10px 0;
   border-bottom: 1px solid #eee;
 }
@@ -148,9 +149,13 @@
   text-decoration: none;
   color: #333;
   flex-grow: 1;
+
+  display: inline-block;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+
+  max-width: 200px;
 }
 .info {
   font-size: 0.85rem;
