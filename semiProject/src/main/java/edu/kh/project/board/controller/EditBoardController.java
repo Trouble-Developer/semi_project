@@ -32,7 +32,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class EditBoardController {
 
-
 	@Autowired
 	private EditBoardService service;
 
@@ -44,7 +43,6 @@ public class EditBoardController {
 
 	@Value("${board.image.folder-path}")
 	private String boardImageFolderPath;
-
 
 	/**
 	 * dev.안재훈 게시판 삭제
@@ -78,7 +76,8 @@ public class EditBoardController {
 		Board selectedBoard = boardService.freeBoardDetil(board);
 
 		// 본인이 작성한 글만 삭제 가능
-		if (loginMember != null && (loginMember.getMemberNo() != selectedBoard.getMemberNo()) && loginMember.getAuthority() == 1) {
+		if (loginMember != null && (loginMember.getMemberNo() != selectedBoard.getMemberNo())
+				&& loginMember.getAuthority() == 1) {
 			message = "본인이 작성한 글만 삭제할 수 있습니다.";
 			ra.addFlashAttribute("message", message);
 			return "redirect:/board/" + board.getBoardCode() + "?cp=" + cp;
@@ -118,6 +117,7 @@ public class EditBoardController {
 		model.addAttribute("boardCode", boardCode);
 		return "board/boardWrite";
 	}
+
 	/**
 	 * 글 등록
 	 * 
@@ -129,25 +129,26 @@ public class EditBoardController {
 	 */
 	@PostMapping("{boardCode:[0-9]+}/insert")
 	public String boardInsert(@PathVariable("boardCode") int boardCode, @RequestParam Map<String, Object> paramMap,
-			@SessionAttribute(value = "loginMember", required = false) Member loginMember, RedirectAttributes ra) {
-		String message = null;
+			@RequestParam(value = "thumbnail", required = false) MultipartFile thumbnail, // 썸네일 추가
+			@SessionAttribute("loginMember") Member loginMember, RedirectAttributes ra) throws Exception {
 
 		paramMap.put("boardCode", boardCode);
-		paramMap.put("content", paramMap.get("editordata"));
 		paramMap.put("memberNo", loginMember.getMemberNo());
-		String boardLock = (paramMap.get("checkbox") != null && paramMap.get("checkbox").equals("on")) ? "Y" : "N";
+		paramMap.put("content", paramMap.get("editordata"));
+
+		String boardLock = (paramMap.get("checkbox") != null) ? "Y" : "N";
 		paramMap.put("boardLock", boardLock);
 
-		int result = service.boardInsert(paramMap);
+		// 서비스에 thumbnail 전달
+		int boardNo = service.boardInsert(paramMap, thumbnail);
 
-		if (result > 0) {
-			message = "게시글이 등록되었습니다.";
-		} else {
-			message = "게시글 등록 실패..";
+		if (boardNo > 0) {
+			ra.addFlashAttribute("message", "게시글이 등록되었습니다.");
+			return "redirect:/board/" + boardCode + "/" + boardNo;
 		}
-		ra.addFlashAttribute("message", message);
 
-		return "redirect:/board/" + boardCode + "/" + result;
+		ra.addFlashAttribute("message", "게시글 등록 실패");
+		return "redirect:insert";
 	}
 
 	/**
