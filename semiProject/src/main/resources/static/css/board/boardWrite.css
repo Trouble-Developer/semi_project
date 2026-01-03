@@ -188,42 +188,42 @@
   gap: 10px;
 }
 
-/* ★ 이미지 박스 크기 고정 (100x100) */
 .preview-area {
   position: relative;
-  width: 400px; /* 100px 고정 */
-  height: 400px; /* 100px 고정 */
+  width: 400px;
+  height: 400px;
   border: 1px solid #ddd;
   border-radius: 4px;
-  overflow: hidden; /* ★ 이미지가 100px 밖으로 나가는 것 차단 */
+  overflow: hidden;
   background-color: #f9f9f9;
 }
 
-/* ★ 이미지 크기 고정 및 비율 유지 */
 #profileImg {
   width: 100%;
   height: 100%;
-  object-fit: contain; /* ★ 이미지가 박스에 꽉 차게 (찌그러짐 방지) */
+  object-fit: contain;
   display: block;
 }
-
 #deleteImage {
   position: absolute;
   top: 2px;
   right: 2px;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.6);
   color: white;
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  font-size: 12px;
-  z-index: 10;
-}
 
+  display: none;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  z-index: 10;
+  padding-bottom: 2px;
+}
 .select-btn {
   padding: 4px 12px;
   border: 1px solid #333;
