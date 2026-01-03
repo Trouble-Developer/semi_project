@@ -32,7 +32,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class EditBoardController {
 
-	private final AdminController adminController;
 
 	@Autowired
 	private EditBoardService service;
@@ -46,9 +45,6 @@ public class EditBoardController {
 	@Value("${board.image.folder-path}")
 	private String boardImageFolderPath;
 
-	EditBoardController(AdminController adminController) {
-		this.adminController = adminController;
-	}
 
 	/**
 	 * dev.안재훈 게시판 삭제

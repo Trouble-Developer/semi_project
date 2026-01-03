@@ -19,15 +19,15 @@
 
       swiper-container {
         width: 100%;
-        height: 100%;
+        max-width: 1200px;
+        height: 450px;
+        margin: 40px auto;
       }
 
       swiper-slide {
-        /* text-align: center;
-        font-size: 18px;
         display: flex;
-        justify-content: center;
-        align-items: center; */
+        flex-direction: column;
+        overflow: hidden;
         border-radius: 20px;
         border: 1px solid #ddd;
         background-color: white;
@@ -219,11 +219,14 @@
           <swiper-container
             class="mySwiper"
             slides-per-view="3"
-            centered-slides="true"
-            space-between="30"
+            centered-slides="false"
+            space-between="20"
             pagination="true"
             pagination-type="fraction"
             navigation="true"
+            autoplay-delay="2000"
+            autoplay-disable-on-interaction="false"
+            loop="true"
           >
             <th:block th:each="board : ${boardList}">
               <swiper-slide>

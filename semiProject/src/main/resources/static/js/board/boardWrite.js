@@ -1,11 +1,21 @@
 const form = document.querySelector("#summernote-write");
 const secretWrapper = document.querySelector("#secret-wrapper");
-const boardTypeSelect = document.querySelector("#board-type");
 
 form.addEventListener("submit", (e) => {
   const boardTitle = document.querySelector("#board-title");
   const secretCheck = document.querySelector("#checkbox");
   const boardPw = document.querySelector("#board-pw");
+  const sdate = document.querySelector("#sdate");
+  const edate = document.querySelector("#edate");
+
+  if (sdate.value !== "" && edate.value !== "") {
+    if (sdate.value > edate.value) {
+      e.preventDefault();
+      alert("시작날짜는 종료날짜보다 빠르거나 같아야 합니다.");
+      sdate.focus();
+      return;
+    }
+  }
 
   if (secretCheck.checked) {
     if (boardPw.value.trim() === "") {
@@ -39,4 +49,3 @@ function toggleSecret() {
   }
 }
 toggleSecret();
-boardTypeSelect.addEventListener("change", toggleSecret);

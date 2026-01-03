@@ -1,6 +1,3 @@
-#mainContent > div > p {
-}
-
 #container {
   width: 100%;
   display: flex;
@@ -14,6 +11,7 @@
   margin-bottom: 40px;
 }
 #mainContent {
+  margin: auto;
   display: flex;
   justify-content: center;
   width: 1000px;
@@ -231,4 +229,7 @@
   margin-top: 10px;
   font-style: italic;
   color: #f08c00;
+}
+#volunteer-title-text {
+  text-align: center;
 }
