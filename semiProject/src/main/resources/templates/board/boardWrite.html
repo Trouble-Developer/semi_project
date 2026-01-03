@@ -42,18 +42,61 @@
             )}"
         id="summernote-write"
       >
-        <div id="board-write">
-          <div id="board-info">
-            <div id="board-info-text">
-              <input
-                type="text"
-                id="board-title"
-                placeholder="제목을 입력해주세요."
-                name="title"
-                th:value="${boardInfo != null ? boardInfo.boardTitle : ''}"
-                maxlength="40"
-              />
+      <div id="board-write">
+        <th:block th:if="${boardCode == 3}">
+          <div id="volunteer-info-container">
+            <div class="v-row">
+              <div class="v-cell">
+                <label class="v-label">봉사기간</label>
+                <div class="v-input-area">
+                  <input type="date" name="volunteerStart" id="sdate" th:value="${boardInfo?.volunteerStart}">
+                  <span> ~ </span>
+                  <input type="date" name="volunteerEnd" id="edate" th:value="${boardInfo?.volunteerEnd}">
+                </div>
+              </div>
+              <div class="v-cell">
+                <label class="v-label" for="volunteerCategory">봉사분야</label>
+                <div class="v-input-area">
+                  <select name="volunteerCategory" id="volunteerCategory">
+                    <option value="생활지원" th:selected="${boardInfo?.volunteerCategory == '생활지원'}">생활지원</option>
+                    <option value="주거환경" th:selected="${boardInfo?.volunteerCategory == '주거환경'}">주거환경</option>
+                    <option value="행정지원" th:selected="${boardInfo?.volunteerCategory == '행정지원'}">행정지원</option>
+                    <option value="보건의료" th:selected="${boardInfo?.volunteerCategory == '보건의료'}">보건의료</option>
+                    <option value="문화체육" th:selected="${boardInfo?.volunteerCategory == '문화체육'}">문화체육</option>
+                    <option value="환경보호" th:selected="${boardInfo?.volunteerCategory == '환경보호'}">환경보호</option>
+                    <option value="기타" th:selected="${boardInfo?.volunteerCategory == '기타'}">기타</option>
+                  </select>
+                </div>
+              </div>
             </div>
+            <div class="v-row">
+              <div class="v-cell">
+                <label class="v-label">모집기관</label>
+                <div class="v-input-area">
+                  <input type="text" name="volunteerAgency" placeholder="기관명 입력" th:value="${boardInfo?.volunteerAgency}">
+                </div>
+              </div>
+              <div class="v-cell">
+                <label class="v-label" for="volunteerType">봉사자유형</label>
+                <div class="v-input-area">
+                  <select name="volunteerType" id="volunteerType">
+                    <option value="성인" th:selected="${boardInfo?.volunteerType == '성인'}">성인</option>
+                    <option value="청소년" th:selected="${boardInfo?.volunteerType == '청소년'}">청소년</option>
+                    <option value="누구나" th:selected="${boardInfo?.volunteerType == '누구나'}">누구나</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </th:block>
+      
+        <div id="board-info">
+          <div id="board-info-text">
+            <input type="text" id="board-title" placeholder="제목을 입력해주세요." name="title" 
+                   th:value="${boardInfo?.boardTitle}" maxlength="40" />
+          </div>
+          </div>
+      </div>
             <div id="secret-wrapper" style="display: none">
               <input type="checkbox" id="checkbox" name="checkbox" />
               <label id="secret-check" for="checkbox">비밀글</label>
@@ -162,6 +205,7 @@
     <script th:inline="javascript">
       const boardInfo = /*[[${boardInfo}]]*/ "보드정보";
       const boardCode = /*[[${boardCode}]]*/ 0;
+      
     </script>
     <script src="/js/board/boardWrite.js"></script>
   </body>
