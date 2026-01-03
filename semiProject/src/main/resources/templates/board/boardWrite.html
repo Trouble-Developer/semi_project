@@ -103,63 +103,27 @@
             </div>
 
             <div id="board-write-info">
-                <textarea id="summernote" name="editordata" th:utext="${boardInfo != null ? boardInfo.boardContent : ''}"></textarea>
-                <div id="write">
-                    <button th:if="${boardInfo == null}" id="write-btn">등록하기</button>
-                    <button th:if="${boardInfo != null}" id="write-btn">수정하기</button>
-                </div>
-            </div>
+              <textarea id="summernote" name="editordata" th:utext="${boardInfo != null ? boardInfo.boardContent : ''}"></textarea>
+              
+              <div id="byte-wrapper" style="text-align: right; margin-top: 5px; font-size: 14px; width: 1130px;">
+                  <span id="current-byte" style="font-weight: bold;">0</span> / <span id="max-byte">4000</span> bytes
+              </div>
+          
+              <div id="write">
+                  <button th:if="${boardInfo == null}" id="write-btn">등록하기</button>
+                  <button th:if="${boardInfo != null}" id="write-btn">수정하기</button>
+              </div>
+          </div>
         </form>
     </div>
 
     <th:block th:replace="~{common/footer}"></th:block>
 
     <script th:inline="javascript">
-        const boardInfo = /*[[${boardInfo}]]*/ null;
-        const boardCode = /*[[${boardCode}]]*/ 0;
-
-        $(document).ready(function () {
-            $("#summernote").summernote({
-                width: 1130,
-                height: 500,
-                lang: "ko-KR",
-                focus: true,
-                toolbar: [
-                    ["fontname", ["fontname"]],
-                    ["fontsize", ["fontsize"]],
-                    ["style", ["bold", "italic", "underline", "strikethrough", "clear"]],
-                    ["color", ["forecolor", "color"]],
-                    ["table", ["table"]],
-                    ["para", ["ul", "ol", "paragraph"]],
-                    ["height", ["height"]],
-                    ["insert", ["picture", "link"]],
-                    ["view", ["codeview", "fullscreen", "help"]],
-                ],
-                callbacks: {
-                    onImageUpload: function (files) {
-                        for (let i = 0; i < files.length; i++) {
-                            uploadImage(files[i]);
-                        }
-                    },
-                },
-            });
-        });
-
-        function uploadImage(file) {
-            const formData = new FormData();
-            formData.append("file", file);
-            $.ajax({
-                url: "/editBoard/image/upload",
-                type: "POST",
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: function (res) {
-                    $("#summernote").summernote("insertImage", res.url);
-                },
-            });
-        }
-    </script>
+      const boardInfo = /*[[${boardInfo}]]*/ null;
+      const boardCode = /*[[${boardCode}]]*/ 0;
+  
+  </script>
     <script src="/js/board/boardWrite.js"></script>
 </body>
 </html>
