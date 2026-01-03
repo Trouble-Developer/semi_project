@@ -142,6 +142,12 @@
       let likeCheck = Number(/*[[${boardInfo.likeCheck}]]*/ 0);
       let scrapCheck = Number(/*[[${boardInfo.scrapCheck}]]*/ 0);
 
+      const boardWriter = /*[[${boardInfo.memberNo}]]*/ 0;
+      const loginAuthority = /*[[${session.loginMember?.authority}]]*/ null;
+      
+
+
+
       // 디버깅: boardCode 값 확인
       console.log("현재 boardCode:", boardCode, "타입:", typeof boardCode);
     </script>
