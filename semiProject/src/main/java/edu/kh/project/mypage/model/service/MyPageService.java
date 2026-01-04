@@ -1,6 +1,7 @@
 package edu.kh.project.mypage.model.service;
 
 import java.io.IOException;
+import java.util.Map;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,5 +20,9 @@ public interface MyPageService {
    * @throws IOException
    */
   int updateProfile(Member updateMember, MultipartFile profileImg, String webPath, String folderPath, String currentPw) throws IOException;
+
+  Map<String, Object> selectPostList(int memberNo, int cp, Map<String, Object> paramMap);
+  
+  Map<String, Object> selectCommentPostList(int memberNo, int cp, Map<String, Object> paramMap);
 
 }

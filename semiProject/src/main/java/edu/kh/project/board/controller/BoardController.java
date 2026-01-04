@@ -79,6 +79,8 @@ public class BoardController {
 	@GetMapping("{boardCode}/{boardNo}")
 	public String freeBoardDetil(Board board,
 			@SessionAttribute(value = "loginMember", required = false) Member loginMember,
+			// dev.전재민 마이페이지 redirect
+			@RequestParam(value = "from", required = false, defaultValue = "") String from,
 			@RequestParam(value = "cp", required = false, defaultValue = "1") int cp, Model model,
 			RedirectAttributes ra, HttpServletRequest req, HttpServletResponse resp) {
 		// 제목, 작성자, 작성일, 조회수, 콘텐츠, 좋아요
@@ -152,6 +154,9 @@ public class BoardController {
 			model.addAttribute("boardInfo", selectedBoard);
 			model.addAttribute("boardCode", board.getBoardCode());
 			model.addAttribute("cp", cp);
+			
+			// 게시글 클릭 위치로 돌아가기 - 전재민
+			model.addAttribute("from", from);
 			
 			// 관리자 여부 판단 - 현동근
 			boolean isAdminView =
