@@ -192,4 +192,30 @@ public class MyPageController {
 		
 		return "mypage/comments"; 
 	}
+	
+	@GetMapping("/scraps")
+	public String myScraps(
+	        HttpSession session,
+	        @RequestParam(value="cp", required=false, defaultValue="1") int cp,
+	        @RequestParam(value="key", required=false) String key,
+	        @RequestParam(value="query", required=false) String query,
+	        Model model,
+	        RedirectAttributes ra) {
+	    
+	    Member loginMember = (Member) session.getAttribute("loginMember");
+	    if (loginMember == null) {
+	        ra.addFlashAttribute("message", "로그인 후 이용해주세요.");
+	        return "redirect:/member/login";
+	    }
+
+	    Map<String, Object> paramMap = new HashMap<>();
+	    paramMap.put("key", key);
+	    paramMap.put("query", query);
+	    
+	    Map<String, Object> map = service.selectScrapList(loginMember.getMemberNo(), cp, paramMap);
+	    
+	    model.addAttribute("map", map);
+	    
+	    return "mypage/scraps";
+	}
 }
