@@ -339,7 +339,8 @@ memberPw.addEventListener("input", e => {   // input 이벤트: 입력될 때마
         return;
     }
 
-    const regExp = /^[a-zA-Z0-9!@#_-]{6,20}$/;  // 영어, 숫자, 일부 특수문자 6~20자
+    // 영문, 숫자, 특수문자(!@#$%^&*)가 모두 최소 1개 이상 포함된 6~20자
+    const regExp = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,20}$/;
     if(!regExp.test(inputPw)){  // 형식이 유효하지 않으면
         pwMessage.innerText = "비밀번호가 유효하지 않습니다";
         pwMessage.classList.add("error");
@@ -403,7 +404,8 @@ memberTel.addEventListener("input", e => {
 const signUpForm = document.querySelector("#signUpForm");
 
 signUpForm.addEventListener("submit", e => {
-    
+
+    // 1. checkObj에 있는 항목들 먼저 검사
     for(let key in checkObj){   // 객체용 향상된 for문
         if(!checkObj[key]){ // 각 key에 대한 value가 false인 경우
             let str;    // 경고창에 출력할 메세지 변수
@@ -417,10 +419,21 @@ signUpForm.addEventListener("submit", e => {
                 case "memberPwConfirm" : str = "비밀번호 확인이 일치하지 않습니다"; break;
                 case "memberTel" : str = "전화번호가 유효하지 않습니다"; break;
             }
-            alert(str); // 경고창 출력
-            
-            e.preventDefault(); // form 기본 제출 이벤트 제거
-            return; // 첫 번째 에러에서 중단하기
+            alert(str); 
+            document.getElementById(key).focus(); // 해당 입력창으로 포커스 이동
+            e.preventDefault(); 
+            return; 
         }
+    }
+
+    // 2. 주소 유효성 검사 (추가된 부분)
+    // 우편번호와 주소 중 하나라도 비어있으면 막음
+    const postcode = document.getElementById("postcode");
+    const address = document.getElementById("address");
+
+    if(postcode.value.trim().length == 0 || address.value.trim().length == 0){
+        alert("주소를 입력해주세요.");
+        e.preventDefault();
+        return;
     }
 });
