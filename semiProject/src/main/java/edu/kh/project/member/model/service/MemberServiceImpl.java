@@ -28,13 +28,7 @@ public class MemberServiceImpl implements MemberService {
         String encPw = bcrypt.encode(inputMember.getMemberPw());
         inputMember.setMemberPw(encPw);
         
-        // 2. 주민번호 합치기
-        if(inputMember.getMemberRrn1() != null && inputMember.getMemberRrn2() != null) {
-            String rrn = inputMember.getMemberRrn1() + "-" + inputMember.getMemberRrn2();
-            inputMember.setMemberRrn(rrn);
-        }
-        
-        // 3. DAO(Mapper) 호출해서 DB에 저장
+        // 2. DAO(Mapper) 호출해서 DB에 저장
         return mapper.signup(inputMember);
     }
     

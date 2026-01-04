@@ -15,7 +15,6 @@
         <result property="memberTel" column="MEMBER_TEL"/>
         <result property="memberEmail" column="MEMBER_EMAIL"/>
         <result property="memberAddress" column="MEMBER_ADDRESS"/>
-        <result property="memberRrn" column="MEMBER_RRN"/>
         <result property="profileImg" column="PROFILE_IMG"/>
         <result property="enrollDate" column="ENROLL_DATE"/>
         <result property="memberDelFl" column="MEMBER_DEL_FL"/>
@@ -90,8 +89,7 @@
             MEMBER_NICKNAME,
             MEMBER_TEL,
             MEMBER_EMAIL,
-            MEMBER_ADDRESS,
-            MEMBER_RRN
+            MEMBER_ADDRESS
         ) VALUES (
             SEQ_MEMBER_NO.NEXTVAL,
             #{memberId},
@@ -100,8 +98,7 @@
             #{memberNickname},
             #{memberTel},
             #{memberEmail},
-            #{memberAddress},
-            #{memberRrn}
+            #{memberAddress}
         )
     </insert>
 
