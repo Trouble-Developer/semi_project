@@ -24,7 +24,7 @@ public interface MyPageMapper {
 	 * @param updateMember
 	 * @return result
 	 */
-	int updateMember(Member updateMember);
+	int updateProfile(Member updateMember);
 
 
     int getPostCount(Map<String, Object> map);
@@ -43,4 +43,10 @@ public interface MyPageMapper {
  	
  	
  	List<Board> selectScrapList(Map<String, Object> map, RowBounds rowBounds);
+
+ 	
+	String selectEncPw(int memberNo);
+	
+
+	int changePw(Member member);
 }

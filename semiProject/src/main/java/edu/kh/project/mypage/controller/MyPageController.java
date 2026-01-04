@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -71,19 +72,20 @@ public class MyPageController {
     
     /**
      * 프로필 정보 수정
+     * (비밀번호 검사 로직 제거 버전)
      */
     @PostMapping("/update")
     public String updateProfile(
             HttpSession session, 
             Member updateMember, 
-            @RequestParam("uploadFile") MultipartFile profileImg,
-            @RequestParam("currentPw") String currentPw,
+            @RequestParam("uploadFile") MultipartFile profileImg, // 니가 쓰던 변수명 유지
+            // @RequestParam("currentPw") String currentPw,  <-- 이거 삭제함
             @RequestParam(value="postcode", required=false) String postcode,
             @RequestParam(value="address", required=false) String address,
             @RequestParam(value="detailAddress", required=false) String detailAddress,
             RedirectAttributes ra) throws IOException {
 
-        // 1. 로그인 검사 
+        // 1. 로그인 검사 (그대로)
         Member loginMember = (Member) session.getAttribute("loginMember");
 
         if (loginMember == null) {
@@ -91,25 +93,24 @@ public class MyPageController {
             return "redirect:/member/login";
         }
 
-
-        // 2. 로그인한 회원의 번호(PK) 세팅
+        // 2. 로그인한 회원의 번호(PK) 세팅 
         updateMember.setMemberNo(loginMember.getMemberNo());
         
-        // 3. 주소 합치기 (구분자 ,, 사용)
+        // 3. 주소 합치기 (그대로)
         if(postcode != null && address != null) {
             String memberAddress = String.join(",,", postcode, address, detailAddress);
             updateMember.setMemberAddress(memberAddress);
         }
 
-        // 4. 서비스 호출
-        int result = service.updateProfile(updateMember, profileImg, profileWebPath, profileFolderPath, currentPw);
+        // 4. 서비스 호출 
+        int result = service.updateProfile(updateMember, profileImg, profileWebPath, profileFolderPath);
 
         String message = null;
 
         if(result > 0) {
             message = "회원 정보가 수정되었습니다.";
 
-            // 5. 세션 갱신 (참조 주소가 같아서 setter만 호출해도 세션 값 바뀜)
+            // 5. 세션 갱신 (그대로)
             loginMember.setMemberAddress(updateMember.getMemberAddress());
             loginMember.setMemberNickname(updateMember.getMemberNickname());
             loginMember.setMemberTel(updateMember.getMemberTel()); 
@@ -118,15 +119,14 @@ public class MyPageController {
                 loginMember.setProfileImg(updateMember.getProfileImg());
             }
 
-        } else if(result == -1) {
-             message = "현재 비밀번호가 일치하지 않습니다.";
         } else {
+            // result == -1 (비번 불일치) 로직 삭제함
             message = "회원 정보 수정 실패";
         }
 
         ra.addFlashAttribute("message", message);
 
-        return "redirect:/mypage/profile";
+        return "redirect:/mypage/profile"; // 경로 유지
     }
     
     /**
@@ -217,5 +217,56 @@ public class MyPageController {
 	    model.addAttribute("map", map);
 	    
 	    return "mypage/scraps";
+	}
+	
+	// 비밀번호 변경 페이지 이동
+	@GetMapping("changePw")
+	public String changePw(
+			@SessionAttribute(value="loginMember", required=false) Member loginMember,
+			RedirectAttributes ra) {
+		
+		// 1. 로그인 안 했으면 로그인 페이지로 쫓아냄
+		if(loginMember == null) {
+			ra.addFlashAttribute("message", "로그인 후 이용해주세요.");
+			return "redirect:/member/login";
+		}
+		
+		// 2. 로그인 했으면 정상적으로 화면 보여줌
+		return "mypage/changePw";
+	}
+
+	// 비밀번호 변경 수행
+	@PostMapping("changePw")
+	public String changePw(
+			@RequestParam("currentPw") String currentPw,
+			@RequestParam("newPw") String newPw,
+			@SessionAttribute(value="loginMember", required=false) Member loginMember,
+			RedirectAttributes ra) {
+		
+		// 1. 로그인 검사
+		if(loginMember == null) {
+			ra.addFlashAttribute("message", "로그인 후 이용해주세요.");
+			return "redirect:/member/login";
+		}
+		
+		// 2. 로그인한 회원의 번호
+		int memberNo = loginMember.getMemberNo();
+		
+		// 3. 서비스 호출
+		int result = service.changePw(currentPw, newPw, memberNo);
+		
+		String message = null;
+		String path = null;
+		
+		if(result > 0) {
+			message = "비밀번호가 변경되었습니다.";
+			path = "redirect:/mypage/profile"; // 내 정보 페이지로
+		} else {
+			message = "현재 비밀번호가 일치하지 않습니다.";
+			path = "redirect:/mypage/changePw"; // 다시 변경 페이지로
+		}
+		
+		ra.addFlashAttribute("message", message);
+		return path;
 	}
 }

@@ -13,6 +13,10 @@
       <li th:classappend="${menu == 'profile'} ? 'active'">
         <a th:href="@{/mypage/profile}">프로필 관리</a>
       </li>
+
+      <li th:classappend="${menu == 'changePw'} ? 'active'">
+        <a th:href="@{/mypage/changePw}">비밀번호 변경</a>
+      </li>
         
       <li th:classappend="${menu == 'posts'} ? 'active'">
         <a th:href="@{/mypage/posts}">내 작성글</a>
