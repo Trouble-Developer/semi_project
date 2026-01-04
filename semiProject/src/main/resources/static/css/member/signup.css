@@ -82,19 +82,6 @@ input:focus {
   flex: 1; /* 남은 공간 다 차지 */
 }
 
-/* 주민번호 레이아웃 */
-.rrn-box {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.rrn-box input {
-  text-align: center;
-}
-.dash {
-  font-weight: bold;
-}
-
 /* 주소 쪽 여백 */
 .mb-10 {
   margin-bottom: 10px;

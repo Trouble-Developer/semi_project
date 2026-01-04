@@ -17,6 +17,10 @@
 		BOARD_CODE,
 		MEMBER_NO,
 		BOARD_PW
+		<if test="boardCode == 3">
+			,VOLUNTEER_START, VOLUNTEER_END, VOLUNTEER_CATEGORY,
+			VOLUNTEER_AGENCY, VOLUNTEER_TYPE
+		</if>
 		)
 		VALUES (
 		#{boardNo},
@@ -29,6 +33,10 @@
 		#{boardCode},
 		#{memberNo},
 		#{encPw}
+		<if test="boardCode == 3">
+			,#{volunteerStart}, #{volunteerEnd}, #{volunteerCategory},
+			#{volunteerAgency}, #{volunteerType}
+		</if>
 		)
 	</insert>
 

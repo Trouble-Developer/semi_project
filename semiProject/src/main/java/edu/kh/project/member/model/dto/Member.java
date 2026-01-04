@@ -19,15 +19,10 @@ public class Member {
     private String memberPw;        // MEMBER_PW
     private String memberNickname;  // MEMBER_NICKNAME
     private String memberEmail;     // MEMBER_EMAIL
-    private String memberRrn;       // MEMBER_RRN (주민번호 전체: 000000-1234567)
     private String memberTel;       // MEMBER_TEL
     private String memberAddress;   // MEMBER_ADDRESS (주소 전체)
     private String profileImg;    	// PROFILE_IMG
     private String enrollDate;      // ENROLL_DATE
     private String memberDelFl;     // MEMBER_DEL_FL
     private int authority;          // AUTHORITY
-
-    // --- DB에는 없지만 HTML 폼에서 입력받을 때 쓰는 임시 필드 ---
-    private String memberRrn1;      // 주민번호 앞자리
-    private String memberRrn2;      // 주민번호 뒷자리
 }

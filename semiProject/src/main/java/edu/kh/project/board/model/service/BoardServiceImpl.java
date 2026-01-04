@@ -27,7 +27,6 @@ public class BoardServiceImpl implements BoardService {
 	@Autowired
 	private BoardMapper mapper;
 
-	// ⭐⭐⭐ 추가 2: CommentMapper 의존성 주입 ⭐⭐⭐
 	@Autowired
 	private CommentMapper commentMapper;
 
@@ -103,7 +102,6 @@ public class BoardServiceImpl implements BoardService {
 		return map;
 	}
 
-	// ⭐⭐⭐ 추가 3: 이 메서드 전체를 아래 코드로 교체! ⭐⭐⭐
 	@Override
 	public Board freeBoardDetil(Board board) {
 		// 1. 게시글 조회
@@ -187,5 +185,10 @@ public class BoardServiceImpl implements BoardService {
 			return 1;
 		}
 		return 0;
+	}
+
+	@Override
+	public List<String> selectDbImageList() {
+		return mapper.selectDbImageList();
 	}
 }

@@ -7,7 +7,7 @@ if (updateBtn !== null) {
     location.href = url;
   });
 }
-
+console.log(`보드 정보 = ${JSON.stringify(boardInfo)}`);
 if (deleteBtn !== null) {
   deleteBtn.addEventListener("click", () => {
     // /editBoard/2/1997/delete?cp=1

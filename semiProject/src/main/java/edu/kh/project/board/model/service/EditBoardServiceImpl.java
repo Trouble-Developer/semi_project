@@ -7,12 +7,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import edu.kh.project.board.model.dto.BoardImg;
 import edu.kh.project.board.model.mapper.EditBoardMapper;
+import edu.kh.project.common.util.Utility;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
@@ -22,42 +25,56 @@ public class EditBoardServiceImpl implements EditBoardService {
 	@Autowired
 	private BCryptPasswordEncoder bcrypt;
 
+	@Value("${board.image.web-path}")
+	private String boardImageWebPath;
+
+	@Value("${board.image.folder-path}")
+	private String boardImageFolderPath;
+
 	@Override
-	public int boardInsert(Map<String, Object> map) {
-
-//		img_path = /upload/board/10231203.jpg
-//				img_original_name=안됌
-//				img_rename=10230213.png
-
-		if (map.get("boardLock").equals("Y")) {
+	public int boardInsert(Map<String, Object> map, MultipartFile thumbnail) throws Exception {
+		if ("Y".equals(map.get("boardLock"))) {
 			map.put("encPw", bcrypt.encode((CharSequence) map.get("boardPw")));
 		} else {
 			map.put("encPw", null);
 		}
-		int result = mapper.boardInsert(map);
 
+		int result = mapper.boardInsert(map);
 		if (result == 0)
 			return 0;
 
-		String content = (String) map.get("content");
+		int boardNo = Integer.parseInt(map.get("boardNo").toString());
+		List<BoardImg> imgList = new ArrayList<>();
 
+		if (thumbnail != null && !thumbnail.isEmpty()) {
+			String rename = Utility.fileRename(thumbnail.getOriginalFilename());
+
+			thumbnail.transferTo(new java.io.File(boardImageFolderPath + rename));
+
+			BoardImg img = new BoardImg();
+			img.setBoardNo(boardNo);
+			img.setImgPath(boardImageWebPath);
+			img.setImgRename(rename);
+			img.setImgOriginal(thumbnail.getOriginalFilename());
+			img.setImgOrder(0); // 썸네일은 무조건 0번
+			imgList.add(img);
+		}
+
+		String content = (String) map.get("content");
 		Pattern pattern = Pattern.compile("<img[^>]+src=\"(/upload/board/[^\"\\s>]+)\"");
 		Matcher matcher = pattern.matcher(content);
 
-		List<BoardImg> imgList = new ArrayList<>();
-		int order = 0;
-
+		int order = 1;
 		while (matcher.find()) {
-			String fullSrc = matcher.group(1); // /upload/board/xxx.png
+			String fullSrc = matcher.group(1);
 			String fileName = fullSrc.replace("/upload/board/", "");
 
 			BoardImg img = new BoardImg();
-			img.setBoardNo((int) map.get("boardNo"));
+			img.setBoardNo(boardNo);
 			img.setImgPath("/upload/board/");
 			img.setImgRename(fileName);
 			img.setImgOriginal(fileName);
-			img.setImgOrder(order++);
-
+			img.setImgOrder(order++); // 본문 이미지는 1, 2, 3...
 			imgList.add(img);
 		}
 
@@ -65,7 +82,7 @@ public class EditBoardServiceImpl implements EditBoardService {
 			mapper.insertUploadList(imgList);
 		}
 
-		return (int) map.get("boardNo");
+		return boardNo;
 	}
 
 	@Override
