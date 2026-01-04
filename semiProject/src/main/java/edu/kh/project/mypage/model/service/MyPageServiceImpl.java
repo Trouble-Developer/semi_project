@@ -2,13 +2,19 @@ package edu.kh.project.mypage.model.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import edu.kh.project.board.model.dto.Board;
+import edu.kh.project.board.model.dto.Pagination;
 import edu.kh.project.member.model.dto.Member;
 import edu.kh.project.mypage.model.mapper.MyPageMapper;
 import lombok.RequiredArgsConstructor;
@@ -90,4 +96,68 @@ public class MyPageServiceImpl implements MyPageService{
     
     return result;
   }
+
+  @Override
+  public Map<String, Object> selectPostList(int memberNo, int cp, Map<String, Object> paramMap) {
+
+      // 1. MyBatis에 전달할 파라미터 맵 생성
+      Map<String, Object> map = new HashMap<>();
+      map.put("memberNo", memberNo);
+      
+      // ★ 여기가 범인임 ★
+      // 검색어(key, query)가 있을 때만 map에 추가해줘야 XML에서 인식함
+      if(paramMap != null) {
+          map.put("key", paramMap.get("key"));
+          map.put("query", paramMap.get("query"));
+      }
+
+      // 2. 게시글 수 조회 (검색어 포함된 갯수 세야 하니까 map 전달)
+      int listCount = mapper.getPostCount(map);
+      
+      // 3. 페이지네이션
+      Pagination pagination = new Pagination(cp, listCount);
+      
+      // 4. 게시글 목록 조회
+      int offset = (pagination.getCurrentPage() - 1) * pagination.getLimit();
+      RowBounds rowBounds = new RowBounds(offset, pagination.getLimit());
+
+      // 여기서 map 안에는 memberNo, key, query 다 들어있어야 함
+      List<Board> boardList = mapper.selectPostList(map, rowBounds);
+      
+      // 5. 결과 리턴
+      Map<String, Object> resultMap = new HashMap<>();
+      resultMap.put("pagination", pagination);
+      resultMap.put("boardList", boardList);
+      
+      return resultMap;
+  }
+  
+  @Override
+	public Map<String, Object> selectCommentPostList(int memberNo, int cp, Map<String, Object> paramMap) {
+		
+		Map<String, Object> map = new HashMap<>();
+		map.put("memberNo", memberNo);
+		
+		if(paramMap != null) {
+			map.put("key", paramMap.get("key"));
+			map.put("query", paramMap.get("query"));
+		}
+
+		// 1. 내가 댓글 단 게시글 수 (중복 제거)
+		int listCount = mapper.getCommentPostCount(map);
+		
+		Pagination pagination = new Pagination(cp, listCount);
+		
+		int offset = (pagination.getCurrentPage() - 1) * pagination.getLimit();
+		RowBounds rowBounds = new RowBounds(offset, pagination.getLimit());
+
+		// 2. 목록 조회
+		List<Board> boardList = mapper.selectCommentPostList(map, rowBounds);
+		
+		Map<String, Object> resultMap = new HashMap<>();
+		resultMap.put("pagination", pagination);
+		resultMap.put("boardList", boardList);
+		
+		return resultMap;
+	}
 }

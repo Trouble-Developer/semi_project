@@ -2,7 +2,8 @@
 
 /* 사이드바 전체 컨테이너 */
 .sidebar {
-    width: 250px;
+    min-width: 250px;
+    max-width: 250px;
     background-color: #f9f9f9; /* 배경색 */
     padding: 40px 20px;
     border-right: 1px solid #eee;
