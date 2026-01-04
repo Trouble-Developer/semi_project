@@ -31,4 +31,6 @@ public interface BoardService {
 	int updateReadCount(int boardNo);
 
 	int checkBoardPw(Board board);
+
+	List<String> selectDbImageList();
 }
