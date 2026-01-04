@@ -160,4 +160,30 @@ public class MyPageServiceImpl implements MyPageService{
 		
 		return resultMap;
 	}
+  
+	  @Override
+	  public Map<String, Object> selectScrapList(int memberNo, int cp, Map<String, Object> paramMap) {
+	      Map<String, Object> map = new HashMap<>();
+	      map.put("memberNo", memberNo);
+	      if(paramMap != null) {
+	          map.put("key", paramMap.get("key"));
+	          map.put("query", paramMap.get("query"));
+	      }
+	      
+	      // 1. 전체 스크랩 수 조회 (일반+정보)
+	      int listCount = mapper.getScrapCount(map);
+	      
+	      Pagination pagination = new Pagination(cp, listCount);
+	      int offset = (pagination.getCurrentPage() - 1) * pagination.getLimit();
+	      RowBounds rowBounds = new RowBounds(offset, pagination.getLimit());
+	
+	      // 2. 목록 조회
+	      List<Board> boardList = mapper.selectScrapList(map, rowBounds);
+	      
+	      Map<String, Object> resultMap = new HashMap<>();
+	      resultMap.put("pagination", pagination);
+	      resultMap.put("boardList", boardList);
+	      
+	      return resultMap;
+	  }
 }

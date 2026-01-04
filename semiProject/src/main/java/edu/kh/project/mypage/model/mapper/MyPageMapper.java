@@ -38,4 +38,9 @@ public interface MyPageMapper {
 
  	List<Board> selectCommentPostList(Map<String, Object> map, RowBounds rowBounds);
 
+ 	
+ 	int getScrapCount(Map<String, Object> map);
+ 	
+ 	
+ 	List<Board> selectScrapList(Map<String, Object> map, RowBounds rowBounds);
 }

@@ -171,4 +171,85 @@
 		</if>
 		ORDER BY B.BOARD_NO DESC
 	</select>
+	
+	
+	<select id="getScrapCount" resultType="_int">
+		SELECT SUM(CNT) FROM (
+			SELECT COUNT(*) CNT
+			FROM "SCRAP" S
+			JOIN "BOARD" B ON (S.BOARD_NO = B.BOARD_NO)
+			WHERE S.MEMBER_NO = #{memberNo}
+			AND B.BOARD_DEL_FL = 'N'
+			<if test="query != null and query != ''">
+				AND (B.BOARD_TITLE LIKE '%' || #{query} || '%'
+				OR B.BOARD_CONTENT LIKE '%' || #{query} || '%')
+			</if>
+
+			UNION ALL
+
+			SELECT COUNT(*) CNT
+			FROM "INFO_SCRAP" S
+			JOIN "INFO_BOARD" B ON (S.INFO_BOARD_NO = B.INFO_BOARD_NO)
+			WHERE S.MEMBER_NO = #{memberNo}
+			<if test="query != null and query != ''">
+				AND B.PROGRM_NM LIKE '%' || #{query} || '%'
+			</if>
+		)
+	</select>
+
+	<select id="selectScrapList" resultType="Board">
+		SELECT * FROM (
+			SELECT 
+				B.BOARD_NO,
+				B.BOARD_CODE,
+				
+				TO_CHAR(B.BOARD_TITLE) AS BOARD_TITLE,
+				TO_CHAR(M.MEMBER_NICKNAME) AS MEMBER_NICKNAME,
+				
+				B.READ_COUNT,
+				TO_CHAR(B.BOARD_WRITE_DATE, 'YYYY-MM-DD') AS BOARD_WRITE_DATE,
+				(SELECT COUNT(*) FROM "BOARD_LIKE" L WHERE L.BOARD_NO = B.BOARD_NO) LIKE_COUNT
+			FROM "SCRAP" S
+			JOIN "BOARD" B ON (S.BOARD_NO = B.BOARD_NO)
+			JOIN "MEMBER" M ON (B.MEMBER_NO = M.MEMBER_NO)
+			WHERE S.MEMBER_NO = #{memberNo}
+			AND B.BOARD_DEL_FL = 'N'
+			<if test="query != null and query != ''">
+				AND 
+				<choose>
+					<when test="key == 'title'"> B.BOARD_TITLE LIKE '%' || #{query} || '%' </when>
+					<when test="key == 'content'"> B.BOARD_CONTENT LIKE '%' || #{query} || '%' </when>
+					<when test="key == 'all'"> (B.BOARD_TITLE LIKE '%' || #{query} || '%' OR B.BOARD_CONTENT LIKE '%' || #{query} || '%') </when>
+				</choose>
+			</if>
+
+			UNION ALL
+
+			SELECT 
+				B.INFO_BOARD_NO AS BOARD_NO,
+				2 AS BOARD_CODE,
+				
+				TO_CHAR(B.PROGRM_NM) AS BOARD_TITLE,
+				
+				CAST('공공데이터' AS VARCHAR2(100)) AS MEMBER_NICKNAME,
+				
+				0 AS READ_COUNT,
+				
+				NVL(TO_CHAR(TO_DATE(B.PROGRM_BGNDE, 'YYYYMMDD'), 'YYYY-MM-DD'), CAST('날짜미정' AS VARCHAR2(30))) AS BOARD_WRITE_DATE,
+				
+				0 AS LIKE_COUNT
+			FROM "INFO_SCRAP" S
+			JOIN "INFO_BOARD" B ON (S.INFO_BOARD_NO = B.INFO_BOARD_NO)
+			WHERE S.MEMBER_NO = #{memberNo}
+			<if test="query != null and query != ''">
+				AND 
+				<choose>
+					<when test="key == 'title'"> TO_CHAR(B.PROGRM_NM) LIKE '%' || #{query} || '%' </when>
+					<when test="key == 'content'"> TO_CHAR(B.PROGRM_NM) LIKE '%' || #{query} || '%' </when> 
+					<when test="key == 'all'"> TO_CHAR(B.PROGRM_NM) LIKE '%' || #{query} || '%' </when>
+				</choose>
+			</if>
+		)
+		ORDER BY BOARD_NO DESC
+	</select>
 </mapper>

@@ -25,4 +25,6 @@ public interface MyPageService {
   
   Map<String, Object> selectCommentPostList(int memberNo, int cp, Map<String, Object> paramMap);
 
+  Map<String, Object> selectScrapList(int memberNo, int cp, Map<String, Object> paramMap);
+
 }
