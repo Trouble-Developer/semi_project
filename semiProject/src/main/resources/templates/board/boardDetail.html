@@ -146,12 +146,6 @@
         </div>
       </div>
       <div id="list-btn">
-
-        <!-- from 값에 따라 목록 버튼 경로 변경(마이페이지 - 전재민) -->
-        <a th:if="${from == 'mypage'}" th:href="@{/mypage/posts(cp=${cp})}">목록</a>
-        <a th:if="${from == 'comments'}" th:href="@{/mypage/comments(cp=${cp})}">목록</a>
-        <a th:if="${from == 'scrap'}" th:href="@{/mypage/scraps(cp=${cp})}">목록</a>
-        <th:block th:unless="${from == 'mypage' or from == 'comments' or from == 'scrap'}">
         <!-- 목록 버튼 클릭 시 관리자면 해당 관리자 게시판으로, 일반 사용자면 해당 게시판으로 - 현동근 -->
         <!-- 관리자 관점일 때 -->
         <a
@@ -172,8 +166,6 @@
           목록
         </a>
       </div>
-
-      </th:block>
 
       <!-- ===== 댓글 영역 ===== -->
       <!-- 공지사항(boardCode=4)을 제외한 게시판에만 댓글 표시 -->
