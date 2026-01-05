@@ -291,5 +291,18 @@ public class MemberController {
 	public int checkEmail(@RequestParam("memberEmail") String memberEmail) {
 		return service.checkEmail(memberEmail);
 	}
+	
+	/**
+	 * 전화번호 중복 검사 (비동기)
+	 * @param memberTel : 입력된 전화번호
+	 * @return count : 1이면 중복, 0이면 사용 가능
+	 */
+	 @GetMapping("checkTel")
+	 @ResponseBody // 페이지 이동이 아니라 값(int)만 그대로 돌려줌
+	 public int checkTel(@RequestParam("memberTel") String memberTel) {
+	    
+		 // Service 호출해서 결과 반환
+		 return service.checkTel(memberTel);
+	  }
 
 }

@@ -397,6 +397,25 @@ memberTel.addEventListener("input", e => {
     telMessage.classList.add("confirm");
     telMessage.classList.remove("error");
     checkObj.memberTel = true;
+
+    fetch("/member/checkTel?memberTel=" + inputTel)
+    .then(resp => resp.text()) // 0 또는 1 반환 가정
+    .then(count => {
+    
+    if(count == 1) { // 중복임 (이미 DB에 있음)
+        telMessage.innerText = "이미 가입된 전화번호입니다.";
+        telMessage.classList.add("error");
+        telMessage.classList.remove("confirm");
+        checkObj.memberTel = false; // 가입 막음
+
+    } else { // 사용 가능
+        telMessage.innerText = "사용 가능한 전화번호입니다.";
+        telMessage.classList.add("confirm");
+        telMessage.classList.remove("error");
+      checkObj.memberTel = true; // 가입 허용
+    }
+
+  })
 });
 
 // -------------------------------------------------------------
