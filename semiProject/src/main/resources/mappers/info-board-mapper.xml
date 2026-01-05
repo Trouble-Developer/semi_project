@@ -8,14 +8,8 @@
             <if test="progrmNm != null and progrmNm != ''">
                 AND PROGRM_NM LIKE '%' || #{progrmNm} || '%'
             </if>
-            <if test="actPlace != null and actPlace != ''">
-                AND ACT_PLACE LIKE '%' || #{actPlace} || '%'
-            </if>
             <if test="schSido != null and schSido != ''">
                 AND SCH_SIDO = #{schSido}
-            </if>
-            <if test="actRm != null and actRm != ''">
-                AND ACT_RM = #{actRm}
             </if>
         </where>
     </select>
@@ -24,23 +18,13 @@
         SELECT * FROM (
             SELECT ROWNUM AS RNUM, A.*
             FROM (
-                SELECT 
-                    INFO_BOARD_NO, SCH_SIDO, SCH_SIGN, PROGRM_NM,
-                    PROGRM_BGNDE, PROGRM_ENDDE, NOTICE_BGN_DE, NOTICE_END_DE,
-                    ACT_BEGIN_TM, ACT_END_TM, ACT_PLACE, NANMM_BY_NM, ACT_RM
-                FROM INFO_BOARD
+                SELECT * FROM INFO_BOARD
                 <where>
                     <if test="progrmNm != null and progrmNm != ''">
                         AND PROGRM_NM LIKE '%' || #{progrmNm} || '%'
                     </if>
-                    <if test="actPlace != null and actPlace != ''">
-                        AND ACT_PLACE LIKE '%' || #{actPlace} || '%'
-                    </if>
                     <if test="schSido != null and schSido != ''">
                         AND SCH_SIDO = #{schSido}
-                    </if>
-                    <if test="actRm != null and actRm != ''">
-                        AND ACT_RM = #{actRm}
                     </if>
                 </where>
                 ORDER BY INFO_BOARD_NO DESC
@@ -51,24 +35,21 @@
 
     <insert id="mergeInfoBoard">
         MERGE INTO INFO_BOARD B
-        USING DUAL ON (B.PROGRM_NM = #{progrmNm})
+        USING DUAL ON (B.URL = #{url})
         WHEN NOT MATCHED THEN
             INSERT (
-                INFO_BOARD_NO, SCH_SIDO, SCH_SIGN, PROGRM_NM, 
-                PROGRM_BGNDE, PROGRM_ENDDE, NOTICE_BGN_DE, NOTICE_END_DE,
-                ADULT_POSBL_AT, YNG_BGS_POSBL_AT, ACT_BEGIN_TM, ACT_END_TM,
-                ACT_PLACE, NANMM_BY_NM, URL, ACT_RM, PROGRM_CN
+                INFO_BOARD_NO, URL, PROGRM_NM, PROGRM_CN, 
+                NANMM_BY_NM, PROGRM_BGNDE, PROGRM_ENDDE,
+                ACT_PLACE, ACT_RM, ADULT_POSBL_AT, YNG_BGS_POSBL_AT
             ) VALUES (
-                INFO_BOARD_SEQ.NEXTVAL, #{schSido}, #{schSign}, #{progrmNm},
-                #{progrmBgnde}, #{progrmEndde}, #{noticeBgnDe}, #{noticeEndDe},
-                #{adultPosblAt}, #{yngBgsPosblAt}, #{actBeginTm}, #{actEndTm},
-                #{actPlace}, #{nanmmByNm}, #{url}, #{actRm}, #{progrmCn}
+                INFO_BOARD_SEQ.NEXTVAL, #{url}, #{progrmNm}, #{progrmCn},
+                #{nanmmByNm}, #{progrmBgnde}, #{progrmEndde},
+                #{actPlace}, #{actRm}, 'Y', 'Y'
             )
     </insert>
     
     <select id="selectInfoBoard" resultType="InfoBoard">
-        SELECT * FROM INFO_BOARD 
-        WHERE INFO_BOARD_NO = #{infoBoardNo}
+        SELECT * FROM INFO_BOARD WHERE INFO_BOARD_NO = #{infoBoardNo}
     </select>
 
 </mapper>
