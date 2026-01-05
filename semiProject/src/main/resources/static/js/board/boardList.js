@@ -4,9 +4,7 @@ const writeBtn = document.querySelector(".write-btn");
 
 searchBtn.addEventListener("click", (e) => {
   if (searchInput.value.trim() == "") {
-    e.preventDefault();
-    alert("검색어를 입력해주세요!");
-    return;
+    location.href = `/board/${boardCode}`;
   }
 });
 
