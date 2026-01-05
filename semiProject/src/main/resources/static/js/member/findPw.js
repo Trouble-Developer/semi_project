@@ -395,6 +395,10 @@ if(sendAuthKeyBtn) {
         
         console.log("✅✅✅ 모든 유효성 검사 통과! 이메일 발송 시작...");
         
+        
+        // ✅ 버튼 클릭 즉시 alert 표시
+        alert("인증번호를 발송합니다.");
+        
         fetch("/email/sendAuthKey", {
             method: "POST",
             headers: {
@@ -413,8 +417,6 @@ if(sendAuthKeyBtn) {
         })
         .then(result => {
             console.log("인증번호 발송 결과:", result);
-            
-            alert("인증번호가 발송되었습니다.\n이메일을 확인해주세요.");
             
             authKey.focus();
             
