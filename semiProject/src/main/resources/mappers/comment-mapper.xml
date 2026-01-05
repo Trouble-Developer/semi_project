@@ -67,4 +67,40 @@
         WHERE COMMENT_NO = #{commentNo}
     </update>
 
+
+	<!-- 고객지원 게시판 댓글 권한용: 글 작성자 조회 -->
+	<select id="selectBoardWriter" resultType="int">
+    SELECT MEMBER_NO
+    FROM BOARD
+    WHERE BOARD_NO = #{boardNo}
+     AND BOARD_CODE = #{boardCode}
+	</select>
+	
+	<!-- ============================================
+	           댓글 신고 관련 SQL
+	     ============================================ -->
+
+	<!-- 댓글 신고 중복 체크 -->
+	<select id="checkCommentReport" resultType="int">
+		SELECT COUNT(*)
+		FROM COMMENT_REPORT
+		WHERE COMMENT_NO = #{commentNo}
+		  AND MEMBER_NO = #{memberNo}
+	</select>
+
+	<!-- 댓글 신고 등록 -->
+	<insert id="insertCommentReport">
+		INSERT INTO COMMENT_REPORT (
+			REPORT_NO,
+			REPORT_REASON,
+			MEMBER_NO,
+			COMMENT_NO
+		) VALUES (
+			SEQ_COMMENT_REPORT_NO.NEXTVAL,
+			#{reportReason},
+			#{memberNo},
+			#{commentNo}
+		)
+	</insert>
+
 </mapper>

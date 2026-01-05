@@ -13,6 +13,8 @@
  */
 
 
+
+
 /* ==========================================================
  *              1. 댓글 작성 영역 스타일
  * ========================================================== */
@@ -26,6 +28,339 @@
     min-height: 85px;           /* 최소 높이 */
     justify-content: center;    /* 가로 중앙 정렬 */
     margin: 30px 0;             /* 상하 여백 */
+}/**
+ * 댓글(Comment) 영역 스타일시트
+ * 
+ * [구성]
+ * 1. 댓글 작성 영역 (.comment-write-area)
+ * 2. 댓글 목록 영역 (#commentList)
+ * 3. 댓글 작성자 정보 (.comment-writer)
+ * 4. 댓글 내용 (.comment-content)
+ * 5. 버튼 영역 (.comment-btn-area)
+ * 6. 댓글 수정 (.update-textarea)
+ * 7. 답글/대댓글 (.child-comment)
+ * 
+ */
+
+
+/* ==========================================================
+ *              1. 댓글 작성 영역 스타일
+ * ========================================================== */
+
+/** 
+ * 댓글 작성 영역 컨테이너
+ * - Flexbox로 textarea와 버튼을 가로 배치
+ */
+.comment-write-area {
+    display: flex;              /* Flexbox 레이아웃 */
+    min-height: 85px;           /* 최소 높이 */
+    justify-content: center;    /* 가로 중앙 정렬 */
+    margin: 30px 0;             /* 상하 여백 */
+}
+
+/**
+ * 댓글 입력 textarea
+ * - 전체 너비의 75% 차지
+ */
+.comment-write-area > textarea {
+    flex-basis: 75%;            /* 너비 비율 */
+    margin-right: 10px;         /* 버튼과의 간격 */
+    resize: none;               /* 크기 조절 비활성화 */
+    padding: 10px;              /* 내부 여백 */
+    border: 1px solid #ddd;     /* 테두리 */
+    border-radius: 5px;         /* 모서리 둥글게 */
+    font-size: 14px;            /* 글자 크기 */
+    line-height: 1.5;           /* 줄 간격 */
+}
+
+/* textarea 포커스 시 스타일 */
+.comment-write-area > textarea:focus {
+    outline: none;              /* 기본 아웃라인 제거 */
+    border-color: #FFB347;      /* 테두리 색상 변경 */
+    box-shadow: 0 0 5px rgba(69, 91, 168, 0.3);  /* 그림자 효과 */
+}
+
+/**
+ * 댓글 등록 버튼
+ * - 메인 페이지와 비슷한 색깔적용
+ */
+.comment-write-area > button {
+    flex-basis: 7%;             /* 너비 비율 */
+    height: 85px;               /* 높이 고정 */
+    font-weight: bold;          /* 글자 굵게 */
+    border: 0;                  /* 테두리 없음 */
+    background-color: #ffb347;  /* 메인 컬러 */
+    color: white;               /* 글자색 흰색 */
+    cursor: pointer;            /* 마우스 포인터 */
+    border-radius: 5px;         /* 모서리 둥글게 */
+    transition: background-color 0.3s ease;  /* 호버 애니메이션 */
+}
+
+/* 등록 버튼 호버 효과 */
+.comment-write-area > button:hover {
+    background-color: #FF9E2C;  /* 진한 색상으로 변경 */
+}
+
+
+/* ==========================================================
+ *              2. 댓글 목록 영역 스타일
+ * ========================================================== */
+
+/**
+ * 댓글 목록 ul 태그
+ * - 기본 리스트 스타일 제거
+ */
+#commentList {
+    padding: 0;                 /* 내부 여백 제거 */
+    list-style: none;           /* 리스트 마커(●) 제거 */
+    margin: 0;                  /* 외부 여백 제거 */
+}
+
+/**
+ * 댓글 행 (li)
+ * - 각 댓글을 구분하는 테두리 적용
+ */
+.comment-row {
+    border-top: 1px solid #ccc; /* 상단 구분선 */
+    padding: 15px 0;            /* 상하 여백 */
+}
+
+/* 마지막 댓글 행에 하단 테두리 추가 */
+.comment-row:last-child {
+    border-bottom: 1px solid #ccc;
+}
+
+
+/* ==========================================================
+ *              3. 댓글 작성자 정보 스타일
+ * ========================================================== */
+
+/**
+ * 작성자 정보 영역
+ * - 프로필 이미지, 닉네임, 작성일을 가로 배치
+ */
+.comment-writer {
+    display: flex;              /* Flexbox 레이아웃 */
+    align-items: center;        /* 세로 중앙 정렬 */
+    margin: 0 0 10px 0;         /* 하단 여백 */
+}
+
+/**
+ * 프로필 이미지
+ * - 원형으로 표시
+ */
+.comment-writer > img {
+    width: 40px;                /* 너비 */
+    height: 40px;               /* 높이 */
+    border-radius: 50%;         /* 원형으로 만들기 */
+    object-fit: cover;          /* 이미지 비율 유지하며 채우기 */
+    border: 1px solid #eee;     /* 테두리 */
+}
+
+/**
+ * 닉네임
+ */
+.comment-writer > span {
+    font-weight: bold;          /* 글자 굵게 */
+    margin-left: 10px;          /* 왼쪽 여백 (이미지와 간격) */
+    color: #333;                /* 글자색 */
+}
+
+/**
+ * 작성일
+ * - 오른쪽 끝에 배치 (margin-left: auto 활용)
+ */
+.comment-date {
+    font-size: 0.8em;           /* 글자 크기 작게 */
+    color: #aaa;                /* 회색 글자 */
+    margin-left: auto !important;  /* 오른쪽 끝으로 밀기 */
+    font-weight: normal !important; /* 굵기 정상 */
+}
+
+
+/* ==========================================================
+ *              4. 댓글 내용 스타일
+ * ========================================================== */
+
+/**
+ * 댓글 내용 텍스트
+ * - 줄바꿈과 공백 유지
+ */
+.comment-content {
+    white-space: pre-wrap;      /* 공백과 줄바꿈 유지 */
+    margin: 10px 0;             /* 상하 여백 */
+    line-height: 1.6;           /* 줄 간격 */
+    color: #444;                /* 글자색 */
+    word-break: break-word;     /* 긴 단어 줄바꿈 */
+}
+
+
+/* ==========================================================
+ *              5. 버튼 영역 스타일
+ * ========================================================== */
+
+/**
+ * 버튼 영역 컨테이너
+ * - 오른쪽 정렬
+ */
+.comment-btn-area {
+    display: flex;              /* Flexbox 레이아웃 */
+    justify-content: flex-end;  /* 오른쪽 정렬 */
+    margin-top: 10px;           /* 상단 여백 */
+}
+
+/**
+ * 버튼 공통 스타일 (답글, 수정, 삭제)
+ */
+.comment-btn-area button {
+    width: 50px;                /* 버튼 너비 */
+    height: 30px;               /* 버튼 높이 */
+    margin-left: 10px;          /* 버튼 간 간격 */
+    font-weight: bold;          /* 글자 굵게 */
+    border: 2px solid #FFB347;  /* 테두리 */
+    background-color: #FFB347;  /* 배경색 */
+    color: white;               /* 글자색 */
+    cursor: pointer;            /* 마우스 포인터 */
+    border-radius: 3px;         /* 모서리 둥글게 */
+    font-size: 0.85em;          /* 글자 크기 */
+    transition: all 0.2s ease;  /* 호버 애니메이션 */
+}
+
+/**
+ * 버튼 호버 효과
+ * - 배경색과 글자색 반전
+ */
+.comment-btn-area button:hover {
+    background-color: white;    /* 배경색 흰색 */
+    color: #455ba8;             /* 글자색 메인 컬러 */
+}
+
+
+/* ==========================================================
+ *              6. 댓글 수정 textarea 스타일
+ * ========================================================== */
+
+/**
+ * 댓글 수정용 textarea
+ * - 수정 버튼 클릭 시 댓글 내용이 이 요소로 변환됨
+ */
+.update-textarea {
+    width: 100%;                /* 전체 너비 */
+    height: 90px;               /* 높이 */
+    resize: none;               /* 크기 조절 비활성화 */
+    padding: 10px;              /* 내부 여백 */
+    border: 1px solid #455ba8;  /* 테두리 (메인 컬러) */
+    border-radius: 5px;         /* 모서리 둥글게 */
+    font-size: 14px;            /* 글자 크기 */
+    line-height: 1.5;           /* 줄 간격 */
+    box-sizing: border-box;     /* 패딩 포함 너비 계산 */
+}
+
+/* 수정 textarea 포커스 시 */
+.update-textarea:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(69, 91, 168, 0.5);
+}
+
+
+/* ==========================================================
+ *              7. 답글(대댓글) 스타일
+ * ========================================================== */
+
+/**
+ * 답글(자식 댓글) 행
+ * - 왼쪽 들여쓰기로 계층 구조 표현
+ * - 배경색을 다르게 하여 구분
+ */
+.child-comment {
+    padding-left: 50px !important;  /* 왼쪽 들여쓰기 */
+    position: relative;             /* 가상 요소 기준점 */
+    background-color: #f9f9f9;      /* 배경색 (살짝 회색) */
+}
+
+/**
+ * 답글 표시 아이콘 (화살표)
+ * - 가상 요소(::before)로 답글 표시
+ */
+.child-comment::before {
+    content: "↳";               /* 답글 화살표 */
+    position: absolute;         /* 절대 위치 */
+    left: 20px;                 /* 왼쪽 위치 */
+    top: 15px;                  /* 상단 위치 */
+    color: #888;                /* 회색 */
+    font-size: 1.2em;           /* 크기 */
+}
+
+/**
+ * 답글 입력 textarea
+ * - 답글 버튼 클릭 시 생성되는 입력창
+ */
+.commentInsertContent {
+    width: 100%;                /* 전체 너비 */
+    height: 90px;               /* 높이 */
+    resize: none;               /* 크기 조절 비활성화 */
+    margin-top: 15px;           /* 상단 여백 */
+    padding: 10px;              /* 내부 여백 */
+    border: 1px solid #ddd;     /* 테두리 */
+    border-radius: 5px;         /* 모서리 둥글게 */
+    font-size: 14px;            /* 글자 크기 */
+    box-sizing: border-box;     /* 패딩 포함 너비 계산 */
+}
+
+/* 답글 입력창 포커스 시 */
+.commentInsertContent:focus {
+    outline: none;
+    border-color: #455ba8;
+    box-shadow: 0 0 5px rgba(69, 91, 168, 0.3);
+}
+
+
+/* ==========================================================
+ *              8. 삭제된 댓글 스타일
+ * ========================================================== */
+
+/**
+ * 삭제된 댓글 표시
+ * - 답글이 있어서 완전히 삭제할 수 없는 댓글
+ */
+.comment-row:has(:only-child:not(.comment-writer)) {
+    color: #999;                /* 회색 글자 */
+    font-style: italic;         /* 기울임체 */
+    padding: 20px 0;            /* 여백 */
+}
+
+
+/* ==========================================================
+ *              9. 반응형 스타일 (모바일)
+ * ========================================================== */
+
+@media screen and (max-width: 768px) {
+    
+    /* 댓글 작성 영역 세로 배치 */
+    .comment-write-area {
+        flex-direction: column;
+    }
+    
+    .comment-write-area > textarea {
+        flex-basis: auto;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+    
+    .comment-write-area > button {
+        flex-basis: auto;
+        width: 100%;
+        height: 45px;
+    }
+    
+    /* 답글 들여쓰기 축소 */
+    .child-comment {
+        padding-left: 30px !important;
+    }
+    
+    .child-comment::before {
+        left: 10px;
+    }
 }
 
 /**
