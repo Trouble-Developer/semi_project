@@ -33,18 +33,65 @@
         WHERE RNUM BETWEEN #{offset} + 1 AND #{offset} + #{limit}
     </select>
 
-    <insert id="mergeInfoBoard">
+    <insert id="mergeInfoBoard" parameterType="InfoBoard">
         MERGE INTO INFO_BOARD B
         USING DUAL ON (B.URL = #{url})
+        
+        WHEN MATCHED THEN
+            UPDATE SET
+                PROGRM_NM = #{progrmNm},
+                PROGRM_CN = #{progrmCn},
+                NANMM_BY_NM = #{nanmmByNm},
+                PROGRM_BGNDE = #{progrmBgnde},
+                PROGRM_ENDDE = #{progrmEndde},
+                NOTICE_BGN_DE = #{noticeBgnDe},
+                NOTICE_END_DE = #{noticeEndDe},
+                ACT_BEGIN_TM = #{actBeginTm},
+                ACT_END_TM = #{actEndTm},
+                ACT_PLACE = #{actPlace},
+                ACT_RM = #{actRm},
+                SCH_SIDO = #{schSido},
+                SCH_SIGN = #{schSign},
+                ADULT_POSBL_AT = #{adultPosblAt},
+                YNG_BGS_POSBL_AT = #{yngBgsPosblAt}
+
         WHEN NOT MATCHED THEN
             INSERT (
-                INFO_BOARD_NO, URL, PROGRM_NM, PROGRM_CN, 
-                NANMM_BY_NM, PROGRM_BGNDE, PROGRM_ENDDE,
-                ACT_PLACE, ACT_RM, ADULT_POSBL_AT, YNG_BGS_POSBL_AT
+                INFO_BOARD_NO, 
+                URL, 
+                SCH_SIDO, 
+                SCH_SIGN, 
+                PROGRM_NM, 
+                PROGRM_BGNDE, 
+                PROGRM_ENDDE, 
+                NOTICE_BGN_DE, 
+                NOTICE_END_DE,
+                ADULT_POSBL_AT, 
+                YNG_BGS_POSBL_AT, 
+                ACT_BEGIN_TM, 
+                ACT_END_TM,
+                ACT_PLACE, 
+                NANMM_BY_NM, 
+                ACT_RM, 
+                PROGRM_CN
             ) VALUES (
-                INFO_BOARD_SEQ.NEXTVAL, #{url}, #{progrmNm}, #{progrmCn},
-                #{nanmmByNm}, #{progrmBgnde}, #{progrmEndde},
-                #{actPlace}, #{actRm}, 'Y', 'Y'
+                INFO_BOARD_SEQ.NEXTVAL, 
+                #{url}, 
+                #{schSido}, 
+                #{schSign}, 
+                #{progrmNm},
+                #{progrmBgnde}, 
+                #{progrmEndde}, 
+                #{noticeBgnDe}, 
+                #{noticeEndDe},
+                #{adultPosblAt}, 
+                #{yngBgsPosblAt}, 
+                #{actBeginTm}, 
+                #{actEndTm},
+                #{actPlace}, 
+                #{nanmmByNm}, 
+                #{actRm}, 
+                #{progrmCn}
             )
     </insert>
     
