@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
 import edu.kh.project.board.model.dto.Comment;
+import edu.kh.project.board.model.dto.CommentReport;
 import edu.kh.project.board.model.service.CommentService;
 import edu.kh.project.member.model.dto.Member;
 import lombok.RequiredArgsConstructor;
@@ -142,5 +143,37 @@ public class CommentController {
     public int deleteComment(@RequestBody int commentNo) {
         log.debug("[댓글 삭제] commentNo: {}", commentNo);
         return service.deleteComment(commentNo);
+    }
+
+    /* ============================================
+     *           댓글 신고 (POST)
+     * ============================================ */
+    
+    /**
+     * 댓글 신고 (AJAX)
+     * 
+     * @param report 신고 정보 (commentNo, reportReason)
+     * @param loginMember 로그인 회원 정보 (세션)
+     * @return 1: 성공, 0: 실패, -1: 중복 신고, -2: 로그인 필요
+     */
+    @PostMapping("/report")
+    public int reportComment(
+            @RequestBody CommentReport report,
+            @SessionAttribute(value = "loginMember", required = false) Member loginMember) {
+        
+        log.debug("[댓글 신고 요청] commentNo: {}, reason: {}", 
+                  report.getCommentNo(), report.getReportReason());
+        
+        // 1) 로그인 체크
+        if (loginMember == null) {
+            log.warn("[댓글 신고] 로그인 필요");
+            return -2;
+        }
+        
+        // 2) 신고자 번호는 세션에서 가져오기 (보안!)
+        report.setMemberNo(loginMember.getMemberNo());
+        
+        // 3) 신고 처리
+        return service.reportComment(report);
     }
 }

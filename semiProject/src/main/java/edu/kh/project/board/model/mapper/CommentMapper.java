@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import edu.kh.project.board.model.dto.Comment;
+import edu.kh.project.board.model.dto.CommentReport;
 
 @Mapper
 public interface CommentMapper {
@@ -30,7 +31,6 @@ public interface CommentMapper {
      */
     int deleteComment(int commentNo);
 
-    // ⭐⭐⭐ 이 메서드 추가! ⭐⭐⭐
     /**
      * 게시글 작성자 번호 조회
      * 
@@ -40,4 +40,24 @@ public interface CommentMapper {
      */
     int selectBoardWriter(@Param("boardNo") int boardNo, 
                           @Param("boardCode") int boardCode);
+
+    /* ============================================
+     *           댓글 신고 관련 메서드
+     * ============================================ */
+
+    /**
+     * 댓글 신고 중복 체크
+     * @param commentNo 댓글 번호
+     * @param memberNo 신고자 회원번호
+     * @return 이미 신고했으면 1, 아니면 0
+     */
+    int checkCommentReport(@Param("commentNo") int commentNo, 
+                           @Param("memberNo") int memberNo);
+
+    /**
+     * 댓글 신고 등록
+     * @param report 신고 정보
+     * @return 성공 시 1
+     */
+    int insertCommentReport(CommentReport report);
 }
