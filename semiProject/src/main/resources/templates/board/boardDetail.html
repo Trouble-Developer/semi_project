@@ -159,6 +159,7 @@
       </div>
 
       <div id="list-btn">
+
         <!-- from 값에 따라 목록 버튼 경로 변경(마이페이지 - 전재민) -->
         <a th:if="${from == 'mypage'}" th:href="@{/mypage/posts(cp=${cp})}"
           >목록</a
@@ -170,6 +171,7 @@
         >
         <a th:if="${from == 'scrap'}" th:href="@{/mypage/scraps(cp=${cp})}"
           >목록</a
+
         >
 
         <th:block
