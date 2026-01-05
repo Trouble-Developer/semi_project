@@ -63,7 +63,9 @@
                    id="content-title" th:text="*{boardTitle}">제목</a>
                 <div>
                   <p id="day-info-text" th:text="*{boardWriteDate}">작성일</p>
-                  <p id="view-info-text" th:text="*{readCount}">조회수</p>
+                  <div id="read-count-info">
+                  <span>조회수</span><p id="view-info-text" th:text="*{readCount}">조회수</p>
+                </div>
                 </div>
               </div>
             </div>

@@ -1,6 +1,5 @@
 package edu.kh.project.main.model.service;
 
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,7 @@ import edu.kh.project.main.model.mapper.MainMapper;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
-public class MainServiceImpl implements MainService{
+public class MainServiceImpl implements MainService {
 	@Autowired
 	private MainMapper mapper;
 
@@ -28,11 +27,10 @@ public class MainServiceImpl implements MainService{
 		return mapper.getFreeBoardList();
 	}
 
-//	@Override
-//	public List<InfoBoard> getInfoBoardList() {
-//		// return mapper.getInfoBoardList();
-//		return null;
-//	}
+	@Override
+	public List<InfoBoard> getInfoBoardList() {
+		return mapper.getInfoBoardList();
+	}
 
 	@Override
 	public List<Board> getNoticeBoardList() {
@@ -44,7 +42,4 @@ public class MainServiceImpl implements MainService{
 		return mapper.getReviewBestUser();
 	}
 
-
-	
-	
 }

@@ -11,7 +11,7 @@ public interface MainService {
 
 	List<Board> getFreeBoardList();
 
-	// List<InfoBoard> getInfoBoardList();
+	List<InfoBoard> getInfoBoardList();
 
 
 	List<Board> getNoticeBoardList();

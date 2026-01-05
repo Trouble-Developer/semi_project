@@ -18,7 +18,7 @@ public interface MainMapper {
 	List<Board> getFreeBoardList();
 
 	Board getReviewBestUser();
-//
-//	List<InfoBoard> getInfoBoardList();
+
+	List<InfoBoard> getInfoBoardList();
 
 }
