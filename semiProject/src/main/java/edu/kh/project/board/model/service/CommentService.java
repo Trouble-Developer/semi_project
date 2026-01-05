@@ -2,6 +2,7 @@ package edu.kh.project.board.model.service;
 
 import java.util.List;
 import edu.kh.project.board.model.dto.Comment;
+import edu.kh.project.board.model.dto.CommentReport;
 
 public interface CommentService {
 
@@ -25,7 +26,6 @@ public interface CommentService {
      */
     int deleteComment(int commentNo);
 
-    // ⭐⭐⭐ 이 메서드 추가! ⭐⭐⭐
     /**
      * 게시글 작성자 번호 조회 (권한 체크용)
      * 
@@ -34,4 +34,15 @@ public interface CommentService {
      * @return 게시글 작성자의 회원 번호
      */
     int selectBoardWriter(int boardNo, int boardCode);
+
+    /* ============================================
+     *           댓글 신고 관련 메서드
+     * ============================================ */
+
+    /**
+     * 댓글 신고
+     * @param report 신고 정보
+     * @return 1: 성공, 0: 실패, -1: 중복 신고
+     */
+    int reportComment(CommentReport report);
 }
