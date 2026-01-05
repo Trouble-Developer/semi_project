@@ -3,6 +3,7 @@ package edu.kh.project.main.model.service;
 import java.util.List;
 
 import edu.kh.project.board.model.dto.Board;
+import edu.kh.project.info.model.dto.InfoBoard;
 
 public interface MainService {
 
@@ -10,7 +11,7 @@ public interface MainService {
 
 	List<Board> getFreeBoardList();
 
-	List<Board> getInfoBoardList();
+	// List<InfoBoard> getInfoBoardList();
 
 
 	List<Board> getNoticeBoardList();

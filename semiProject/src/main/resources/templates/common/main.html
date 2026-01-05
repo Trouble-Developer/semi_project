@@ -57,6 +57,11 @@
                 <a href="/board/1" class="more-btn">더보기</a>
               </div>
               <ul class="board-list">
+                <li>
+                  <span class="rank-text text">순위</span
+                  ><span class="board-title-text text">제목</span
+                  ><span class="board-like-text text">좋아요</span>
+                </li>
                 <li
                   th:each="freeBoard, iterStatus : ${freeBoardList}"
                   th:object="${freeBoard}"
@@ -75,40 +80,15 @@
             <article class="board-section">
               <div class="section-header">
                 <h3>
-                  정보게시판
-                  <i class="fa-solid fa-chart-line" style="color: #4dabf7"></i>
-                </h3>
-                <a href="/info/listPage" class="more-btn">더보기</a>
-              </div>
-              <ul class="board-list">
-                <li>
-                  <a href="#">[필독] 2025년 봉사 시간 관리법</a
-                  ><span class="info views">2.1k</span>
-                </li>
-                <li>
-                  <a href="#">우수 봉사자 혜택 총정리</a
-                  ><span class="info views">1.8k</span>
-                </li>
-                <li>
-                  <a href="#">겨울철 야외 봉사 주의사항</a
-                  ><span class="info views">1.5k</span>
-                </li>
-                <li>
-                  <a href="#">VMS와 1365 연동하는 방법</a
-                  ><span class="info views">1.2k</span>
-                </li>
-              </ul>
-            </article>
-
-            <article class="board-section">
-              <div class="section-header">
-                <h3>
                   공지사항
                   <i class="fa-solid fa-bullhorn" style="color: #4dabf7"></i>
                 </h3>
                 <a href="/board/4" class="more-btn">더보기</a>
               </div>
               <ul class="board-list">
+                <li>
+                  <span class="text">제목</span><span class="text">조회수</span>
+                </li>
                 <li
                   th:each="noticeBoard : ${noticeBoardList}"
                   th:object="${noticeBoard}"
@@ -123,7 +103,87 @@
               </ul>
             </article>
           </section>
-
+          <p id="volunteer-title-text">모집중인 자원봉사</p>
+          <section class="info-board-section">
+            <div class="info-board-grid">
+              <a href="#">
+                <div class="info-board-detail">
+                  <div>
+                    <p class="volun-type-text">기타</p>
+                  </div>
+                  <div>
+                    <p class="volun-info-title-text">
+                      [아름다운가게 강서화곡점] 매장운영관리 (10:00 ~ 14:00)
+                    </p>
+                  </div>
+                  <div>
+                    <ul class="info-board-detail-text">
+                      <li>모집인원 3명</li>
+                      <li>모집기간 2025.10.20 ~ 2026.01.06</li>
+                      <li>봉사기간 2025.11.01 ~ 2026.01.31</li>
+                    </ul>
+                  </div>
+                </div>
+              </a>
+              <a href="#">
+                <div class="info-board-detail">
+                  <div>
+                    <p class="volun-type-text">기타</p>
+                  </div>
+                  <div>
+                    <p class="volun-info-title-text">
+                      [아름다운가게 강서화곡점] 매장운영관리 (10:00 ~ 14:00)
+                    </p>
+                  </div>
+                  <div>
+                    <ul class="info-board-detail-text">
+                      <li>모집인원 3명</li>
+                      <li>모집기간 2025.10.20 ~ 2026.01.06</li>
+                      <li>봉사기간 2025.11.01 ~ 2026.01.31</li>
+                    </ul>
+                  </div>
+                </div>
+              </a>
+              <a href="#">
+                <div class="info-board-detail">
+                  <div>
+                    <p class="volun-type-text">기타</p>
+                  </div>
+                  <div>
+                    <p class="volun-info-title-text">
+                      [아름다운가게 강서화곡점] 매장운영관리 (10:00 ~ 14:00)
+                    </p>
+                  </div>
+                  <div>
+                    <ul class="info-board-detail-text">
+                      <li>모집인원 3명</li>
+                      <li>모집기간 2025.10.20 ~ 2026.01.06</li>
+                      <li>봉사기간 2025.11.01 ~ 2026.01.31</li>
+                    </ul>
+                  </div>
+                </div>
+              </a>
+              <a href="#">
+                <div class="info-board-detail">
+                  <div>
+                    <p class="volun-type-text">기타</p>
+                  </div>
+                  <div>
+                    <p class="volun-info-title-text">
+                      [아름다운가게 강서화곡점] 매장운영관리 (10:00 ~ 14:00)
+                    </p>
+                  </div>
+                  <div>
+                    <ul class="info-board-detail-text">
+                      <li>모집인원 3명</li>
+                      <li>모집기간 2025.10.20 ~ 2026.01.06</li>
+                      <li>봉사기간 2025.11.01 ~ 2026.01.31</li>
+                    </ul>
+                  </div>
+                </div>
+              </a>
+            </div>
+          </section>
           <section class="volunteer-king-section">
             <div th:if="${reviewBestUser != null}" class="king-card">
               <div class="king-badge">이달의 봉사왕 🏆</div>
