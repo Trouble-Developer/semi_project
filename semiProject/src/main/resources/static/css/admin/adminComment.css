@@ -1,0 +1,61 @@
+/* 관리자 신고 상세 페이지 댓글 영역 보정 */
+
+/* 댓글 전체 영역 */
+.comment-area {
+    max-width: 1000px;        /* 신고 정보 테이블과 동일 */
+    margin: 60px auto 0;      /* 가운데 정렬 */
+    padding: 0 20px;
+}
+
+/* 댓글 목록 */
+#commentList {
+    width: 100%;
+}
+
+/* 댓글 한 줄 */
+.comment-row {
+    width: 100%;
+    max-width: none;          /* 기존 제한 해제 */
+    margin: 0;
+}
+
+/* 자식 댓글도 동일 기준 */
+.child-comment {
+    max-width: none;
+}
+
+/* ===============================
+   관리자 신고 상세 댓글 레이아웃 강제 해제
+   =============================== */
+
+/* comment-area가 속한 상위 section / main의 제한 해제 */
+body > section.comment-area {
+    max-width: 1000px !important;
+    margin: 60px auto 0 !important;
+    padding: 0 20px;
+}
+
+/* 혹시 공통 section 규칙이 있는 경우 대비 */
+body > section.comment-area,
+body > main + section.comment-area {
+    width: 100% !important;
+}
+
+/* 댓글 목록 */
+#commentList {
+    width: 100% !important;
+    max-width: none !important;
+}
+
+/* 댓글 한 줄 */
+.comment-row {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0;
+}
+
+/* 대댓글 */
+.child-comment {
+    max-width: none !important;
+}
+
