@@ -60,4 +60,34 @@ public interface CommentMapper {
      * @return 성공 시 1
      */
     int insertCommentReport(CommentReport report);
+
+    /* ============================================
+     *           댓글 좋아요 관련 메서드
+     * ============================================ */
+
+    /**
+     * 댓글 좋아요 체크 (이미 눌렀는지)
+     * @param commentNo 댓글 번호
+     * @param memberNo 회원 번호
+     * @return 좋아요 눌렀으면 1, 아니면 0
+     */
+    int checkCommentLike(@Param("commentNo") int commentNo, 
+                         @Param("memberNo") int memberNo);
+
+    /**
+     * 댓글 좋아요 등록
+     */
+    int insertCommentLike(@Param("commentNo") int commentNo, 
+                          @Param("memberNo") int memberNo);
+
+    /**
+     * 댓글 좋아요 삭제
+     */
+    int deleteCommentLike(@Param("commentNo") int commentNo, 
+                          @Param("memberNo") int memberNo);
+
+    /**
+     * 댓글 좋아요 수 조회
+     */
+    int countCommentLike(int commentNo);
 }
