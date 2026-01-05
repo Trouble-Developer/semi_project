@@ -345,6 +345,10 @@ sendAuthKeyBtn.addEventListener("click", () => {
     if(!validateName()) return;
     if(!validateEmail()) return;
     
+    
+    // ✅ 버튼 클릭 즉시 alert 표시
+    alert("인증번호를 발송합니다.");
+    
     // AJAX: 인증번호 발송 요청
     fetch("/email/sendAuthKey", {
         method: "POST",
@@ -363,8 +367,6 @@ sendAuthKeyBtn.addEventListener("click", () => {
     })
     .then(result => {
         console.log("인증번호 발송 결과:", result);
-        
-        alert("인증번호가 발송되었습니다.\n이메일을 확인해주세요.");
         
         authKey.focus();    // 인증번호 입력칸으로 포커스 이동
         
