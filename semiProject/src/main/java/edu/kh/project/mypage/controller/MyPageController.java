@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -266,4 +267,56 @@ public class MyPageController {
 		ra.addFlashAttribute("message", message);
 		return path;
 	}
+
+	/**
+	 * 회원 탈퇴 페이지 이동
+	 */
+	@GetMapping("/withdraw")
+	public String withdraw(
+			@SessionAttribute(value="loginMember", required=false) Member loginMember,
+			RedirectAttributes ra) {
+		
+		if(loginMember == null) {
+			ra.addFlashAttribute("message", "로그인 후 이용해주세요.");
+			return "redirect:/member/login";
+		}
+		
+		return "mypage/withdraw";
+	}
+
+	/**
+	 * 회원 탈퇴 수행
+	 */
+	@PostMapping("/withdraw")
+	public String withdrawProcess(
+			@RequestParam("memberPw") String memberPw,
+			@SessionAttribute(value="loginMember", required=false) Member loginMember,
+			RedirectAttributes ra,
+			HttpSession session,
+			SessionStatus status) {
+		
+		if(loginMember == null) {
+			ra.addFlashAttribute("message", "로그인 후 이용해주세요.");
+			return "redirect:/member/login";
+		}
+		
+		int memberNo = loginMember.getMemberNo();
+		int result = service.withdraw(memberPw, memberNo);
+		
+		String message = null;
+		String path = null;
+		
+		if(result > 0) {
+			message = "회원 탈퇴가 완료되었습니다.";
+			status.setComplete();  // @SessionAttributes 세션 정리
+			session.invalidate();   // HttpSession 무효화
+			path = "redirect:/";
+		} else {
+			message = "비밀번호가 일치하지 않습니다.";
+			path = "redirect:/mypage/withdraw";
+		}
+		
+		ra.addFlashAttribute("message", message);
+		return path;
+		}
 }

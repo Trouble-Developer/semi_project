@@ -228,4 +228,12 @@
 		MEMBER_PW = #{memberPw}
 		WHERE MEMBER_NO = #{memberNo}
 	</update>
+	
+	
+	<!-- 회원 탈퇴 -->
+	<update id="withdraw">
+		UPDATE "MEMBER"
+		SET MEMBER_DEL_FL = 'Y'
+		WHERE MEMBER_NO = #{memberNo}
+	</update>
 </mapper>
