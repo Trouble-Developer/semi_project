@@ -33,10 +33,11 @@ body {
 
 /* 입력 한 줄 박스 */
 .myPage-row {
-    margin-bottom: 25px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; 
+  width: 60%;            
+  margin: 0 auto 25px;   
 }
 
 /* 라벨 */
@@ -49,14 +50,14 @@ body {
 
 /* 입력창 */
 .myPage-row input {
-    width: 100%;
-    height: 50px;
-    padding: 0 15px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 15px;
-    box-sizing: border-box;
-    transition: 0.2s ease-in-out;
+  width: 100%; 
+  height: 50px;
+  padding: 0 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 15px;
+  box-sizing: border-box;
+  transition: 0.2s ease-in-out;
 }
 
 .myPage-row input:focus {
@@ -68,14 +69,14 @@ body {
 .signUp-message {
     display: block;
     font-size: 13px;
-    margin-top: -15px;
-    margin-bottom: 20px;
+    margin-top: 10px;
+    margin-bottom: -10px;
     padding-left: 5px;
     letter-spacing: -0.5px;
 }
 
 .error { color: #e74c3c; }
-.confirm { color: #2ecc71; }
+.confirm { color: #07ce5a; }
 
 /* 버튼 */
 .myPage-submit {
