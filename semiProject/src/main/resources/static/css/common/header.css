@@ -56,6 +56,8 @@ a {
   align-items: center;
   width: 165px;
   height: 63px;
+  transition: background-color 0.2s ease;
+  border-radius: 20px;
 }
 .navList a {
   display: flex;
