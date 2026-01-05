@@ -20,4 +20,8 @@ public class Comment {
     private int parentCommentNo;    // 부모 댓글 번호 (답글용)
     private String profileImg;      // 회원 프로필 이미지
     private String memberNickname;  // 회원 닉네임
+    
+    // [고객지원 게시판 권한 체크용] 추가
+    private int boardCode;          // 게시판 코드 (권한 체크용)
+    private int boardWriter;        // 게시글 작성자 번호 (권한 체크용)
 }
