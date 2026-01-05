@@ -47,6 +47,7 @@
 
       <div id="board-background-area">
         <div class="inner-content">
+          <p id="volunteer-title-text">게시판</p>
           <section class="board-grid">
             <article class="board-section">
               <div class="section-header">
@@ -58,9 +59,8 @@
               </div>
               <ul class="board-list">
                 <li>
-                  <span class="rank-text text">순위</span
-                  ><span class="board-title-text text">제목</span
-                  ><span class="board-like-text text">좋아요</span>
+                  <span class="rank-text text">순위</span>
+                  <span class="board-like-text text">좋아요</span>
                 </li>
                 <li
                   th:each="freeBoard, iterStatus : ${freeBoardList}"
@@ -85,9 +85,9 @@
                 </h3>
                 <a href="/board/4" class="more-btn">더보기</a>
               </div>
-              <ul class="board-list">
-                <li>
-                  <span class="text">제목</span><span class="text">조회수</span>
+              <ul class="board-list board-list-content-2">
+                <li class="read-count-text">
+                  <span class="text">조회수</span>
                 </li>
                 <li
                   th:each="noticeBoard : ${noticeBoardList}"
@@ -106,119 +106,77 @@
           <p id="volunteer-title-text">모집중인 자원봉사</p>
           <section class="info-board-section">
             <div class="info-board-grid">
-              <a href="#">
-                <div class="info-board-detail">
-                  <div>
-                    <p class="volun-type-text">기타</p>
+              <!-- infoBoardNo=498, url=null, progrmNm=예술단공연, progrmCn=null, actRm=기타, nanmmByNm=null, progrmBgnde=20251013, progrmEndde=20260112, noticeBgnDe=20250915, noticeEndDe=20260112, actBeginTm=13, actEndTm=15, actPlace=null, adultPosblAt=null, yngBgsPosblAt=null, schSido=null, schSign=null), -->
+              <th:block
+                th:each="infoBoard : ${infoBoardList}"
+                th:object="${infoBoard}"
+              >
+                <a
+                  th:href="@{/info/detail/{infoBoardNo}(infoBoardNo=*{infoBoardNo})}"
+                >
+                  <div class="info-board-detail">
+                    <div>
+                      <p class="volun-type-text" th:text="*{actRm}">종류</p>
+                    </div>
+                    <div>
+                      <p class="volun-info-title-text" th:text="*{progrmNm}">
+                        프로그램 이름
+                      </p>
+                    </div>
+                    <div>
+                      <ul class="info-board-detail-text">
+                        <li
+                          th:text="|모집기간 : *{noticeBgnDe} ~ *{noticeEndDe}|"
+                        >
+                          모집 기간
+                        </li>
+                        <li
+                          th:text="|봉사기간 : *{progrmBgnde} ~ *{progrmEndde}|"
+                        >
+                          봉사기간
+                        </li>
+                      </ul>
+                    </div>
                   </div>
-                  <div>
-                    <p class="volun-info-title-text">
-                      [아름다운가게 강서화곡점] 매장운영관리 (10:00 ~ 14:00)
-                    </p>
-                  </div>
-                  <div>
-                    <ul class="info-board-detail-text">
-                      <li>모집인원 3명</li>
-                      <li>모집기간 2025.10.20 ~ 2026.01.06</li>
-                      <li>봉사기간 2025.11.01 ~ 2026.01.31</li>
-                    </ul>
-                  </div>
-                </div>
-              </a>
-              <a href="#">
-                <div class="info-board-detail">
-                  <div>
-                    <p class="volun-type-text">기타</p>
-                  </div>
-                  <div>
-                    <p class="volun-info-title-text">
-                      [아름다운가게 강서화곡점] 매장운영관리 (10:00 ~ 14:00)
-                    </p>
-                  </div>
-                  <div>
-                    <ul class="info-board-detail-text">
-                      <li>모집인원 3명</li>
-                      <li>모집기간 2025.10.20 ~ 2026.01.06</li>
-                      <li>봉사기간 2025.11.01 ~ 2026.01.31</li>
-                    </ul>
-                  </div>
-                </div>
-              </a>
-              <a href="#">
-                <div class="info-board-detail">
-                  <div>
-                    <p class="volun-type-text">기타</p>
-                  </div>
-                  <div>
-                    <p class="volun-info-title-text">
-                      [아름다운가게 강서화곡점] 매장운영관리 (10:00 ~ 14:00)
-                    </p>
-                  </div>
-                  <div>
-                    <ul class="info-board-detail-text">
-                      <li>모집인원 3명</li>
-                      <li>모집기간 2025.10.20 ~ 2026.01.06</li>
-                      <li>봉사기간 2025.11.01 ~ 2026.01.31</li>
-                    </ul>
-                  </div>
-                </div>
-              </a>
-              <a href="#">
-                <div class="info-board-detail">
-                  <div>
-                    <p class="volun-type-text">기타</p>
-                  </div>
-                  <div>
-                    <p class="volun-info-title-text">
-                      [아름다운가게 강서화곡점] 매장운영관리 (10:00 ~ 14:00)
-                    </p>
-                  </div>
-                  <div>
-                    <ul class="info-board-detail-text">
-                      <li>모집인원 3명</li>
-                      <li>모집기간 2025.10.20 ~ 2026.01.06</li>
-                      <li>봉사기간 2025.11.01 ~ 2026.01.31</li>
-                    </ul>
-                  </div>
-                </div>
-              </a>
-            </div>
-          </section>
-          <section class="volunteer-king-section">
-            <div th:if="${reviewBestUser != null}" class="king-card">
-              <div class="king-badge">이달의 봉사왕 🏆</div>
-              <div class="king-content">
-                <div class="king-profile">
-                  <img
-                    th:src="${reviewBestUser.profileImg != null and reviewBestUser.profileImg != '' ? reviewBestUser.profileImg : '/images/default_profile.png'}"
-                    alt="봉사왕"
-                  />
-                </div>
-                <div class="king-info">
-                  <h4>
-                    <span th:text="|${reviewBestUser.memberNickname} 님|"
-                      >사용자</span
-                    >
-                  </h4>
-                  <p>
-                    이번 달 총
-                    <strong th:text="${reviewBestUser.postCount}">0</strong>회의
-                    따뜻한 봉사 후기를 공유해 주셨습니다!
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div
-              th:if="${reviewBestUser == null}"
-              style="text-align: center; padding: 20px"
-            >
-              <p>아직 이번 달 봉사왕이 없습니다. 첫 주인공이 되어보세요! 🏅</p>
+                </a>
+              </th:block>
             </div>
           </section>
         </div>
       </div>
       <div class="story-area">
-        <p id="volunteer-title-text">자원봉사 이야기</p>
+        <section class="volunteer-king-section">
+          <div th:if="${reviewBestUser != null}" class="king-card">
+            <div class="king-badge">이달의 봉사왕 🏆</div>
+            <div class="king-content">
+              <div class="king-profile">
+                <img
+                  th:src="${reviewBestUser.profileImg != null and reviewBestUser.profileImg != '' ? reviewBestUser.profileImg : '/images/default_profile.png'}"
+                  alt="봉사왕"
+                />
+              </div>
+              <div class="king-info">
+                <h4>
+                  <span th:text="|${reviewBestUser.memberNickname} 님|"
+                    >사용자</span
+                  >
+                </h4>
+                <p>
+                  이번 달 총
+                  <strong th:text="${reviewBestUser.postCount}">0</strong>회의
+                  따뜻한 봉사 후기를 공유해 주셨습니다!
+                </p>
+              </div>
+            </div>
+          </div>
+          <div
+            th:if="${reviewBestUser == null}"
+            style="text-align: center; padding: 20px"
+          >
+            <p>아직 이번 달 봉사왕이 없습니다. 첫 주인공이 되어보세요! 🏅</p>
+          </div>
+        </section>
+        <p id="volunteer-story-title-text">자원봉사 이야기</p>
         <div id="mainContent">
           <swiper-container
             class="mySwiper2"
