@@ -93,6 +93,16 @@ const selectCommentList = () => {
           commentBtnArea.append(updateBtn, deleteBtn);
         }
 
+        // 신고 버튼 (로그인 + 본인 댓글 아닌 경우만)
+        if (loginMemberNo != null && loginMemberNo != comment.memberNo) {
+          const reportBtn = document.createElement("button");
+          reportBtn.innerText = "신고";
+          reportBtn.classList.add("report-btn");
+          reportBtn.setAttribute("onclick", 
+            `openReportModal(${comment.commentNo})`);
+          commentBtnArea.append(reportBtn);
+        }
+
         commentRow.append(commentBtnArea);
         ul.append(commentRow);
       }
@@ -377,3 +387,94 @@ const updateComment = (commentNo, btn) => {
  * =========================================================*/
 
 document.addEventListener("DOMContentLoaded", selectCommentList);
+
+/* =========================================================
+ *              7. 댓글 신고
+ * =========================================================*/
+
+/**
+ * 신고 모달 열기
+ * @param {number} commentNo - 신고할 댓글 번호
+ */
+const openReportModal = (commentNo) => {
+  
+  // 로그인 체크
+  if (loginMemberNo == null) {
+    alert("로그인 후 이용해 주세요");
+    return;
+  }
+  
+  // 신고 사유 선택 (prompt 사용 - 시간 절약)
+  const selectedReason = prompt(
+    "신고 사유를 선택해주세요:\n\n" +
+    "1. 욕설/비방\n" +
+    "2. 스팸/광고\n" +
+    "3. 음란물\n" +
+    "4. 도배\n" +
+    "5. 기타\n\n" +
+    "번호를 입력하세요 (1~5):"
+  );
+  
+  if (selectedReason == null) return; // 취소
+  
+  const reasonMap = {
+    "1": "욕설/비방",
+    "2": "스팸/광고", 
+    "3": "음란물",
+    "4": "도배",
+    "5": "기타"
+  };
+  
+  const reason = reasonMap[selectedReason.trim()];
+  
+  if (!reason) {
+    alert("올바른 번호를 입력해주세요 (1~5)");
+    return;
+  }
+  
+  // 신고 확인
+  if (!confirm(`"${reason}" 사유로 이 댓글을 신고하시겠습니까?`)) {
+    return;
+  }
+  
+  // 신고 요청
+  reportComment(commentNo, reason);
+};
+
+/**
+ * 댓글 신고 AJAX 요청
+ * @param {number} commentNo - 댓글 번호
+ * @param {string} reason - 신고 사유
+ */
+const reportComment = (commentNo, reason) => {
+  
+  const data = {
+    "commentNo": commentNo,
+    "reportReason": reason
+  };
+  
+  fetch("/comment/report", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  })
+  .then(response => response.text())
+  .then(result => {
+    
+    console.log("신고 결과:", result);
+    
+    if (result == 1) {
+      alert("신고가 접수되었습니다");
+    } else if (result == -1) {
+      alert("이미 신고한 댓글입니다");
+    } else if (result == -2) {
+      alert("로그인이 필요합니다");
+    } else {
+      alert("신고 처리 중 오류가 발생했습니다");
+    }
+  })
+  .catch(err => {
+    console.error("댓글 신고 에러:", err);
+    alert("신고 처리 중 오류가 발생했습니다");
+  });
+};

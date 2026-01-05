@@ -6,9 +6,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import edu.kh.project.board.model.dto.Comment;
+import edu.kh.project.board.model.dto.CommentReport;
 import edu.kh.project.board.model.mapper.CommentMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -36,12 +39,36 @@ public class CommentServiceImpl implements CommentService {
         return mapper.deleteComment(commentNo);
     }
 
-    // ⭐⭐⭐ 이 메서드 추가! ⭐⭐⭐
     /**
      * 게시글 작성자 번호 조회 (권한 체크용)
      */
     @Override
     public int selectBoardWriter(int boardNo, int boardCode) {
         return mapper.selectBoardWriter(boardNo, boardCode);
+    }
+
+    /* ============================================
+     *           댓글 신고 관련 메서드
+     * ============================================ */
+
+    /**
+     * 댓글 신고
+     * @param report 신고 정보
+     * @return 1: 성공, 0: 실패, -1: 중복 신고
+     */
+    @Override
+    public int reportComment(CommentReport report) {
+        
+        // 1. 중복 신고 체크
+        int check = mapper.checkCommentReport(report.getCommentNo(), report.getMemberNo());
+        
+        if (check > 0) {
+            log.debug("[댓글 신고] 중복 신고 - commentNo: {}, memberNo: {}", 
+                      report.getCommentNo(), report.getMemberNo());
+            return -1; // 이미 신고함
+        }
+        
+        // 2. 신고 등록
+        return mapper.insertCommentReport(report);
     }
 }

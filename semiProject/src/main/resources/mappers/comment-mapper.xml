@@ -76,6 +76,31 @@
      AND BOARD_CODE = #{boardCode}
 	</select>
 	
+	<!-- ============================================
+	           댓글 신고 관련 SQL
+	     ============================================ -->
 
+	<!-- 댓글 신고 중복 체크 -->
+	<select id="checkCommentReport" resultType="int">
+		SELECT COUNT(*)
+		FROM COMMENT_REPORT
+		WHERE COMMENT_NO = #{commentNo}
+		  AND MEMBER_NO = #{memberNo}
+	</select>
+
+	<!-- 댓글 신고 등록 -->
+	<insert id="insertCommentReport">
+		INSERT INTO COMMENT_REPORT (
+			REPORT_NO,
+			REPORT_REASON,
+			MEMBER_NO,
+			COMMENT_NO
+		) VALUES (
+			SEQ_COMMENT_REPORT_NO.NEXTVAL,
+			#{reportReason},
+			#{memberNo},
+			#{commentNo}
+		)
+	</insert>
 
 </mapper>
