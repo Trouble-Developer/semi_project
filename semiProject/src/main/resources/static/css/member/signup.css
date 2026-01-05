@@ -53,33 +53,32 @@ main {
   color: #333;
 }
 
-/* 공통 인풋 박스 스타일 (회색 배경, 테두리 없음) */
+/* 공통 인풋 박스 스타일 */
 input[type="text"],
 input[type="password"] {
   width: 100%;
   height: 50px;
-  background-color: #f4f5f9; /* 사진의 그 회색 */
+  background-color: #f4f5f9; 
   border: none;
   border-radius: 4px;
   padding: 0 15px;
   font-size: 15px;
-  box-sizing: border-box; /* 패딩 포함 크기 계산 */
-  outline: none; /* 클릭 시 파란 테두리 제거 */
+  box-sizing: border-box; 
+  outline: none;
 }
 
 input:focus {
-  background-color: #e9ecef; /* 포커스 되면 약간 진해짐 */
+  background-color: #e9ecef; 
 }
 
-/* 버튼 옆에 붙을 때 레이아웃 (이메일, 인증번호 등) */
 .flex-row {
   display: flex;
-  gap: 10px; /* 인풋과 버튼 사이 간격 */
+  gap: 10px; 
   width: 100%;
 }
 
 .flex-row input {
-  flex: 1; /* 남은 공간 다 차지 */
+  flex: 1; 
 }
 
 /* 주소 쪽 여백 */
@@ -87,20 +86,18 @@ input:focus {
   margin-bottom: 10px;
 }
 
-/* [버튼 스타일 1] 오렌지색 솔리드 (이메일 인증) */
 .btn-orange-solid {
   background-color: #ff6b00;
   color: white;
   border: none;
-  border-radius: 25px; /* 둥글게 */
+  border-radius: 25px; 
   padding: 0 20px;
   height: 50px;
   font-weight: bold;
   cursor: pointer;
-  white-space: nowrap; /* 줄바꿈 방지 */
+  white-space: nowrap; 
 }
 
-/* [버튼 스타일 2] 서브 버튼 (검색, 확인 등) */
 .btn-sub {
   background-color: #333;
   color: white;
@@ -111,7 +108,6 @@ input:focus {
   cursor: pointer;
 }
 
-/* [버튼 스타일 3] 회원가입 완료 버튼 (하단) */
 .btn-area {
   margin-top: 50px;
   text-align: center;
@@ -125,7 +121,7 @@ input:focus {
   color: #ff6b00;
   font-size: 18px;
   font-weight: bold;
-  border-radius: 30px; /* 완전 둥글게 */
+  border-radius: 30px; 
   cursor: pointer;
   transition: 0.2s;
 }
@@ -135,18 +131,17 @@ input:focus {
   color: white;
 }
 
-/* 유효성 검사 메시지 (빨간 글씨) */
 .error-msg {
   color: red;
   font-size: 12px;
   margin-top: 5px;
-  display: none; /* 평소엔 숨김 */
+  display: none; 
 }
 
 .confirm {
   color: green;
   font-size: 12px;
-  display: block !important; /* display: none 무시하고 보이게 */
+  display: block !important;
 }
 
 .error {

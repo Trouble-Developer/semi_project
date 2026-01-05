@@ -80,7 +80,7 @@ main {
 }
 
 .input-field:focus {
-  outline: 2px solid #ff8c00; /* 주황색 포커스 */
+  outline: 2px solid #ff8c00;
 }
 
 /* 옵션 (아이디 저장 / 찾기) */
@@ -149,19 +149,18 @@ main {
   background-color: #e63900;
 }
 
-/* 아이디/비밀번호 찾기 링크 (비밀번호 입력란 아래) */
 .find-links-top {
-  text-align: right; /* 오른쪽 정렬 */
-  margin-top: 8px; /* 위 여백 */
-  font-size: 13px; /* 작은 글씨 */
+  text-align: right; 
+  margin-top: 8px; 
+  font-size: 13px; 
 }
 
 .find-links-top a {
-  color: #666; /* 회색 */
-  text-decoration: none; /* 밑줄 없음 */
+  color: #666; 
+  text-decoration: none;
 }
 
 .find-links-top a:hover {
-  color: #ff6b00; /* 마우스 올리면 오렌지색 */
+  color: #ff6b00;
   text-decoration: underline;
 }

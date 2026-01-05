@@ -4,7 +4,7 @@
 .sidebar {
     min-width: 250px;
     max-width: 250px;
-    background-color: #f9f9f9; /* 배경색 */
+    background-color: #f9f9f9; 
     padding: 40px 20px;
     border-right: 1px solid #eee;
     box-sizing: border-box;
@@ -17,7 +17,7 @@
     font-size: 1.2rem;
     font-weight: 700;
     color: #333;
-    margin-bottom: 40px; /* 메뉴랑 간격 띄우기 */
+    margin-bottom: 40px; 
     letter-spacing: -0.5px;
 }
 
@@ -30,40 +30,34 @@
 
 /* 메뉴 아이템 간격 */
 .sidebar li {
-    margin-bottom: 12px; /* 버튼 사이 간격 */
+    margin-bottom: 12px; 
 }
 
 /* 링크(버튼) 스타일 */
 .sidebar li a {
-    display: flex; /* 아이콘과 텍스트 정렬 */
+    display: flex; 
     align-items: center;
-    padding: 15px 20px; /* 버튼 내부 통통하게 */
-    border-radius: 10px; /* 둥근 모서리 (이미지 포인트) */
+    padding: 15px 20px; 
+    border-radius: 10px; 
     text-decoration: none;
-    color: #555; /* 기본 글자색 (진한 회색) */
+    color: #555;
     font-size: 16px;
     font-weight: 500;
     transition: all 0.2s ease;
 }
 
-/* 아이콘(이모지) 간격 */
-/* 만약 이모지 대신 이미지나 i태그 쓰면 margin-right 조절 필요 */
 .sidebar li a::before {
-    /* 이모지가 텍스트에 포함되어 있으면 생략 가능하지만, 
-       혹시 아이콘을 span 등으로 감쌌다면 margin-right: 10px; 주면 됨 */
     margin-right: 8px; 
 }
 
-/* 마우스 올렸을 때 (Hover) - 연한 회색 */
 .sidebar li:hover a {
     background-color: #eee;
     color: #333;
 }
 
-/* [핵심] 현재 선택된 메뉴 (Active) - 노란색 배경 */
 .sidebar li.active a {
-    background-color: #ffd54f; /* 이미지의 그 노란색! */
-    color: #333; /* 글자색 진하게 */
-    font-weight: 700; /* 글자 두껍게 */
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* 살짝 입체감 */
+    background-color: #FFD86E; 
+    color: #333; 
+    font-weight: 700; 
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
