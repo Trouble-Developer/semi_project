@@ -1,12 +1,11 @@
-/* 1. 몸통(body)을 화면 꽉 차게 늘리고 세로 정렬로 바꿈 */
+
 body {
     display: flex;
-    flex-direction: column; /* 위에서 아래로 쌓이게 */
-    min-height: 100vh;      /* 최소 높이 = 화면 전체 높이 */
-    margin: 0;              /* 기본 여백 제거 */
+    flex-direction: column;
+    min-height: 100vh;      
+    margin: 0;            
 }
 
-/* 2. 가운데 컨텐츠 영역이 남는 빈 공간을 싹 다 차지하게 함 */
 .mypage-container {
     flex: 1;
     display: flex;
@@ -15,10 +14,10 @@ body {
     padding: 50px 0;
     gap: 40px;
 }
-/* 본문 영역이 남은 공간 꽉 채우게 */
+
 .main-content {
-    flex-grow: 1;             /* 남은 너비 다 먹어라 */
-    width: 100%;              /* 혹시 모르니 너비 지정 */
+    flex-grow: 1;            
+    width: 100%;             
 }
 
 /* 제목 스타일 */
@@ -41,9 +40,9 @@ body {
 		table-layout: fixed;
 }
 
-/* 헤더 배경색 (이미지랑 맞춤) */
+/* 헤더 배경색 */
 .board-table thead th {
-    background-color: #FFE8B8; 
+    background-color: #FFD86E; 
     padding: 15px 0;
     font-weight: bold;
     border-bottom: 1px solid #ddd;
@@ -57,21 +56,19 @@ body {
 
 /* 제목 왼쪽 정렬 */
 .title-col {
-    text-align: center !important;  /* 왼쪽(left) 말고 가운데(center)로 변경 */
-    padding-left: 0 !important;     /* 아까 준 왼쪽 여백(20px) 삭제 */
+    text-align: center !important; 
+    padding-left: 0 !important;  
 }
 
 
 .title-col a {
     text-decoration: none;
     color: #333;
-    display: block;            /* 박스 형태로 만들어서 너비를 가지게 함 */
-    width: 100%;               /* 부모 칸(td) 너비만큼 꽉 채움 */
-    
-    /* 말줄임표 3대장 (이거 3개 다 있어야 작동함) */
-    white-space: nowrap;       /* 글자가 길어도 절대 줄 바꿈 안 함 (한 줄 강제) */
-    overflow: hidden;          /* 칸 밖으로 넘치는 글자는 숨겨버림 */
-    text-overflow: ellipsis;   /* 숨겨진 부분 끝에 "..."을 붙임 */
+    display: block;          
+    width: 100%;            
+    white-space: nowrap;     
+    overflow: hidden;          
+    text-overflow: ellipsis; 
 }
 
 .title-col a:hover {
@@ -95,7 +92,7 @@ body {
 /* 숫자들이 들어있는 리스트 (ul) */
 .pagination {
   display: flex;
-  gap: 6px;           /* 숫자들 사이 간격 */
+  gap: 6px;          
   list-style: none;
   padding: 0;
   margin: 0;
@@ -104,26 +101,25 @@ body {
 
 /* 숫자 & 화살표 버튼 (a 태그) */
 .pagination li a {
-  display: flex;        /* 글자 정가운데 맞추려고 */
+  display: flex;       
   justify-content: center;
   align-items: center;
   
-  width: 32px;          /* 정원 만들기 위한 너비 */
-  height: 32px;         /* 정원 만들기 위한 높이 */
-  border-radius: 50%;   /* 동그라미 */
+  width: 32px;        
+  height: 32px;         
+  border-radius: 50%;   
   
   font-size: 13px;
   color: #333;
-  text-decoration: none; /* 밑줄 제거 */
-  transition: 0.2s;     /* 부드럽게 */
+  text-decoration: none; 
+  transition: 0.2s;  
 }
 
-/* ★ 현재 페이지 (빨간 동그라미) */
 .pagination li a.current {
-  background-color: #ff6b6b; /* 니가 가져온 그 색깔 (살구색?) */
+  background-color: #ff6b6b; 
   color: #fff;
   font-weight: bold;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* 살짝 그림자 */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 /* 현재 페이지 활성화 */
