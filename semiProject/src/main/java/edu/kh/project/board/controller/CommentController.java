@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 import edu.kh.project.board.model.dto.Comment;
 import edu.kh.project.board.model.service.CommentService;
+import edu.kh.project.member.model.dto.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,28 +25,28 @@ import lombok.extern.slf4j.Slf4j;
 public class CommentController {
 
     /* ============================================
+     *              상수 선언
+     * ============================================ */
+    
+    /** 고객지원 게시판 코드 */
+    private static final int BOARD_CODE_SUPPORT = 5;
+    
+    /** 관리자 권한 코드 */
+    private static final int AUTHORITY_ADMIN = 2;
+
+    /* ============================================
      *              의존성 주입 (DI)
      * ============================================ */
     
-    /** 댓글 관련 비즈니스 로직을 처리하는 Service */
     private final CommentService service;
 
     /* ============================================
      *           댓글 목록 조회 (GET - Read)
      * ============================================ */
     
-    /**
-     * 특정 게시글의 댓글 목록 조회 (AJAX)
-     * 
-     * @param boardNo : 조회할 게시글 번호 (쿼리스트링)
-     * @return commentList : 댓글 목록 (JSON 배열로 자동 변환)
-     */
     @GetMapping("")
-    public List<Comment> selectCommentList(
-            @RequestParam("boardNo") int boardNo) {
-        
+    public List<Comment> selectCommentList(@RequestParam("boardNo") int boardNo) {
         log.debug("[댓글 목록 조회] boardNo: {}", boardNo);
-        
         return service.selectCommentList(boardNo);
     }
 
@@ -53,15 +55,71 @@ public class CommentController {
      * ============================================ */
     
     /**
-     * @param comment : 요청 본문의 JSON → Comment 객체로 변환
-     *                  (@RequestBody가 JSON → Java 객체 변환 수행)
-     * @return result : 삽입된 행의 수 (1: 성공, 0: 실패)
+     * 댓글 등록 (AJAX)
+     * 
+     * [보안 강화]
+     * - 클라이언트가 보낸 memberNo, boardWriter 값은 무시
+     * - 세션에서 memberNo를 가져와서 덮어씀
+     * - DB에서 실제 boardWriter를 조회해서 비교
+     * 
+     * [고객지원 게시판 권한]
+     * - 관리자(authority=2) → 허용
+     * - 게시글 작성자 본인 → 허용
+     * - 그 외 일반 사용자 → 차단
+     * 
+     * @param comment 댓글 정보 (클라이언트 전송)
+     * @param loginMember 로그인 회원 정보 (세션)
+     * @return 1: 성공, 0: 실패, -1: 권한 없음
      */
     @PostMapping("")
-    public int insertComment(@RequestBody Comment comment) {
+    public int insertComment(
+            @RequestBody Comment comment,
+            @SessionAttribute(value = "loginMember", required = false) Member loginMember) {
         
-        log.debug("[댓글 등록] comment: {}", comment);
+        log.debug("[댓글 등록 요청] comment: {}", comment);
         
+        // ===== 1) 로그인 체크 =====
+        if (loginMember == null) {
+            log.warn("[권한 없음] 로그인이 필요합니다");
+            return -1;
+        }
+        
+        // ===== 2) 작성자 번호는 무조건 세션 값으로 덮어쓰기 (보안!) =====
+        // 클라이언트가 보낸 memberNo는 무시!
+        comment.setMemberNo(loginMember.getMemberNo());
+        
+        log.debug("[보안] 댓글 작성자를 세션 값으로 설정: {}", loginMember.getMemberNo());
+        
+        // ===== 3) 고객지원 게시판 권한 체크 =====
+        if (comment.getBoardCode() == BOARD_CODE_SUPPORT) {
+            
+            // DB에서 실제 게시글 작성자 조회 (클라이언트 값 신뢰 안 함!)
+            int boardWriterNo = service.selectBoardWriter(
+                comment.getBoardNo(), 
+                comment.getBoardCode()
+            );
+            
+            log.debug("[권한 체크] 게시글 작성자(DB): {}, 로그인 회원: {}, 권한: {}", 
+                      boardWriterNo, loginMember.getMemberNo(), loginMember.getAuthority());
+            
+            // 관리자면 통과
+            if (loginMember.getAuthority() == AUTHORITY_ADMIN) {
+                log.debug("[권한 확인] 관리자 - 댓글 작성 허용");
+                return service.insertComment(comment);
+            }
+            
+            // 게시글 작성자 본인이면 통과
+            if (loginMember.getMemberNo() == boardWriterNo) {
+                log.debug("[권한 확인] 게시글 작성자 본인 - 댓글 작성 허용");
+                return service.insertComment(comment);
+            }
+            
+            // 그 외 차단
+            log.warn("[권한 없음] 고객지원 게시글은 작성자와 관리자만 댓글 작성 가능");
+            return -1;
+        }
+        
+        // ===== 4) 일반 게시판은 모두 허용 =====
         return service.insertComment(comment);
     }
 
@@ -69,19 +127,10 @@ public class CommentController {
      *           댓글 수정 (PUT - Update)
      * ============================================ */
     
-    /**
-     * 댓글 수정 (AJAX)
-     * 
-     * 
-     * @param comment : 수정할 댓글 정보 (commentNo, commentContent 필수)
-     * @return result : 수정된 행의 수 (1: 성공, 0: 실패)
-     */
     @PutMapping("")
     public int updateComment(@RequestBody Comment comment) {
-        
         log.debug("[댓글 수정] commentNo: {}, content: {}", 
                   comment.getCommentNo(), comment.getCommentContent());
-        
         return service.updateComment(comment);
     }
 
@@ -89,25 +138,9 @@ public class CommentController {
      *           댓글 삭제 (DELETE - Delete)
      * ============================================ */
     
-    /**
-     * 댓글 삭제 (AJAX) - 논리적 삭제
-     * 
-     * [요청 예시]
-     * DELETE /comment
-     * Content-Type: application/json
-     * Body: 123    ← 삭제할 댓글 번호 (숫자)
-     * 
-     * [응답]
-     * 1 (성공) 또는 0 (실패)
-     * 
-     * @param commentNo : 삭제할 댓글 번호 (요청 본문에서 수신)
-     * @return result : 삭제 처리된 행의 수 (1: 성공, 0: 실패)
-     */
     @DeleteMapping("")
     public int deleteComment(@RequestBody int commentNo) {
-        
         log.debug("[댓글 삭제] commentNo: {}", commentNo);
-        
         return service.deleteComment(commentNo);
     }
 }

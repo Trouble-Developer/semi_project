@@ -47,11 +47,6 @@
 #boardContentType > ul > li > a:hover {
   text-decoration: underline;
 }
-#mainContent > div {
-  /* display: flex; */
-  /* flex-direction: column; */
-  /* align-items: center; */
-}
 
 /* 봉사후기 */
 #volunteerReviewListContent {

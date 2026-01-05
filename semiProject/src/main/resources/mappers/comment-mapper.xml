@@ -67,4 +67,15 @@
         WHERE COMMENT_NO = #{commentNo}
     </update>
 
+
+	<!-- 고객지원 게시판 댓글 권한용: 글 작성자 조회 -->
+	<select id="selectBoardWriter" resultType="int">
+    SELECT MEMBER_NO
+    FROM BOARD
+    WHERE BOARD_NO = #{boardNo}
+     AND BOARD_CODE = #{boardCode}
+	</select>
+	
+
+
 </mapper>

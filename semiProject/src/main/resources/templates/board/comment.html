@@ -122,33 +122,46 @@
     <!-- ================================================================ -->
     <!-- 
         고객지원 게시판(boardCode == 5)인 경우:
-        - 관리자(authority == 2)만 댓글 작성 가능
-        - 일반 회원은 댓글 작성 폼 숨김
+        - 관리자(authority == 2) 또는 게시글 작성자 본인만 댓글 작성 가능
+        - 그 외 사용자는 댓글 작성 폼 숨김
+        
+        [조건 설명]
+        - boardCode != 5 : 고객지원 게시판이 아닌 경우 → 모두 허용
+        - session.loginMember.authority == 2 : 관리자인 경우 → 허용
+        - session.loginMember.memberNo == boardInfo.memberNo : 게시글 작성자 본인인 경우 → 허용
     -->
     <div class="comment-write-area"
-     th:if="${boardCode != 5 
-             or (session.loginMember != null 
-                 and session.loginMember.authority == 2)}">
+         th:if="${boardCode != 5 
+                 or (session.loginMember != null 
+                     and (session.loginMember.authority == 2 
+                          or session.loginMember.memberNo == boardInfo.memberNo))}">
     
-    <!-- 댓글 입력 textarea -->
-    <textarea id="commentContent" 
-              placeholder="댓글을 입력해주세요"
-              maxlength="2000"></textarea>
+        <!-- 댓글 입력 textarea -->
+        <textarea id="commentContent" 
+                  placeholder="댓글을 입력해주세요"
+                  maxlength="2000"></textarea>
 
-    <!-- 댓글 등록 버튼 -->
-    <button id="addComment">
-        댓글<br>등록
-    </button>
-</div>
+        <!-- 댓글 등록 버튼 -->
+        <button id="addComment">
+            댓글<br>등록
+        </button>
+    </div>
 
-    <!-- 고객지원 게시판에서 일반 회원에게 안내 메시지 표시 -->
+    <!-- 고객지원 게시판에서 권한 없는 사용자에게 안내 메시지 표시 -->
+    <!-- 
+        [표시 조건]
+        - 고객지원 게시판(boardCode == 5)이면서
+        - 로그인 안 했거나, 관리자가 아니고 게시글 작성자도 아닌 경우
+    -->
     <div class="admin-only-notice"
-        th:if="${boardCode == 5 
-                and (session.loginMember == null 
-                    or session.loginMember.authority != 2)}">
+         th:if="${boardCode == 5 
+                 and (session.loginMember == null 
+                      or (session.loginMember.authority != 2 
+                          and session.loginMember.memberNo != boardInfo.memberNo))}">
         <p>고객지원 문의에 대한 답변은 관리자만 작성할 수 있습니다.</p>
     </div>
 
+</div>
 
 <!-- ================================================================ -->
 <!--                     JavaScript 파일 로드                          -->
