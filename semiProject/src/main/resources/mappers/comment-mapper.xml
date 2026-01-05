@@ -102,5 +102,37 @@
 			#{commentNo}
 		)
 	</insert>
+		
+	<!-- ============================================
+	           댓글 좋아요 관련 SQL
+	   ============================================ -->
+
+	<!-- 댓글 좋아요 체크 -->
+	<select id="checkCommentLike" resultType="int">
+		SELECT COUNT(*)
+		FROM COMMENT_LIKE
+		WHERE COMMENT_NO = #{commentNo}
+		  AND MEMBER_NO = #{memberNo}
+	</select>
+
+	<!-- 댓글 좋아요 등록 -->
+	<insert id="insertCommentLike">
+		INSERT INTO COMMENT_LIKE (COMMENT_NO, MEMBER_NO)
+		VALUES (#{commentNo}, #{memberNo})
+	</insert>
+
+	<!-- 댓글 좋아요 삭제 -->
+	<delete id="deleteCommentLike">
+		DELETE FROM COMMENT_LIKE
+		WHERE COMMENT_NO = #{commentNo}
+		  AND MEMBER_NO = #{memberNo}
+	</delete>
+
+	<!-- 댓글 좋아요 수 조회 -->
+	<select id="countCommentLike" resultType="int">
+		SELECT COUNT(*)
+		FROM COMMENT_LIKE
+		WHERE COMMENT_NO = #{commentNo}
+	</select>
 
 </mapper>
