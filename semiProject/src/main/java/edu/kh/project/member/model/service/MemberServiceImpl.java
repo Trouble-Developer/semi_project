@@ -73,6 +73,12 @@ public class MemberServiceImpl implements MemberService {
         return mapper.checkEmail(memberEmail);
     }
     
+    // 전화번호 중복 검사
+    @Override
+    public int checkTel(String memberTel) {
+      return mapper.checkTel(memberTel);
+    }
+    
     /**
      * 아이디 찾기 (이름 + 이메일)
      * 

@@ -26,4 +26,6 @@ public interface MemberService {
 
     int resetPw(String memberId, String newPw);
 
+	int checkTel(String memberTel);
+
 }

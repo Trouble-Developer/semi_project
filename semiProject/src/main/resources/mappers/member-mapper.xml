@@ -75,6 +75,12 @@
         WHERE MEMBER_EMAIL = #{memberEmail}
           AND MEMBER_DEL_FL = 'N'
     </select>
+    
+    <select id="checkTel" resultType="_int">
+  		SELECT COUNT(*) FROM MEMBER
+  		WHERE MEMBER_TEL = #{memberTel}
+  		AND MEMBER_DEL_FL = 'N'
+    </select>
 
     <!-- ===================================== -->
     <!-- 회원가입 -->
