@@ -339,7 +339,7 @@ memberPw.addEventListener("input", e => {   // input 이벤트: 입력될 때마
         return;
     }
 
-    // 영문, 숫자, 특수문자(!@#$%^&*)가 모두 최소 1개 이상 포함된 6~20자
+    // 영문, 숫자, 특수문자(!@#$%^&*)가 모두 포함된 6~20자
     const regExp = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,20}$/;
     if(!regExp.test(inputPw)){  // 형식이 유효하지 않으면
         pwMessage.innerText = "비밀번호가 유효하지 않습니다";

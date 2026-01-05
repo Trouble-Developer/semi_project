@@ -172,7 +172,7 @@ const validateNewPw = () => {
         return false;
     }
     
-    const regExp = /^[a-zA-Z0-9!@#$%^&*]{6,20}$/;
+    const regExp = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,20}$/;
     
     if(!regExp.test(pwValue)) {
         newPwMessage.innerText = "영문, 숫자, 특수문자 포함 6~20자로 입력해주세요.";
