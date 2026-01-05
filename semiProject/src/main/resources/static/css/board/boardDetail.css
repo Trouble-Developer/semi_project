@@ -143,3 +143,49 @@
   background-color: #ff5900;
   color: white;
 }
+
+/* 봉사후기 디테일 항목 */
+#v-info-detail {
+  width: 100%;
+  margin: 20px 0;
+  border-top: 2px solid #333;
+  border-bottom: 1px solid #ccc;
+  display: flex;
+  flex-direction: column;
+}
+
+.v-detail-row {
+  display: flex;
+  width: 100%;
+  border-bottom: 1px solid #eee;
+}
+
+.v-detail-row:last-child {
+  border-bottom: none;
+}
+
+.v-detail-item {
+  display: flex;
+  flex: 1;
+}
+
+.v-detail-label {
+  width: 120px;
+  background-color: #f5f5f5;
+  padding: 15px;
+  font-weight: bold;
+  color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid #ddd;
+}
+
+.v-detail-value {
+  flex: 1;
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  color: #555;
+  background-color: #fff;
+}

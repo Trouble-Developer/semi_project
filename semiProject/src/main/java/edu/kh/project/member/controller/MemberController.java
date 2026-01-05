@@ -117,29 +117,14 @@ public class MemberController {
 	/* 아이디 찾기 페이지로 이동
 	 * 
 	 * <p> 회원이 아이디를 잊어버렸을 때 접근하는 페이지</p>
-	 * <p> 이름, 주민번호 앞자리(생년월일), 이메일을 입력 받아 아이디를 찾아줌</p>
+	 * <p> 이름, 이메일을 입력 받아 아이디를 찾아줌</p>
 	 * 
 	 * @return "member/findId" : 아이디 찾기 페이지로 이동
 	 * */
 	
 	/** 아이디 찾기 처리 (AJAX)
 	 * 
-	 * /** 아이디 찾기 처리 (비동기 요청)
-	 * 
-	 * <p>사용자가 입력한 이름, 주민번호 앞자리, 이메일 정보를 받아서
-	 * DB에서 일치하는 회원 정보를 조회한 후 아이디와 가입일자를 반환</p>
-	 * 
-	 * <p><strong>[처리 흐름]</strong></p>
-	 * <ol>
-	 *   <li>클라이언트에서 AJAX로 POST 요청 (이름, 주민번호 앞자리, 이메일)</li>
-	 *   <li>Controller가 파라미터를 받아서 Service로 전달</li>
-	 *   <li>Service/Mapper를 통해 DB에서 회원 조회</li>
-	 *   <li>조회된 Member 객체를 JSON 형태로 응답</li>
-	 *   <li>클라이언트에서 아이디와 가입일자를 화면에 표시</li>
-	 * </ol>
-	 * 
-	 * @param memberNickname : 이름
-	 * @param memberRrn1 : 주민번호 앞자리 (생년월일)
+	 * @param memberName : 이름
 	 * @param memberEmail : 이메일
 	 * @return Member 객체 (아이디, 가입일자) 또는 null
 	 */
@@ -151,7 +136,7 @@ public class MemberController {
 		) {
 	    
 	    // Service의 findId 메서드 호출하여 DB 조회
-	    // - 3개 파라미터가 모두 일치하는 회원 찾기
+	    // - 2개 파라미터가 모두 일치하는 회원 찾기
 	    // - 조회 성공 시: Member 객체 리턴 (memberId, enrollDate 포함)
 	    // - 조회 실패 시: null 리턴
 		 Member findMember = service.findId(memberName,  memberEmail);
@@ -168,8 +153,8 @@ public class MemberController {
 
 	/** 비밀번호 찾기 페이지 이동
 	 * 
-	 * <p>회원이 비밀번호를 잊어버렸을 때 접근하는 페이지</p>
-	 * <p>아이디, 이름, 주민번호, 이메일을 입력받아 본인 확인 후 비밀번호 재설정</p>
+	 * 회원이 비밀번호를 잊어버렸을 때 접근하는 페이지
+	 * 아이디, 이름, 이메일을 입력받아 본인 확인 후 비밀번호 재설정
 	 * 
 	 * @return "member/findPw" : 비밀번호 찾기 페이지로 이동
 	 */
@@ -179,10 +164,12 @@ public class MemberController {
 	    return "member/findPw";
 	}
 	
-	/**
-	 * @param memberId: 회원 아이디
+	/** 비밀번호 찾기 - 본인 확인 처리 (AJAX)
+	 * 
+	 * 아이디, 이름, 이메일을 받아서 DB에서 회원 정보 조회
+	 * 
+	 * @param memberId : 회원 아이디
 	 * @param memberName : 회원 이름
-	 * @param memberRrn1 : 주민번호 앞자리 (생년월일)
 	 * @param memberEmail : 이메일
 	 * @return Member 객체 (조회 성공) 또는 null (조회 실패)
 	 */
@@ -191,22 +178,21 @@ public class MemberController {
 	public Member findPw(
 		@RequestParam("memberId") String memberId,
 		@RequestParam("memberName") String memberName,
-		@RequestParam("memberRrn1") String memberRrn1,
 		@RequestParam("memberEmail") String memberEmail
 	) {
-		/* Serivce의 findPw 메서드 호출하여 DB 조회
-		 * 4개 파라미터가 모두 일치하는 회원 찾기
+		/* Service의 findPw 메서드 호출하여 DB 조회
+		 * 3개 파라미터가 모두 일치하는 회원 찾기
 		 * 조회 성공 : Member 객체 리턴
 		 * 조회 실패 : null 리턴
 		 * */
-		Member findMember = service.findPw(memberId, memberName, memberRrn1, memberEmail);
+		Member findMember = service.findPw(memberId, memberName, memberEmail);
 		
 		return findMember; 
 	}
 		/** 비밀번호 재설정 처리 (AJAX)
 		 * 
-		 * @param memberId : 회원 아디
-		 * @param newPw : 새 비번
+		 * @param memberId : 회원 아이디
+		 * @param newPw : 새 비밀번호
 		 * @return result (1: 성공, 0: 실패)
 		 */
 		@ResponseBody
@@ -216,7 +202,7 @@ public class MemberController {
 			@RequestParam("newPw") String newPw
 		) {
 		
-			// Service의  resetPw 메서드 호출
+			// Service의 resetPw 메서드 호출
 			// 비밀번호 암호화 하고 DB 업데이트 해야함
 			// 성공 시: 1 리턴
 			// 실패 시: 0 리턴

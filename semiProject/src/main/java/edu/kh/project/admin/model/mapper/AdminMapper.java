@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Mapper;
 import edu.kh.project.admin.dto.AdminMember;
 import edu.kh.project.admin.dto.AdminNotice;
 import edu.kh.project.admin.dto.AdminSupport;
+import edu.kh.project.admin.dto.Report;
 import edu.kh.project.board.model.dto.Board;
 
 
@@ -70,4 +71,19 @@ public interface AdminMapper {
 	 */
 	int updateSupportStatus(Map<String, Object> paramMap);
 
+	/** 신고글 전체 개수 조회
+	 * @param paramMap
+	 * @return
+	 */
+	int getReportCount(Map<String, Object> paramMap);
+
+	/** 신고글 목록 조회
+	 * @param paramMap
+	 * @return
+	 */
+	List<Report> selectReportList(Map<String, Object> paramMap);
+
+	
+	
+	
 }

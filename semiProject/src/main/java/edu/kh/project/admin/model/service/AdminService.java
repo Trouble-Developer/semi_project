@@ -52,6 +52,14 @@ public interface AdminService {
 	 */
 	int updateSupportStatus(Map<String, Object> paramMap);
 
+	/** 신고글 목록 조회
+	 * @param paramMap
+	 * @return
+	 */
+	Map<String, Object> selectReportList(Map<String, Object> paramMap);
+
+	
+
 	
 
 	

@@ -66,13 +66,11 @@
                 <a
                   th:href="@{/board/{boardCode}/{boardNo}(boardCode=${boardCode}, boardNo=*{boardNo}, cp=${pagination.currentPage})}"
                 >
-                  <img
-                    th:src="${board.imgRename != null 
-                                 ? board.imgPath + board.imgRename 
-                                 : '/images/volunteer.jpeg'}"
-                    id="content-img-info"
-                    alt="썸네일"
-                  />
+                <img th:src="${board.thumbnailPath != null 
+                  ? board.thumbnailPath 
+                  : '/images/footer-logo.png'}" 
+          id="content-img-info" 
+          alt="썸네일">
                 </a>
               </div>
 
@@ -119,7 +117,12 @@
                 <th th:if="${boardCode != 4 && boardCode != 5}">좋아요</th>
               </tr>
             </thead>
-
+            <th
+              th:if="${freeBoardList == null or #lists.isEmpty(freeBoardList)}"
+              class="empty-message"
+            >
+              게시글이 존재하지 않습니다.
+            </th>
             <tbody id="free-board-body">
               <th:block
                 th:each="freeBoard : ${freeBoardList}"

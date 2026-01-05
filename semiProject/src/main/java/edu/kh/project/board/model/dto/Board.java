@@ -21,7 +21,7 @@ public class Board {
 	private char boardLock;
 	private int boardCode;
 	private int memberNo;
-
+	
 	// BOARD_IMG 조인
 	private String imgPath;
 	private String imgRename;
@@ -35,7 +35,18 @@ public class Board {
 	
 	private int scrapCheck; // 0: 스크랩 X, 1: 스크랩 O
 	
-
+	// 봉사왕 게시글 개수
+	private int postCount;
+	private String profileImg; // 봉사왕 프로필 이미지
+	
+	// 봉사후기 상세정보
+	private String volunteerStart;
+	private String volunteerEnd;
+	private String volunteerCategory;
+	private String volunteerAgency;
+	private String volunteerType;
+	
+	
 	private String thumbnailPath;
 	// 추후 이미지 리스트, 댓글 리스트 추가
 	// 우선은 글 가져오는 것 부터!

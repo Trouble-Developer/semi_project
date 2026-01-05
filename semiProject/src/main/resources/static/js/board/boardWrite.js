@@ -1,41 +1,179 @@
-const form = document.querySelector("#summernote-write");
-const secretWrapper = document.querySelector("#secret-wrapper");
-const boardTypeSelect = document.querySelector("#board-type");
+function getByteLength(s) {
+  if (s == null || s.length === 0) return 0;
+  return new TextEncoder().encode(s).length;
+}
 
-form.addEventListener("submit", (e) => {
-  const boardTitle = document.querySelector("#board-title");
-  const summernote = document.querySelector("#summernote");
-  const secretCheck = document.querySelector("#checkbox");
-  const boardPw = document.querySelector("#board-pw");
+$(document).ready(function () {
+  const MAX_BYTE = 4000;
+  const profileImg = document.getElementById("profileImg");
+  const imageInput = document.getElementById("imageInput");
+  const deleteImage = document.getElementById("deleteImage");
+  const defaultImageUrl = `/images/footer-logo.png`;
 
-  if (secretCheck.checked) {
-    if (boardPw.value.trim() === "") {
-      e.preventDefault();
-      alert("비밀번호를 입력해주세요!");
-      return;
+  if (profileImg && deleteImage) {
+    if (profileImg.getAttribute("src") !== defaultImageUrl) {
+      deleteImage.style.display = "flex";
     }
   }
 
-  if (boardTitle.value.trim() === "") {
-    e.preventDefault();
-    alert("제목을 입력해주세요!");
-    boardTitle.focus();
-    return;
+  $("#summernote").summernote({
+    width: 1130,
+    height: 500,
+    lang: "ko-KR",
+    callbacks: {
+      onChange: function (contents) {
+        const currentByte = getByteLength(contents);
+        const $byteCounter = $("#current-byte");
+        if ($byteCounter.length > 0) {
+          $byteCounter.text(currentByte);
+          $byteCounter.css("color", currentByte > MAX_BYTE ? "red" : "black");
+        }
+      },
+      onImageUpload: function (files) {
+        for (let i = 0; i < files.length; i++) {
+          uploadImage(files[i]);
+        }
+      },
+    },
+  });
+
+  const form = document.querySelector("#summernote-write");
+  if (form) {
+    form.addEventListener("submit", (e) => {
+      const boardTitle = document.querySelector("#board-title");
+      if (boardTitle.value.trim() === "") {
+        e.preventDefault();
+        alert("제목을 입력해주세요!");
+        boardTitle.focus();
+        return false;
+      }
+
+      const secretCheck = document.querySelector("#checkbox");
+      const boardPw = document.querySelector("#board-pw");
+      if (secretCheck && secretCheck.checked) {
+        if (boardPw.value.trim() === "") {
+          e.preventDefault();
+          alert("비밀번호를 입력해주세요!");
+          boardPw.focus();
+          return false;
+        }
+      }
+
+      const sdate = document.querySelector("#sdate");
+      const edate = document.querySelector("#edate");
+      if (sdate && edate) {
+        const startVal = sdate.value.trim();
+        const endVal = edate.value.trim();
+        if (
+          (startVal !== "" && endVal === "") ||
+          (startVal === "" && endVal !== "")
+        ) {
+          e.preventDefault();
+          alert(
+            "봉사 기간을 설정하시려면 시작 날짜와 종료 날짜를 모두 입력하셔야 합니다."
+          );
+          if (startVal === "") sdate.focus();
+          else edate.focus();
+          return false;
+        }
+        if (startVal !== "" && endVal !== "" && startVal > endVal) {
+          e.preventDefault();
+          alert("시작 날짜는 종료 날짜보다 빠르거나 같아야 합니다.");
+          sdate.focus();
+          return false;
+        }
+      }
+
+      const contents = $("#summernote").summernote("code");
+      const currentByte = getByteLength(contents);
+      if ($("#summernote").summernote("isEmpty")) {
+        e.preventDefault();
+        alert("내용을 입력해주세요!");
+        return false;
+      }
+      if (currentByte > MAX_BYTE) {
+        e.preventDefault();
+        alert(
+          `용량이 초과되었습니다! (현재: ${currentByte} / 최대: ${MAX_BYTE} bytes)\n내용을 조금 줄여주세요.`
+        );
+        return false;
+      }
+    });
   }
-  if ($("#summernote").summernote("isEmpty")) {
-    e.preventDefault();
-    alert("내용을 입력해주세요!");
-    return;
+
+  const secretWrapper = document.querySelector("#secret-wrapper");
+  function toggleSecret() {
+    if (secretWrapper) {
+      if (typeof boardCode !== "undefined" && boardCode == 5) {
+        secretWrapper.style.display = "block";
+      } else {
+        secretWrapper.style.display = "none";
+        const checkbox = document.querySelector("#checkbox");
+        if (checkbox) checkbox.checked = false;
+      }
+    }
+  }
+  toggleSecret();
+
+  if (imageInput) {
+    let previousImage = profileImg ? profileImg.src : defaultImageUrl;
+    let previousFile = null;
+
+    imageInput.addEventListener("change", () => {
+      const file = imageInput.files[0];
+      if (file) {
+        if (file.size <= 1024 * 1024 * 5) {
+          const newImageUrl = URL.createObjectURL(file);
+          profileImg.src = newImageUrl;
+          previousImage = newImageUrl;
+          previousFile = file;
+          if (deleteImage) deleteImage.style.display = "flex";
+        } else {
+          alert("5MB 이하의 이미지를 선택해주세요!");
+          imageInput.value = "";
+          profileImg.src = previousImage;
+          if (previousFile) {
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(previousFile);
+            imageInput.files = dataTransfer.files;
+          }
+        }
+      } else {
+        profileImg.src = previousImage;
+        if (previousFile) {
+          const dataTransfer = new DataTransfer();
+          dataTransfer.items.add(previousFile);
+          imageInput.files = dataTransfer.files;
+        }
+      }
+    });
+
+    if (deleteImage) {
+      deleteImage.addEventListener("click", () => {
+        imageInput.value = "";
+        profileImg.src = defaultImageUrl;
+        previousFile = null;
+        previousImage = defaultImageUrl;
+        deleteImage.style.display = "none";
+      });
+    }
   }
 });
-function toggleSecret() {
-  if (boardTypeSelect.value === "5") {
-    secretWrapper.style.display = "block";
-  } else {
-    secretWrapper.style.display = "none";
-    const checkbox = document.querySelector("#checkbox");
-    if (checkbox) checkbox.checked = false;
-  }
+
+function uploadImage(file) {
+  const formData = new FormData();
+  formData.append("file", file);
+  $.ajax({
+    url: "/editBoard/image/upload",
+    type: "POST",
+    data: formData,
+    contentType: false,
+    processData: false,
+    success: function (res) {
+      $("#summernote").summernote("insertImage", res.url);
+    },
+    error: function () {
+      alert("이미지 업로드 중 오류가 발생했습니다.");
+    },
+  });
 }
-toggleSecret();
-boardTypeSelect.addEventListener("change", toggleSecret);

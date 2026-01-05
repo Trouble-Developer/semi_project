@@ -1,15 +1,15 @@
 /**
- * 비밀번호 찾기 페이지 JavaScript (디버그 버전)
+ * 비밀번호 찾기 페이지 JavaScript
  * 
  * [기능 설명]
- * - 아이디, 이름, 주민번호, 이메일 유효성 검사
+ * - 아이디, 이름, 이메일 유효성 검사
  * - 이메일 인증번호 발송 및 확인
  * - 인증 완료 시 회원 정보 확인
  * - 새 비밀번호 입력 및 유효성 검사
  * - 비밀번호 변경 처리
  * 
  * [동작 흐름]
- * 1. 사용자가 아이디, 이름, 주민번호, 이메일 입력
+ * 1. 사용자가 아이디, 이름, 이메일 입력
  * 2. "인증번호 발송" 버튼 클릭 → 이메일로 인증번호 발송
  * 3. 5분 타이머 시작
  * 4. 사용자가 인증번호 입력 후 "확인" 버튼 클릭
@@ -28,8 +28,6 @@ console.log("=== findPw.js 로딩 시작 ===");
 // ----- 입력 필드 -----
 const memberId = document.querySelector("#memberId");           // 아이디 입력칸
 const memberName = document.querySelector("#memberName");       // 이름 입력칸
-const memberRrn1 = document.querySelector("#memberRrn1");       // 주민번호 앞 6자리
-const memberRrn2 = document.querySelector("#memberRrn2");       // 주민번호 뒤 1자리
 const memberEmail = document.querySelector("#memberEmail");     // 이메일 입력칸
 const authKey = document.querySelector("#authKey");             // 인증번호 입력칸
 
@@ -45,7 +43,6 @@ const resetPwBtn = document.querySelector("#resetPwBtn");           // 비밀번
 // ----- 메시지 영역 (에러/성공 메시지 표시) -----
 const idMessage = document.querySelector("#idMessage");             // 아이디 메시지
 const nameMessage = document.querySelector("#nameMessage");         // 이름 메시지
-const rrnMessage = document.querySelector("#rrnMessage");           // 주민번호 메시지
 const emailMessage = document.querySelector("#emailMessage");       // 이메일 메시지
 const authKeyMessage = document.querySelector("#authKeyMessage");   // 인증번호 메시지
 const newPwMessage = document.querySelector("#newPwMessage");       // 새 비밀번호 메시지
@@ -80,8 +77,8 @@ let pwConfirmCheck = false;
 // ===========================================================================================
 
 /**
- * 아이디 유효성 검사 (간소화 버전)
- * - 조건: 빈 값만 체크, 4~20자
+ * 아이디 유효성 검사
+ * - 조건: 빈 값 체크, 4~20자
  */
 const validateId = () => {
     const idValue = memberId.value.trim();
@@ -94,7 +91,7 @@ const validateId = () => {
         return false;
     }
     
-    // 길이만 체크 (4~20자)
+    // 길이 체크 (4~20자)
     if(idValue.length < 4 || idValue.length > 20) {
         idMessage.innerText = "아이디는 4~20자로 입력해주세요.";
         idMessage.classList.add("error");
@@ -131,32 +128,6 @@ const validateName = () => {
     
     nameMessage.innerText = "";
     nameMessage.classList.remove("error");
-    return true;
-};
-
-/**
- * 주민번호 유효성 검사
- */
-const validateRrn = () => {
-    const rrn1 = memberRrn1.value.trim();
-    const rrn2 = memberRrn2.value.trim();
-    
-    if(rrn1.length !== 6 || isNaN(rrn1)) {
-        rrnMessage.innerText = "생년월일 6자리를 정확히 입력해주세요.";
-        rrnMessage.classList.add("error");
-        rrnMessage.classList.remove("confirm");
-        return false;
-    }
-    
-    if(rrn2.length !== 1 || isNaN(rrn2)) {
-        rrnMessage.innerText = "뒤 1자리를 입력해주세요.";
-        rrnMessage.classList.add("error");
-        rrnMessage.classList.remove("confirm");
-        return false;
-    }
-    
-    rrnMessage.innerText = "";
-    rrnMessage.classList.remove("error");
     return true;
 };
 
@@ -201,7 +172,7 @@ const validateNewPw = () => {
         return false;
     }
     
-    const regExp = /^[a-zA-Z0-9!@#$%^&*]{6,20}$/;
+    const regExp = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,20}$/;
     
     if(!regExp.test(pwValue)) {
         newPwMessage.innerText = "영문, 숫자, 특수문자 포함 6~20자로 입력해주세요.";
@@ -287,13 +258,11 @@ function verifyMember() {
     const params = new URLSearchParams();
     params.append("memberId", memberId.value.trim());
     params.append("memberName", memberName.value.trim());
-    params.append("memberRrn1", memberRrn1.value.trim());
     params.append("memberEmail", memberEmail.value.trim());
     
     console.log("요청 데이터:", {
         memberId: memberId.value.trim(),
         memberName: memberName.value.trim(),
-        memberRrn1: memberRrn1.value.trim(),
         memberEmail: memberEmail.value.trim()
     });
     
@@ -399,8 +368,6 @@ if(sendAuthKeyBtn) {
         console.log("입력값 확인:");
         console.log("- 아이디:", memberId.value);
         console.log("- 이름:", memberName.value);
-        console.log("- 주민번호 앞:", memberRrn1.value);
-        console.log("- 주민번호 뒤:", memberRrn2.value);
         console.log("- 이메일:", memberEmail.value);
         
         console.log("유효성 검사 시작...");
@@ -418,13 +385,6 @@ if(sendAuthKeyBtn) {
             return;
         }
         console.log("✅ 이름 검사 통과");
-        
-        if(!validateRrn()) {
-            console.log("❌ 주민번호 유효성 검사 실패!");
-            console.log("에러 메시지:", rrnMessage.innerText);
-            return;
-        }
-        console.log("✅ 주민번호 검사 통과");
         
         if(!validateEmail()) {
             console.log("❌ 이메일 유효성 검사 실패!");
@@ -503,7 +463,6 @@ if(checkAuthKeyBtn) {
         
         if(!validateId()) return;
         if(!validateName()) return;
-        if(!validateRrn()) return;
         if(!validateEmail()) return;
         
         const params = new URLSearchParams({
@@ -565,8 +524,6 @@ if(resetPwBtn) {
 
 if(memberId) memberId.addEventListener("input", validateId);
 if(memberName) memberName.addEventListener("input", validateName);
-if(memberRrn1) memberRrn1.addEventListener("input", validateRrn);
-if(memberRrn2) memberRrn2.addEventListener("input", validateRrn);
 if(memberEmail) memberEmail.addEventListener("input", validateEmail);
 if(newPw) newPw.addEventListener("input", validateNewPw);
 if(newPwConfirm) newPwConfirm.addEventListener("input", validateNewPwConfirm);

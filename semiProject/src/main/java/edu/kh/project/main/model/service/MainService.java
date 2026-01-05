@@ -8,4 +8,13 @@ public interface MainService {
 
 	List<Board> getVolunteerList(int boardNo);
 
+	List<Board> getFreeBoardList();
+
+	List<Board> getInfoBoardList();
+
+
+	List<Board> getNoticeBoardList();
+
+	Board getReviewBestUser();
+
 }

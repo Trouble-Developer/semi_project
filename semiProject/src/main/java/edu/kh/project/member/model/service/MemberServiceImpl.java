@@ -28,13 +28,7 @@ public class MemberServiceImpl implements MemberService {
         String encPw = bcrypt.encode(inputMember.getMemberPw());
         inputMember.setMemberPw(encPw);
         
-        // 2. 주민번호 합치기
-        if(inputMember.getMemberRrn1() != null && inputMember.getMemberRrn2() != null) {
-            String rrn = inputMember.getMemberRrn1() + "-" + inputMember.getMemberRrn2();
-            inputMember.setMemberRrn(rrn);
-        }
-        
-        // 3. DAO(Mapper) 호출해서 DB에 저장
+        // 2. DAO(Mapper) 호출해서 DB에 저장
         return mapper.signup(inputMember);
     }
     
@@ -87,7 +81,7 @@ public class MemberServiceImpl implements MemberService {
      * @return Member 객체 (아이디, 가입일자) 또는 null
      */
     @Override
-    public Member findId(String memberName, String memberEmail) {  // ✅ memberRrn1 파라미터 제거
+    public Member findId(String memberName, String memberEmail) {
         
         // 입력값 검증
         if(memberName == null || memberName.trim().isEmpty()) {
@@ -100,24 +94,39 @@ public class MemberServiceImpl implements MemberService {
             return null;
         }
         
-        // Mapper 호출하여 DB 조회 (이름 + 이메일만 전달)
-        return mapper.findId(memberName, memberEmail);  // ✅ memberRrn1 제거
+        // Mapper 호출하여 DB 조회 (이름 + 이메일만 사용)
+        return mapper.findId(memberName, memberEmail);
     }
 
     /**
-     * 비밀번호 찾기 - 본인 확인
+     * 비밀번호 찾기 - 본인 확인 (아이디 + 이름 + 이메일)
      * 
      * @param memberId : 회원 아이디
      * @param memberName : 회원 이름
-     * @param memberRrn1 : 주민번호 앞자리
      * @param memberEmail : 회원 이메일
      * @return Member 객체 또는 null
      */
     @Override
-    public Member findPw(String memberId, String memberName, String memberRrn1, String memberEmail) {
+    public Member findPw(String memberId, String memberName, String memberEmail) {
         
-        // Mapper 호출해서 DB 조회
-        Member findMember = mapper.findPw(memberId, memberName, memberRrn1, memberEmail);
+        // 입력값 검증
+        if(memberId == null || memberId.trim().isEmpty()) {
+            log.error("비밀번호 찾기 실패: 아이디가 비어있음");
+            return null;
+        }
+        
+        if(memberName == null || memberName.trim().isEmpty()) {
+            log.error("비밀번호 찾기 실패: 이름이 비어있음");
+            return null;
+        }
+        
+        if(memberEmail == null || memberEmail.trim().isEmpty()) {
+            log.error("비밀번호 찾기 실패: 이메일이 비어있음");
+            return null;
+        }
+        
+        // Mapper 호출하여 DB 조회 (아이디 + 이름 + 이메일로 본인 확인)
+        Member findMember = mapper.findPw(memberId, memberName, memberEmail);
         
         return findMember;
     }

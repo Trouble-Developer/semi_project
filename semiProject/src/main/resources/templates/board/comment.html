@@ -120,20 +120,34 @@
     <!-- ================================================================ -->
     <!--                        댓글 작성 영역                              -->
     <!-- ================================================================ -->
-    <div class="comment-write-area">
-        
-        <!-- 댓글 입력 textarea -->
-        <textarea id="commentContent" 
-                  placeholder="댓글을 입력해주세요"
-                  maxlength="2000"></textarea>
+    <!-- 
+        고객지원 게시판(boardCode == 5)인 경우:
+        - 관리자(authority == 2)만 댓글 작성 가능
+        - 일반 회원은 댓글 작성 폼 숨김
+    -->
+    <div class="comment-write-area"
+     th:if="${boardCode != 5 
+             or (session.loginMember != null 
+                 and session.loginMember.authority == 2)}">
+    
+    <!-- 댓글 입력 textarea -->
+    <textarea id="commentContent" 
+              placeholder="댓글을 입력해주세요"
+              maxlength="2000"></textarea>
 
-        <!-- 댓글 등록 버튼 -->
-        <button id="addComment">
-            댓글<br>등록
-        </button>
-    </div>
-
+    <!-- 댓글 등록 버튼 -->
+    <button id="addComment">
+        댓글<br>등록
+    </button>
 </div>
+
+    <!-- 고객지원 게시판에서 일반 회원에게 안내 메시지 표시 -->
+    <div class="admin-only-notice"
+        th:if="${boardCode == 5 
+                and (session.loginMember == null 
+                    or session.loginMember.authority != 2)}">
+        <p>고객지원 문의에 대한 답변은 관리자만 작성할 수 있습니다.</p>
+    </div>
 
 
 <!-- ================================================================ -->

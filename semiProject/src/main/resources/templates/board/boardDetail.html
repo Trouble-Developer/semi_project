@@ -43,6 +43,44 @@
         </div>
       </div>
       <div id="content">
+        <th:block th:if="${boardInfo.boardCode == 3}">
+          <div id="v-info-detail">
+            <div class="v-detail-row">
+              <div class="v-detail-item">
+                <div class="v-detail-label">봉사기간</div>
+                <div class="v-detail-value">
+                  <span th:text="*{volunteerStart}">시작일</span>
+                  <th:block
+                    th:if="*{volunteerStart != null and volunteerEnd != null}"
+                  >
+                    ~
+                  </th:block>
+                  <span th:text="*{volunteerEnd}">종료일</span>
+                </div>
+              </div>
+              <div class="v-detail-item">
+                <div class="v-detail-label">봉사분야</div>
+                <div class="v-detail-value" th:text="*{volunteerCategory}">
+                  기타
+                </div>
+              </div>
+            </div>
+            <div class="v-detail-row">
+              <div class="v-detail-item">
+                <div class="v-detail-label">모집기관</div>
+                <div class="v-detail-value" th:text="*{volunteerAgency}">
+                  기관명 없음
+                </div>
+              </div>
+              <div class="v-detail-item">
+                <div class="v-detail-label">봉사자 유형</div>
+                <div class="v-detail-value" th:text="*{volunteerType}">
+                  성인
+                </div>
+              </div>
+            </div>
+          </div>
+        </th:block>
         <p th:utext="*{boardContent}">컨텐츠</p>
       </div>
       <div id="btn">
@@ -108,10 +146,34 @@
         </div>
       </div>
       <div id="list-btn">
-        <a th:href="@{/board/{boardCode}(boardCode = ${boardCode}, cp=${cp})}"
-          >목록</a
+
+        <!-- from 값에 따라 목록 버튼 경로 변경(마이페이지 - 전재민) -->
+        <a th:if="${from == 'mypage'}" th:href="@{/mypage/posts(cp=${cp})}">목록</a>
+        <a th:if="${from == 'comments'}" th:href="@{/mypage/comments(cp=${cp})}">목록</a>
+        <a th:if="${from == 'scrap'}" th:href="@{/mypage/scraps(cp=${cp})}">목록</a>
+        <th:block th:unless="${from == 'mypage' or from == 'comments' or from == 'scrap'}">
+        <!-- 목록 버튼 클릭 시 관리자면 해당 관리자 게시판으로, 일반 사용자면 해당 게시판으로 - 현동근 -->
+        <!-- 관리자 관점일 때 -->
+        <a
+          th:if="${isAdminView}"
+          th:href="
+            ${boardCode == 4} ? '/admin/notice' :
+            (${boardCode == 5} ? '/admin/support' :
+            (${boardCode == 6} ? '/admin/report' : '/'))"
         >
+          목록
+        </a>
+
+        <!-- 일반 사용자 관점일 때 -->
+        <a
+          th:if="${!isAdminView}"
+          th:href="@{/board/{boardCode}(boardCode=${boardCode}, cp=${cp})}"
+        >
+          목록
+        </a>
       </div>
+
+      </th:block>
 
       <!-- ===== 댓글 영역 ===== -->
       <!-- 공지사항(boardCode=4)을 제외한 게시판에만 댓글 표시 -->
@@ -130,8 +192,7 @@
       let likeCheck = Number(/*[[${boardInfo.likeCheck}]]*/ 0);
       let scrapCheck = Number(/*[[${boardInfo.scrapCheck}]]*/ 0);
 
-      // 디버깅: boardCode 값 확인
-      console.log("현재 boardCode:", boardCode, "타입:", typeof boardCode);
+      const boardInfo = /*[[${boardInfo}]]*/ "게시판 내용";
     </script>
     <script
       src="https://kit.fontawesome.com/c0777c617e.js"

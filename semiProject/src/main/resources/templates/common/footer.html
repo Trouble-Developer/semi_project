@@ -8,14 +8,31 @@
   </head>
   <body>
     <footer id="footer">
-      <p id="footerText">ⓒCopyright. All rights reserved.</p>
+      <div class="footer-brand">
+        <img src="/images/footer-logo.png" alt="봉사로고" id="footer-logo" />
+      </div>
+
+      <div id="info-content-1">
+        <a href="/policy/terms">이용약관</a>
+        <span>|</span>
+        <a href="/policy/privacy">개인정보처리방침</a>
+        <span>|</span>
+        <a href="/policy/copyright">저작권정책</a>
+      </div>
+
+      <div class="footer-info">
+        <p>이메일 : dhgkqwlwhf@gmail.com</p>
+        <p>Copyright 2026 오합지졸 All rights Reserved.</p>
+      </div>
     </footer>
 
     <script th:inline="javascript">
-      const message = /*[[${message}]]*/ "전달 받은 message";
+      const message = /*[[${message}]]*/ null;
 
-      if (message != null) alert(message);
-      history.replaceState(null, "", location.pathname + location.search);
+      if (message != null) {
+        alert(message);
+        history.replaceState(null, "", location.pathname + location.search);
+      }
     </script>
   </body>
 </html>

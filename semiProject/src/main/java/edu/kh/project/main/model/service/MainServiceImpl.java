@@ -21,6 +21,28 @@ public class MainServiceImpl implements MainService{
 		return mapper.getVolunteerList(boardNo);
 	}
 
+	@Override
+	public List<Board> getFreeBoardList() {
+		// TODO Auto-generated method stub
+		return mapper.getFreeBoardList();
+	}
+
+	@Override
+	public List<Board> getInfoBoardList() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Board> getNoticeBoardList() {
+		return mapper.getNoticeBoardList();
+	}
+
+	@Override
+	public Board getReviewBestUser() {
+		return mapper.getReviewBestUser();
+	}
+
 
 	
 	

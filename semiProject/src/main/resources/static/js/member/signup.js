@@ -28,8 +28,7 @@ const checkObj = {
     "authKey"         : false,  // 이메일 인증번호
     "memberPw"        : false,  // 비밀번호
     "memberPwConfirm" : false,  // 비밀번호 확인
-    "memberTel"       : false,  // 전화번호
-    "memberRrn"       : false // 주민번호 (앞/뒤 다 입력했는지)
+    "memberTel"       : false  // 전화번호
 };
 
 
@@ -340,7 +339,8 @@ memberPw.addEventListener("input", e => {   // input 이벤트: 입력될 때마
         return;
     }
 
-    const regExp = /^[a-zA-Z0-9!@#_-]{6,20}$/;  // 영어, 숫자, 일부 특수문자 6~20자
+    // 영문, 숫자, 특수문자(!@#$%^&*)가 모두 포함된 6~20자
+    const regExp = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,20}$/;
     if(!regExp.test(inputPw)){  // 형식이 유효하지 않으면
         pwMessage.innerText = "비밀번호가 유효하지 않습니다";
         pwMessage.classList.add("error");
@@ -399,60 +399,13 @@ memberTel.addEventListener("input", e => {
     checkObj.memberTel = true;
 });
 
-
-// -------------------------------------------------------------
-/* 7. 주민등록번호 유효성 검사 (길이 체크 및 포커스 이동) */
-const memberRrn1 = document.querySelector("#memberRrn1");
-const memberRrn2 = document.querySelector("#memberRrn2");
-const rrnMessage = document.querySelector("#rrnMessage");
-
-// 주민번호 앞자리
-memberRrn1.addEventListener("input", (e) => {
-    // 숫자만 입력받게
-    // 숫자가 아닌 문자가 입력되면 빈 문자열로 대체해서 지움
-    e.target.value = e.target.value.replace(/[^0-9]/g, '');
-
-    // 6자리 입력 시 포커스 이동
-    if(memberRrn1.value.length === 6){  // 앞자리가 6자리이면
-        if(memberRrn2.value.length === 7){  // 뒷자리도 7자리이면
-            checkObj.memberRrn = true;
-            rrnMessage.innerText = "유효한 형식입니다.";
-            rrnMessage.classList.add("confirm");
-            rrnMessage.classList.remove("error");   // 검사 성공 처리
-        } else {
-            checkObj.memberRrn = false; // 뒷자리 7자리 아니면 false
-             memberRrn2.focus(); // 앞자리 다 치면 뒷자리로 이동
-        }
-    } else {
-        checkObj.memberRrn = false; // 앞자리 6자리 아니면 false
-    }
-});
-
-// 주민번호 뒷자리
-memberRrn2.addEventListener("input", (e) => {
-    // 숫자만 입력받게
-    e.target.value = e.target.value.replace(/[^0-9]/g, ''); // 보안상 type=password지만 숫자가 아닌 값 방지
-    
-    if(memberRrn1.value.length === 6 && memberRrn2.value.length === 7){ // 앞자리 6글자와 뒷자리 7글자가 모두 채워졌는지 확인
-        rrnMessage.innerText = "유효한 형식입니다.";
-        rrnMessage.classList.add("confirm");
-        rrnMessage.classList.remove("error");   // 검사 성공 처리
-        checkObj.memberRrn = true;
-    } else {    // 둘 중 하나라도 길이가 부족하면
-        rrnMessage.innerText = "주민등록번호를 모두 입력해주세요.";
-        rrnMessage.classList.remove("confirm");
-        rrnMessage.classList.add("error");
-        checkObj.memberRrn = false;
-    }
-});
-
-
 // -------------------------------------------------------------
 /* 최종 회원가입 버튼 클릭 시 검사 */
 const signUpForm = document.querySelector("#signUpForm");
 
 signUpForm.addEventListener("submit", e => {
-    
+
+    // 1. checkObj에 있는 항목들 먼저 검사
     for(let key in checkObj){   // 객체용 향상된 for문
         if(!checkObj[key]){ // 각 key에 대한 value가 false인 경우
             let str;    // 경고창에 출력할 메세지 변수
@@ -465,16 +418,22 @@ signUpForm.addEventListener("submit", e => {
                 case "memberPw" : str = "비밀번호가 유효하지 않습니다"; break;
                 case "memberPwConfirm" : str = "비밀번호 확인이 일치하지 않습니다"; break;
                 case "memberTel" : str = "전화번호가 유효하지 않습니다"; break;
-                case "memberRrn" : str = "주민등록번호를 모두 입력해주세요"; break;
             }
-            alert(str); // 경고창 출력
-            
-            // 해당 요소로 포커스 이동 (주민번호는 예외 처리)
-            if(key === "memberRrn") document.getElementById("memberRrn1").focus();
-            else document.getElementById(key).focus();
-            
-            e.preventDefault(); // form 기본 제출 이벤트 제거
-            return; // 첫 번째 에러에서 중단하기
+            alert(str); 
+            document.getElementById(key).focus(); // 해당 입력창으로 포커스 이동
+            e.preventDefault(); 
+            return; 
         }
+    }
+
+    // 2. 주소 유효성 검사 (추가된 부분)
+    // 우편번호와 주소 중 하나라도 비어있으면 막음
+    const postcode = document.getElementById("postcode");
+    const address = document.getElementById("address");
+
+    if(postcode.value.trim().length == 0 || address.value.trim().length == 0){
+        alert("주소를 입력해주세요.");
+        e.preventDefault();
+        return;
     }
 });

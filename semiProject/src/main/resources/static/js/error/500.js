@@ -4,15 +4,17 @@ const closeBtn = document.querySelector("#close-btn");
 const mainBtn = document.querySelector("#main-btn"); // mainBtn 추가!
 
 errorBtn.addEventListener("click", () => {
-	console.log("click");
-	modal.classList.remove("hidden");
+  console.log("click");
+  modal.classList.remove("hidden");
 });
 
 closeBtn.addEventListener("click", () => {
-	console.log("close");
-	modal.classList.add("hidden");
+  console.log("close");
+  modal.classList.add("hidden");
 });
 
-mainBtn.addEventListener("click", () => {
-	location.href = "/";
-});
+if (mainBtn !== null) {
+  mainBtn.addEventListener("click", () => {
+    location.href = "/";
+  });
+}
