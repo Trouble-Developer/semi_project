@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>회원 탈퇴</title>
+    <link rel="stylesheet" href="/css/mypage/withdraw.css">
+    <link rel="stylesheet" href="/css/mypage/sidebar.css">
+</head>
+<body>
+    <th:block th:replace="~{common/header}"></th:block>
+
+    <main class="mypage-main">
+        <th:block th:replace="~{mypage/sidebar :: sidebar(menu='withdraw')}"></th:block>
+
+        <section class="mypage-content">
+            <h2 class="mypage-title">회원 탈퇴</h2>
+            
+            <!-- 경고 박스 -->
+            <div class="warning-box">
+                <h3>⚠️ 회원 탈퇴 시 계정 정보 및 개인 정보는 관련 법령에 따라 처리됩니다.</h3>
+                <ul>
+                    <li>탈퇴 후에는 동일한 아이디로 재가입이 불가능합니다.</li>
+                    <li>탈퇴 즉시 작성한 게시글, 댓글 등은 일부 글은 삭제되지 않습니다.</li>
+                    <li>탈퇴 후에는 복구가 불가능하니 신중히 결정해 주세요.</li>
+                </ul>
+            </div>
+            
+            <form action="/mypage/withdraw" method="POST" id="withdrawForm">
+                
+                <!-- 아이디 -->
+                <div class="myPage-row">
+                    <label>아이디</label>
+                    <input type="text" 
+                           th:value="${session.loginMember.memberId}" 
+                           readonly 
+                           class="readonly-input">
+                </div>
+
+                <!-- 비밀번호 -->
+                <div class="myPage-row">
+                    <label>비밀번호</label>
+                    <input type="password" 
+                           name="memberPw" 
+                           id="memberPw" 
+                           maxlength="20" 
+                           placeholder="비밀번호"
+                           required>
+                </div>
+                
+                <!-- 비밀번호 확인 -->
+                <div class="myPage-row">
+                    <label>비밀번호 확인</label>
+                    <input type="password" 
+                           id="memberPwConfirm" 
+                           maxlength="20" 
+                           placeholder="비밀번호 확인"
+                           required>
+                    <span class="signUp-message" id="pwConfirmMessage"></span>
+                </div>
+
+                <!-- 동의 체크박스 -->
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" id="agreeCheck">
+                    <label for="agreeCheck">위 안내 사항을 모두 확인하였으며, 이에 동의합니다.</label>
+                </div>
+
+                <!-- 탈퇴 버튼 -->
+                <button type="submit" class="myPage-submit danger" id="submitBtn" disabled>
+                    회원탈퇴
+                </button>
+
+            </form>
+        </section>
+    </main>
+    
+    <th:block th:replace="~{common/footer}"></th:block>
+    <script src="/js/mypage/withdraw.js"></script>
+</body>
+</html>

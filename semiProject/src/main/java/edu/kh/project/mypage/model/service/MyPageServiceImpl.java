@@ -181,4 +181,22 @@ public class MyPageServiceImpl implements MyPageService{
 		
 		return mapper.changePw(member);
 	}
-}
+
+	/**
+	 * 회원 탈퇴
+	 */
+	@Override
+	public int withdraw(String memberPw, int memberNo) {
+		
+		// 1. DB에 저장된 암호화된 비밀번호 조회
+		String encPw = mapper.selectEncryptedPw(memberNo);
+		
+		// 2. 입력받은 비밀번호와 비교
+		if(!bcrypt.matches(memberPw, encPw)) {
+			return 0; // 비밀번호 불일치
+		}
+		
+		// 3. 비밀번호가 일치하면 회원 탈퇴 처리 (MEMBER_DEL_FL = 'Y')
+		return mapper.withdraw(memberNo);
+	}
+	}
