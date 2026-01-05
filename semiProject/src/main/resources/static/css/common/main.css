@@ -34,8 +34,9 @@ body {
 
 .board-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 20px;
+  width: 100%;
 }
 
 .board-section {
@@ -144,12 +145,7 @@ swiper-slide {
 .mySwiper {
   padding-bottom: 50px;
 }
-.rank {
-  font-weight: bold;
-  color: #ff8787;
-  margin-right: 10px;
-  width: 20px;
-}
+
 #volun-title {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -160,4 +156,46 @@ swiper-slide {
   width: 100%;
   height: 100%;
   object-fit: contain;
+}
+.text {
+  color: gray;
+}
+.rank {
+  font-weight: bold;
+  color: #ff8787;
+  margin-right: 10px;
+  width: 20px;
+}
+/* 정보게시판 */
+.info-board-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  width: 100%;
+}
+.info-board-detail-text li {
+  list-style: none;
+}
+.info-board-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background-color: white;
+  border-radius: 20px;
+  padding: 20px;
+}
+.info-board-detail-btn {
+  display: flex;
+  justify-content: flex-end;
+}
+.volun-type-text {
+  color: #ff5900;
+  font-weight: bold;
+}
+.volun-info-title-text {
+  font-weight: bold;
+  font-size: 20px;
+}
+.info-board-section {
+  padding-bottom: 30px;
 }

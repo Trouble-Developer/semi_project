@@ -138,7 +138,7 @@
             <li><a th:href="@{/board/{boardCode}(boardCode=${boardCode}, cp=${i}, key=${param.key}, query=${param.query})}" th:text="${i}" class="page-btn"
                    th:classappend="${i == pagination.currentPage} ? ' curr-page' : ''"></a></li>
           </th:block>
-          <li><a th:href="@{/board/{boardCode}(boardCode=${boardCode}, cp=*{nextPage}, key=${param.key}, query=${param.query})}" class="page-btn">&gt;</a></li>
+          <li><a th:href="@{/eboard/{boardCode}(boardCode=${boardCode}, cp=*{nextPage}, key=${param.key}, query=${param.query})}" class="page-btn">&gt;</a></li>
           <li><a th:href="@{/board/{boardCode}(boardCode=${boardCode}, cp=*{maxPage}, key=${param.key}, query=${param.query})}" class="page-btn">&gt;&gt;</a></li>
         </ul>
       </div>

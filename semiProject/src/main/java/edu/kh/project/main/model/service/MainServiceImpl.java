@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import edu.kh.project.board.model.dto.Board;
+import edu.kh.project.info.model.dto.InfoBoard;
 import edu.kh.project.main.model.mapper.MainMapper;
 
 @Service
@@ -27,11 +28,11 @@ public class MainServiceImpl implements MainService{
 		return mapper.getFreeBoardList();
 	}
 
-	@Override
-	public List<Board> getInfoBoardList() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+//	@Override
+//	public List<InfoBoard> getInfoBoardList() {
+//		// return mapper.getInfoBoardList();
+//		return null;
+//	}
 
 	@Override
 	public List<Board> getNoticeBoardList() {

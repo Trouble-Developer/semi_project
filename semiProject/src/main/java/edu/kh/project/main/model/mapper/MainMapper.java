@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import edu.kh.project.board.model.dto.Board;
+import edu.kh.project.info.model.dto.InfoBoard;
 
 @Mapper
 public interface MainMapper {
@@ -17,5 +18,7 @@ public interface MainMapper {
 	List<Board> getFreeBoardList();
 
 	Board getReviewBestUser();
+//
+//	List<InfoBoard> getInfoBoardList();
 
 }
