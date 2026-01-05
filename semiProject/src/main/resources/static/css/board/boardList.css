@@ -1,3 +1,6 @@
+#container {
+  margin-bottom: 150px;
+}
 #title-text {
   font-size: 32px;
 }
@@ -176,4 +179,13 @@ a {
   padding: 40px 0;
   color: #888;
   font-size: 25px;
+}
+
+#notFoundBoard {
+  text-align: center;
+  padding: 100px 0;
+}
+#notFoundBoardText {
+  font-size: 20px;
+  color: #666;
 }
