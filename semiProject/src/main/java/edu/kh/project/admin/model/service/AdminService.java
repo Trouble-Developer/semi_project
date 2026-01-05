@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 import edu.kh.project.admin.dto.AdminMember;
+import edu.kh.project.admin.dto.AdminReportComment;
+import edu.kh.project.admin.dto.Report;
+import edu.kh.project.board.model.dto.Board;
 import edu.kh.project.board.model.dto.Pagination;
 
 public interface AdminService {
@@ -52,11 +55,77 @@ public interface AdminService {
 	 */
 	int updateSupportStatus(Map<String, Object> paramMap);
 
+		
 	/** 신고글 목록 조회
 	 * @param paramMap
 	 * @return
 	 */
 	Map<String, Object> selectReportList(Map<String, Object> paramMap);
+
+	/** 신고글 기각
+	 * @param reportNo
+	 */
+	void rejectReport(int reportNo);
+
+	/** 신고글 삭제
+	 * @param paramMap
+	 */
+	void deleteReport(Map<String, Object> paramMap);
+
+	/** 신고 대상(게시글 or 댓글)에 따른 게시글 번호
+	 * @param targetNo
+	 * @return
+	 */
+	Integer selectBoardNoByReportTarget(int targetNo);
+
+	/** 이전 글
+	 * @param reportNo
+	 * @return
+	 */
+	Integer selectPrevReportNo(int reportNo);
+
+	/** 다음 글
+	 * @param reportNo
+	 * @return
+	 */
+	Integer selectNextReportNo(int reportNo);
+
+	/** 이전글, 다음글 제목
+	 * @param prevReportNo
+	 * @return
+	 */
+	String selectReportTitle(int reportNo);
+
+	/** 게시글 상세 목록 
+	 * @param boardNo
+	 * @return
+	 */
+	Board selectBoardDetailForReport(int boardNo);
+
+	/** 댓글 목록(관리자 전용)
+	 * @param boardNo
+	 * @return
+	 */
+	List<AdminReportComment> selectCommentListForReport(int boardNo);
+
+	/** 게시글 신고 상세
+	 * @param reportNo
+	 * @return
+	 */
+	Report selectBoardReportDetail(int reportNo);
+
+	/** 댓글 신고 상세
+	 * @param reportNo
+	 * @return
+	 */
+	Report selectCommentReportDetail(int reportNo);
+
+	
+
+
+
+
+	
 
 	
 

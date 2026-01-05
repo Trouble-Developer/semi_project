@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import edu.kh.project.admin.dto.AdminMember;
 import edu.kh.project.admin.dto.AdminNotice;
+import edu.kh.project.admin.dto.AdminReportComment;
 import edu.kh.project.admin.dto.AdminSupport;
 import edu.kh.project.admin.dto.Report;
 import edu.kh.project.admin.model.mapper.AdminMapper;
@@ -135,6 +136,7 @@ public class AdminServiceImpl implements AdminService{
     	return mapper.updateSupportStatus(paramMap);
     }
     
+    // 신고글 목록 페이지
     @Override
     public Map<String, Object> selectReportList(Map<String, Object> paramMap) {
 
@@ -180,7 +182,98 @@ public class AdminServiceImpl implements AdminService{
 
         return resultMap;
     }
-
     
+    // 신고 기각
+    @Override
+    public void rejectReport(int reportNo) {
+
+        // 1️⃣ 신고 상세 조회 (BOARD 먼저 시도)
+        Report report = mapper.selectBoardReportDetail(reportNo);
+
+        if (report == null) {
+            // 2️⃣ BOARD가 아니면 COMMENT 시도
+            report = mapper.selectCommentReportDetail(reportNo);
+        }
+
+        if (report == null) {
+            throw new IllegalStateException("존재하지 않거나 이미 처리된 신고");
+        }
+
+        // 3️⃣ 타입 분기
+        if ("BOARD".equals(report.getReportType())) {
+            mapper.rejectBoardReport(reportNo);
+
+        } else if ("COMMENT".equals(report.getReportType())) {
+            mapper.rejectCommentReport(reportNo);
+        }
+    }
+    
+    // 신고글 삭제
+    @Override
+    public void deleteReport(Map<String, Object> paramMap) {
+
+        String reportType = (String) paramMap.get("reportType");
+
+        if ("BOARD".equals(reportType)) {
+            mapper.deleteReportedBoard(paramMap);
+            mapper.updateBoardReportProcess(paramMap);
+
+        } else if ("COMMENT".equals(reportType)) {
+            mapper.deleteReportedComment(paramMap);
+            mapper.updateCommentReportProcess(paramMap);
+        }
+    }
+    
+    // 이전 글
+    @Override
+    public Integer selectPrevReportNo(int reportNo) {
+        return mapper.selectPrevReportNo(reportNo);
+    }
+
+    // 다음 글
+    @Override
+    public Integer selectNextReportNo(int reportNo) {
+        return mapper.selectNextReportNo(reportNo);
+    }
+
+    // 이전, 다음글 제목
+    @Override
+    public String selectReportTitle(int reportNo) {
+        return mapper.selectReportTitle(reportNo);
+    }
+    
+    
+    // 신고 대상(게시글 or 댓글)에 따른 게시글 번호
+    @Override
+    public Integer selectBoardNoByReportTarget(int targetNo) {
+        // targetNo == commentNo 인 경우에만 사용됨
+        return mapper.selectBoardNoByReportTarget(targetNo);
+    }
+    
+    // 게시글 상세 + 댓글 목록
+    @Override
+    public Board selectBoardDetailForReport(int boardNo) {
+    	Board board = mapper.selectBoardDetail(boardNo);
+        board.setCommentList(mapper.selectCommentListByBoardNo(boardNo));
+        return board;
+    }
+    
+    // 댓글 목록 (관리자 전용)
+    @Override
+    public List<AdminReportComment> selectCommentListForReport(int boardNo) {
+    	 return mapper.selectCommentListForReport(boardNo);
+    }
+    
+    // 게시글 신고 상세
+    @Override
+    public Report selectBoardReportDetail(int reportNo) {
+    	return mapper.selectBoardReportDetail(reportNo);
+    }
+    
+    // 댓글 신고 상세
+    @Override
+    public Report selectCommentReportDetail(int reportNo) {
+    	return mapper.selectCommentReportDetail(reportNo);
+    }
 	
 }
