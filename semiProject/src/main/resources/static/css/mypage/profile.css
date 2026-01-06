@@ -1,10 +1,24 @@
-/* 전체 레이아웃 잡기 */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column; 
+    min-height: 100vh;      
+    margin: 0;              
+}
+
+
 .mypage-container {
+    flex: 1;
     display: flex;
     width: 1200px;
-    margin: 50px auto;
-    min-height: 800px;
-    gap: 40px; 
+    margin: 0 auto;
+    padding: 50px 0;
+    gap: 40px;
 }
 
 /* 메인 콘텐츠 영역 */
