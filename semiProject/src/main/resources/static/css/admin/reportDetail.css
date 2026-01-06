@@ -266,3 +266,16 @@
     width: 100%;
     border-collapse: collapse;
 }
+
+/* 신고 상세 페이지 본문 줄바꿈 처리 */
+.board-content {
+  max-width: 100%;
+  
+  /* 핵심 */
+  white-space: pre-wrap;        /* 줄바꿈 + 공백 유지 */
+  word-break: break-all;        /* 공백 없는 문자열 강제 줄바꿈 */
+  overflow-wrap: break-word;    /* 컨테이너 밖으로 넘치지 않게 */
+
+  /* 안전장치 */
+  box-sizing: border-box;
+}
