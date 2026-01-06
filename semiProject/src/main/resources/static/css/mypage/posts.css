@@ -17,10 +17,8 @@ body {
 
 
 .main-content {
-    flex: 1;
-    padding: 50px;
-    background-color: #fff;
-    border-radius: 10px;
+    flex-grow: 1;            
+    width: 100%;             
 }
 
 /* 제목 스타일 */
