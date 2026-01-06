@@ -1,20 +1,24 @@
 package edu.kh.project.info.model.service;
 
+import java.util.List;
 import java.util.Map;
+import edu.kh.project.info.model.dto.AreaCode;
 import edu.kh.project.info.model.dto.InfoBoard;
 
 public interface InfoService {
 
-    /** 1365 데이터 수집 (성공 건수 반환)  */
+    /** [기능 1] 1365 API 데이터 DB 동기화 */
     int syncFrom1365() throws Exception;
 
-    /** * 봉사 목록 조회 (페이지네이션 적용) 
-     * @param cp : 현재 페이지 번호
-     * @param map : 검색 조건
-     * @return : pagination(계산기) + infoList(10개 게시글) 가 담긴 Map
-     */
+    /** [기능 2] 봉사 목록 조회 (페이징/검색 포함) */
     Map<String, Object> selectInfoList(int cp, Map<String, Object> map);
 
-    /** 상세 조회  */
+    /** [기능 3] 봉사 상세 정보 조회 */
     InfoBoard selectInfoBoard(int infoBoardNo);
+
+    /** [기능 4] 시도 목록 조회 (AreaCode DTO 활용) */
+    List<AreaCode> getSidoList();
+
+    /** [기능 5] 시군구 목록 조회 (AreaCode DTO 활용) */
+    List<AreaCode> getSignList(String sidoCd);
 }
