@@ -158,11 +158,17 @@ public interface AdminMapper {
 	 */
 	List<AdminReportComment> selectCommentListForReport(int boardNo);
 
-	/** 이전글,다음글 제목
+	/** 신고된 게시글용 제목
 	 * @param reportNo
 	 * @return
 	 */
-	String selectReportTitle(int reportNo);
+	String selectBoardReportTitle(int reportNo);
+	
+	/** 신고된 댓글용 제목
+	 * @param reportNo
+	 * @return
+	 */
+	String selectCommentReportTitle(int reportNo);
 
 	/** 게시글 상세 조회
 	 * @param reportNo

@@ -293,6 +293,7 @@
 	SELECT
 	    reportNo,
 	    reportType,
+	    targetNo,
 	    reportReason,
 	    reportDate,
 	    reportStatus,
@@ -310,6 +311,7 @@
 	        SELECT
 	            BR.REPORT_NO         AS reportNo,
 	            'BOARD'              AS reportType,
+	            BR.BOARD_NO          AS targetNo, 
 	            BR.REPORT_REASON     AS reportReason,
 	            BR.REPORT_DATE       AS reportDate,
 	            BR.PROCESS_YN        AS reportStatus,
@@ -333,6 +335,7 @@
 	        SELECT
 	            CR.REPORT_NO         AS reportNo,
 	            'COMMENT'            AS reportType,
+	            CR.COMMENT_NO        AS targetNo,
 	            CR.REPORT_REASON     AS reportReason,
 	            CR.REPORT_DATE       AS reportDate,
 	            CR.PROCESS_YN        AS reportStatus,
@@ -560,21 +563,27 @@
 
 </select>
 
-<!-- 이전/다음 신고글 제목 -->
-<select id="selectReportTitle" resultType="string">
+<!-- 신고글 제목(게시글) -->
+<select id="selectBoardReportTitle"
+        parameterType="int"
+        resultType="string">
     SELECT B.BOARD_TITLE
     FROM BOARD_REPORT BR
     JOIN BOARD B ON BR.BOARD_NO = B.BOARD_NO
     WHERE BR.REPORT_NO = #{reportNo}
+</select>
 
-    UNION ALL
-
+<!-- 신고글 제목(댓글) -->
+<select id="selectCommentReportTitle"
+        parameterType="int"
+        resultType="string">
     SELECT B.BOARD_TITLE
     FROM COMMENT_REPORT CR
     JOIN "COMMENT" C ON CR.COMMENT_NO = C.COMMENT_NO
     JOIN BOARD B ON C.BOARD_NO = B.BOARD_NO
     WHERE CR.REPORT_NO = #{reportNo}
 </select>
+
 
 <!-- 게시글 신고 상세 -->
 <select id="selectBoardReportDetail"
