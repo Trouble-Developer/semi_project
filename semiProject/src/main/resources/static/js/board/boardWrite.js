@@ -1,3 +1,6 @@
+/**
+ * 문자열의 바이트 길이를 계산 (UTF-8 기준)
+ */
 function getByteLength(s) {
   if (s == null || s.length === 0) return 0;
   return new TextEncoder().encode(s).length;
@@ -10,17 +13,42 @@ $(document).ready(function () {
   const deleteImage = document.getElementById("deleteImage");
   const defaultImageUrl = `/images/footer-logo.png`;
 
-  if (profileImg && deleteImage) {
-    if (profileImg.getAttribute("src") !== defaultImageUrl) {
-      deleteImage.style.display = "flex";
-    }
-  }
-
+  // --- 1. 섬머노트(Summernote) 초기화 설정 ---
   $("#summernote").summernote({
     width: 1130,
     height: 500,
     lang: "ko-KR",
+    placeholder: "내용을 입력해주세요.",
+
+    // 사용 가능한 폰트 목록
+    fontNames: [
+      "Arial",
+      "Arial Black",
+      "Comic Sans MS",
+      "Courier New",
+      "맑은 고딕",
+      "궁서",
+      "굴림체",
+      "돋움체",
+      "바탕체",
+    ],
+    // 시스템에 해당 폰트가 있는지 확인하지 않고 바로 목록에 노출
+    fontNamesIgnoreCheck: ["맑은 고딕", "궁서", "굴림체", "돋움체", "바탕체"],
+
+    // 툴바 구성 정의
+    toolbar: [
+      ["fontname", ["fontname"]], // 글꼴 설정
+      ["fontsize", ["fontsize"]], // 글자 크기
+      ["style", ["bold", "italic", "underline", "strikethrough", "clear"]], // 서식
+      ["color", ["forecolor", "color"]], // 글자색/배경색
+      ["para", ["ul", "ol", "paragraph"]], // 정렬/목록
+      ["height", ["height"]], // 줄간격
+      ["insert", ["picture", "link"]], // 이미지/링크/동영상
+      ["view", ["fullscreen", "help"]], // 도구
+    ],
+
     callbacks: {
+      // 내용이 변경될 때마다 바이트 수 체크
       onChange: function (contents) {
         const currentByte = getByteLength(contents);
         const $byteCounter = $("#current-byte");
@@ -29,6 +57,7 @@ $(document).ready(function () {
           $byteCounter.css("color", currentByte > MAX_BYTE ? "red" : "black");
         }
       },
+      // 이미지 업로드 시 실행
       onImageUpload: function (files) {
         for (let i = 0; i < files.length; i++) {
           uploadImage(files[i]);
@@ -37,9 +66,18 @@ $(document).ready(function () {
     },
   });
 
+  // --- 2. 썸네일 이미지 삭제 버튼 초기 상태 제어 ---
+  if (profileImg && deleteImage) {
+    if (profileImg.getAttribute("src") !== defaultImageUrl) {
+      deleteImage.style.display = "flex";
+    }
+  }
+
+  // --- 3. 폼 제출(Submit) 유효성 검사 ---
   const form = document.querySelector("#summernote-write");
   if (form) {
     form.addEventListener("submit", (e) => {
+      // 제목 검사
       const boardTitle = document.querySelector("#board-title");
       if (boardTitle.value.trim() === "") {
         e.preventDefault();
@@ -48,6 +86,7 @@ $(document).ready(function () {
         return false;
       }
 
+      // 비밀글 체크 시 비밀번호 검사
       const secretCheck = document.querySelector("#checkbox");
       const boardPw = document.querySelector("#board-pw");
       if (secretCheck && secretCheck.checked) {
@@ -59,6 +98,7 @@ $(document).ready(function () {
         }
       }
 
+      // 봉사 기간 유효성 검사 (시작일/종료일 세트 체크)
       const sdate = document.querySelector("#sdate");
       const edate = document.querySelector("#edate");
       if (sdate && edate) {
@@ -84,6 +124,7 @@ $(document).ready(function () {
         }
       }
 
+      // 섬머노트 내용 유효성 및 용량 검사
       const contents = $("#summernote").summernote("code");
       const currentByte = getByteLength(contents);
       if ($("#summernote").summernote("isEmpty")) {
@@ -101,9 +142,11 @@ $(document).ready(function () {
     });
   }
 
+  // --- 4. 게시판 유형에 따른 비밀글 영역 노출 제어 ---
   const secretWrapper = document.querySelector("#secret-wrapper");
   function toggleSecret() {
     if (secretWrapper) {
+      // boardCode가 5(예: 문의 게시판)인 경우에만 비밀글 활성화
       if (typeof boardCode !== "undefined" && boardCode == 5) {
         secretWrapper.style.display = "block";
       } else {
@@ -115,6 +158,7 @@ $(document).ready(function () {
   }
   toggleSecret();
 
+  // --- 5. 썸네일 이미지 업로드 및 미리보기 로직 ---
   if (imageInput) {
     let previousImage = profileImg ? profileImg.src : defaultImageUrl;
     let previousFile = null;
@@ -122,6 +166,7 @@ $(document).ready(function () {
     imageInput.addEventListener("change", () => {
       const file = imageInput.files[0];
       if (file) {
+        // 용량 제한 (5MB)
         if (file.size <= 1024 * 1024 * 5) {
           const newImageUrl = URL.createObjectURL(file);
           profileImg.src = newImageUrl;
@@ -148,6 +193,7 @@ $(document).ready(function () {
       }
     });
 
+    // 썸네일 삭제 버튼 클릭 이벤트
     if (deleteImage) {
       deleteImage.addEventListener("click", () => {
         imageInput.value = "";
@@ -160,6 +206,9 @@ $(document).ready(function () {
   }
 });
 
+/**
+ * 에디터 내 본문 이미지 업로드 (서버 전송)
+ */
 function uploadImage(file) {
   const formData = new FormData();
   formData.append("file", file);
@@ -170,6 +219,7 @@ function uploadImage(file) {
     contentType: false,
     processData: false,
     success: function (res) {
+      // 서버에서 반환한 이미지 URL을 에디터에 삽입
       $("#summernote").summernote("insertImage", res.url);
     },
     error: function () {
