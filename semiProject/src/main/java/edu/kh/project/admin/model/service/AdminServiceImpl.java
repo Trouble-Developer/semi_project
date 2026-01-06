@@ -236,10 +236,18 @@ public class AdminServiceImpl implements AdminService{
         return mapper.selectNextReportNo(reportNo);
     }
 
-    // 이전, 다음글 제목
+    // 신고된 게시글용, 댓글용 제목
     @Override
-    public String selectReportTitle(int reportNo) {
-        return mapper.selectReportTitle(reportNo);
+    public String selectReportTitle(int reportNo, String reportType) {
+
+        if ("BOARD".equals(reportType)) {
+            return mapper.selectBoardReportTitle(reportNo);
+
+        } else if ("COMMENT".equals(reportType)) {
+            return mapper.selectCommentReportTitle(reportNo);
+        }
+
+        return null;
     }
     
     

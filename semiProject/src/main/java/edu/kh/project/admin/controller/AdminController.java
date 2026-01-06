@@ -447,11 +447,13 @@ public class AdminController {
         String nextReportTitle = null;
 
         if (prevReportNo != null) {
-            prevReportTitle = adminService.selectReportTitle(prevReportNo);
+            prevReportTitle =
+                adminService.selectReportTitle(prevReportNo, reportType);
         }
 
         if (nextReportNo != null) {
-            nextReportTitle = adminService.selectReportTitle(nextReportNo);
+            nextReportTitle =
+                adminService.selectReportTitle(nextReportNo, reportType);
         }
         
 

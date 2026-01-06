@@ -90,11 +90,11 @@ public interface AdminService {
 	 */
 	Integer selectNextReportNo(int reportNo);
 
-	/** 이전글, 다음글 제목
+	/** 이전글, 다음글 제목(신고된 게시글, 댓글 분류)
 	 * @param prevReportNo
 	 * @return
 	 */
-	String selectReportTitle(int reportNo);
+	String selectReportTitle(int reportNo, String reportType);
 
 	/** 게시글 상세 목록 
 	 * @param boardNo

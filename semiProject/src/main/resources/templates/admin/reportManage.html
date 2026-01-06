@@ -36,7 +36,7 @@
         <th>유형</th>
         <th>제목</th>
         <th>작성일</th>
-        <th>신고 기각</th>
+        <th>신고 취소</th>
         <th>삭제</th>
       </tr>
     </thead>
@@ -69,7 +69,7 @@
             type="button"
             class="danger"
             th:onclick="|rejectReport(${report.reportNo})|">
-            기각
+            취소
           </button>
         </td>
 
@@ -79,7 +79,7 @@
             type="button"
             class="danger"
             th:attr="
-              data-target-no=${report.boardNo},
+              data-target-no=${report.targetNo},
               data-report-no=${report.reportNo},
               data-report-type=${report.reportType}"
             onclick="deleteReport(this)">
