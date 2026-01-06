@@ -27,7 +27,6 @@ public class MyPageServiceImpl implements MyPageService{
     private final MyPageMapper mapper;
     private final BCryptPasswordEncoder bcrypt;
 
- // ★ [수정] 메서드명 updateProfile로 통일 / currentPw 파라미터 삭제
     @Override
     public int updateProfile(Member updateMember, MultipartFile profileImg, String webPath, String folderPath) throws IOException {
         
@@ -80,14 +79,12 @@ public class MyPageServiceImpl implements MyPageService{
       Map<String, Object> map = new HashMap<>();
       map.put("memberNo", memberNo);
       
-      // ★ 여기가 범인임 ★
-      // 검색어(key, query)가 있을 때만 map에 추가해줘야 XML에서 인식함
       if(paramMap != null) {
           map.put("key", paramMap.get("key"));
           map.put("query", paramMap.get("query"));
       }
 
-      // 2. 게시글 수 조회 (검색어 포함된 갯수 세야 하니까 map 전달)
+      // 2. 게시글 수 조회
       int listCount = mapper.getPostCount(map);
       
       // 3. 페이지네이션
@@ -146,7 +143,7 @@ public class MyPageServiceImpl implements MyPageService{
 	          map.put("query", paramMap.get("query"));
 	      }
 	      
-	      // 1. 전체 스크랩 수 조회 (일반+정보)
+	      // 1. 전체 스크랩 수 조회
 	      int listCount = mapper.getScrapCount(map);
 	      
 	      Pagination pagination = new Pagination(cp, listCount);
@@ -184,4 +181,22 @@ public class MyPageServiceImpl implements MyPageService{
 		
 		return mapper.changePw(member);
 	}
-}
+
+	/**
+	 * 회원 탈퇴
+	 */
+	@Override
+	public int withdraw(String memberPw, int memberNo) {
+		
+		// 1. DB에 저장된 암호화된 비밀번호 조회
+		String encPw = mapper.selectEncryptedPw(memberNo);
+		
+		// 2. 입력받은 비밀번호와 비교
+		if(!bcrypt.matches(memberPw, encPw)) {
+			return 0; // 비밀번호 불일치
+		}
+		
+		// 3. 비밀번호가 일치하면 회원 탈퇴 처리 (MEMBER_DEL_FL = 'Y')
+		return mapper.withdraw(memberNo);
+	}
+	}

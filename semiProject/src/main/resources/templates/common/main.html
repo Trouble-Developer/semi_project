@@ -11,184 +11,154 @@
       href="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css"
     />
     <style>
-      html,
-      body {
-        position: relative;
-        height: 100%;
-      }
-
-      swiper-container {
-        width: 100%;
-        max-width: 1200px;
-        height: 450px;
-        margin: 40px auto;
-      }
-
-      swiper-slide {
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
+      .swiper {
+        width: 1000px;
+        height: 350px;
+        margin-bottom: 100px;
         border-radius: 20px;
-        border: 1px solid #ddd;
-        background-color: white;
-        box-shadow: 0px 8px 6px -6px #666;
       }
-
-      swiper-container {
+      .swiper-slide img {
+        display: block;
         width: 100%;
-        height: 400px;
-        margin: 20px auto;
-      }
-
-      .append-buttons {
-        text-align: center;
-        margin-top: 20px;
-      }
-
-      .append-buttons button {
-        display: inline-block;
-        cursor: pointer;
-        border: 1px solid #007aff;
-        color: #007aff;
-        text-decoration: none;
-        padding: 4px 10px;
-        border-radius: 4px;
-        margin: 0 10px;
-        font-size: 13px;
-      }
-      .swiper-content {
-        display: flex;
-        flex-direction: column;
-      }
-      .bg {
-        width: 100%;
-        height: 250px;
-        border-top-left-radius: 20px;
-        border-top-right-radius: 20px;
-      }
-      .text-info {
-        padding: 0px 20px;
-      }
-      #volunteer-title-text {
-        font-size: 25px;
-        font-weight: bold;
+        height: 100%;
+        object-fit: cover;
       }
     </style>
   </head>
   <body>
     <th:block th:replace="~{common/header}"></th:block>
-    <div id="container">
-      <img src="images/mainLogo.jpg" alt="메인로고" id="mainLogoImg" />
-      <div>
-        <section class="board-grid">
-          <article class="board-section">
-            <div class="section-header">
-              <h3>
-                자유게시판
-                <i class="fa-solid fa-fire" style="color: #ff4d4d"></i>
-              </h3>
-              <a href="/board/1" class="more-btn">더보기</a>
-            </div>
-            <th:block
-              th:each="freeBoard, iterStatus : ${freeBoardList}"
-              th:object="${freeBoard}"
-            >
+
+    <main id="container">
+      <div class="swiper mySwiper">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide">
+            <img src="/images/main-logo-one.png" />
+          </div>
+          <div class="swiper-slide">
+            <a href="/board/3">
+              <img src="/images/main-logo-two.png" />
+            </a>
+          </div>
+        </div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-pagination"></div>
+      </div>
+
+      <div id="board-background-area">
+        <div class="inner-content">
+          <p id="volunteer-title-text">게시판</p>
+          <section class="board-grid">
+            <article class="board-section">
+              <div class="section-header">
+                <h3>
+                  자유게시판
+                  <i class="fa-solid fa-fire" style="color: #ff4d4d"></i>
+                </h3>
+                <a href="/board/1" class="more-btn">더보기</a>
+              </div>
               <ul class="board-list">
                 <li>
-                  <span class="rank" th:text="${iterStatus.count}">순위</span>
+                  <span class="rank-text text">순위</span>
+                  <span class="board-like-text text">좋아요</span>
+                </li>
+                <li
+                  th:each="freeBoard, iterStatus : ${freeBoardList}"
+                  th:object="${freeBoard}"
+                >
+                  <span class="rank" th:text="${iterStatus.count}">1</span>
                   <a
                     th:href="@{/board/{boardCode}/{boardNo}(boardCode=*{boardCode}, boardNo=*{boardNo})}"
                     th:text="*{boardTitle}"
-                    >자유게시판 제목</a
+                    >제목</a
                   >
-                  <span class="info hot" th:text="*{likeCount}">좋아요 수</span>
+                  <span class="info hot" th:text="*{likeCount}">0</span>
                 </li>
               </ul>
-            </th:block>
-          </article>
+            </article>
 
-          <article class="board-section">
-            <div class="section-header">
-              <h3>
-                정보게시판
-                <i class="fa-solid fa-chart-line" style="color: #4dabf7"></i>
-              </h3>
-              <a href="/board/2" class="more-btn">더보기</a>
-            </div>
-            <ul class="board-list">
-              <li>
-                <a href="#">[필독] 2025년 봉사 시간 관리법</a>
-                <span class="info views"
-                  ><i class="fa-solid fa-eye"></i> 2.1k</span
+            <article class="board-section">
+              <div class="section-header">
+                <h3>
+                  공지사항
+                  <i class="fa-solid fa-bullhorn" style="color: #4dabf7"></i>
+                </h3>
+                <a href="/board/4" class="more-btn">더보기</a>
+              </div>
+              <ul class="board-list board-list-content-2">
+                <li class="read-count-text">
+                  <span class="text">조회수</span>
+                </li>
+                <li
+                  th:each="noticeBoard : ${noticeBoardList}"
+                  th:object="${noticeBoard}"
                 >
-              </li>
-              <li>
-                <a href="#">우수 봉사자 혜택 총정리</a>
-                <span class="info views"
-                  ><i class="fa-solid fa-eye"></i> 1.8k</span
-                >
-              </li>
-              <li>
-                <a href="#">겨울철 야외 봉사 주의사항</a>
-                <span class="info views"
-                  ><i class="fa-solid fa-eye"></i> 1.5k</span
-                >
-              </li>
-              <li>
-                <a href="#">VMS와 1365 연동하는 방법</a>
-                <span class="info views"
-                  ><i class="fa-solid fa-eye"></i> 1.2k</span
-                >
-              </li>
-            </ul>
-          </article>
-
-          <article class="board-section">
-            <div class="section-header">
-              <h3>
-                공지사항
-                <i class="fa-solid fa-chart-line" style="color: #4dabf7"></i>
-              </h3>
-              <a href="/board/4" class="more-btn">더보기</a>
-            </div>
-            <th:block
-              th:each="noticeBoard : ${noticeBoardList}"
-              th:object="${noticeBoard}"
-            >
-              <ul class="board-list">
-                <li>
                   <a
                     th:href="@{/board/{boardCode}/{boardNo}(boardCode=*{boardCode}, boardNo=*{boardNo})}"
                     th:text="*{boardTitle}"
-                    >공지사항 제목</a
+                    >제목</a
                   >
-                  <span class="info views" th:text="*{readCount}">조회수</span>
+                  <span class="info views" th:text="*{readCount}">0</span>
                 </li>
               </ul>
-            </th:block>
-          </article>
-        </section>
-
-        <section
-          class="volunteer-king-section"
-          th:if="${reviewBestUser != null}"
-        >
-          <div class="king-card">
+            </article>
+          </section>
+          <p id="volunteer-title-text">모집중인 자원봉사</p>
+          <section class="info-board-section">
+            <div class="info-board-grid">
+              <!-- infoBoardNo=498, url=null, progrmNm=예술단공연, progrmCn=null, actRm=기타, nanmmByNm=null, progrmBgnde=20251013, progrmEndde=20260112, noticeBgnDe=20250915, noticeEndDe=20260112, actBeginTm=13, actEndTm=15, actPlace=null, adultPosblAt=null, yngBgsPosblAt=null, schSido=null, schSign=null), -->
+              <th:block
+                th:each="infoBoard : ${infoBoardList}"
+                th:object="${infoBoard}"
+              >
+                <a
+                  th:href="@{/info/detail/{infoBoardNo}(infoBoardNo=*{infoBoardNo})}"
+                >
+                  <div class="info-board-detail">
+                    <div>
+                      <p class="volun-type-text" th:text="*{actRm}">종류</p>
+                    </div>
+                    <div>
+                      <p class="volun-info-title-text" th:text="*{progrmNm}">
+                        프로그램 이름
+                      </p>
+                    </div>
+                    <div>
+                      <ul class="info-board-detail-text">
+                        <li
+                          th:text="|모집기간 : *{noticeBgnDe} ~ *{noticeEndDe}|"
+                        >
+                          모집 기간
+                        </li>
+                        <li
+                          th:text="|봉사기간 : *{progrmBgnde} ~ *{progrmEndde}|"
+                        >
+                          봉사기간
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </a>
+              </th:block>
+            </div>
+          </section>
+        </div>
+      </div>
+      <div class="story-area">
+        <section class="volunteer-king-section">
+          <div th:if="${reviewBestUser != null}" class="king-card">
             <div class="king-badge">이달의 봉사왕 🏆</div>
             <div class="king-content">
               <div class="king-profile">
                 <img
-                  th:src="${reviewBestUser.profileImg != null and reviewBestUser.profileImg != '' 
-                             ? reviewBestUser.profileImg 
-                             : '/images/default_profile.png'}"
-                  alt="봉사왕 프로필"
+                  th:src="${reviewBestUser.profileImg != null and reviewBestUser.profileImg != '' ? reviewBestUser.profileImg : '/images/default_profile.png'}"
+                  alt="봉사왕"
                 />
               </div>
               <div class="king-info">
                 <h4>
-                  봉사마스터
-                  <span th:text="|(${reviewBestUser.memberNickname} 님)|"
-                    >(유저 이름)</span
+                  <span th:text="|${reviewBestUser.memberNickname} 님|"
+                    >사용자</span
                   >
                 </h4>
                 <p>
@@ -199,125 +169,65 @@
               </div>
             </div>
           </div>
+          <div
+            th:if="${reviewBestUser == null}"
+            style="text-align: center; padding: 20px"
+          >
+            <p>아직 이번 달 봉사왕이 없습니다. 첫 주인공이 되어보세요! 🏅</p>
+          </div>
         </section>
-
-        <section
-          class="volunteer-king-section"
-          th:if="${reviewBestUser == null}"
-          style="
-            text-align: center;
-            padding: 30px;
-            background: #f9f9f9;
-            border-radius: 20px;
-          "
-        >
-          <p>아직 이번 달 봉사왕이 없습니다. 첫 주인공이 되어보세요! 🏅</p>
-        </section>
-
-        <p id="volunteer-title-text">자원봉사 이야기</p>
+        <p id="volunteer-story-title-text">자원봉사 이야기</p>
         <div id="mainContent">
           <swiper-container
-            class="mySwiper"
+            class="mySwiper2"
             slides-per-view="3"
-            centered-slides="false"
             space-between="20"
             pagination="true"
-            pagination-type="fraction"
             navigation="true"
-            autoplay-delay="2000"
-            autoplay-disable-on-interaction="false"
+            autoplay-delay="3000"
             loop="true"
           >
-            <th:block th:each="board : ${boardList}">
-              <swiper-slide>
-                <div class="swiper-content">
-                  <a
-                    th:href="@{/board/{boardCode}/{boardNo}(boardCode=${board.boardCode}, boardNo=${board.boardNo})}"
-                  >
-                    <img
-                      th:src="${board.imgRename != null 
-                      ? board.imgPath + board.imgRename 
-                      : '/images/mainLogo.jpg'}"
-                      alt="배경"
-                      class="bg"
-                    />
-                  </a>
-                </div>
-                <div class="text-info">
-                  <p th:text="|${board.memberNickname} 님|"></p>
-                  <a
-                    th:href="@{/board/{boardCode}/{boardNo}(boardCode=${board.boardCode}, boardNo = ${board.boardNo})}"
-                    th:text="${board.boardTitle}"
-                    id="volun-title"
-                  ></a>
-                </div>
-              </swiper-slide>
-            </th:block>
+            <swiper-slide th:each="board : ${boardList}">
+              <div class="swiper-content">
+                <a
+                  th:href="@{/board/{boardCode}/{boardNo}(boardCode=${board.boardCode}, boardNo=${board.boardNo})}"
+                >
+                  <img
+                    th:src="${board.imgRename != null ? board.imgPath + board.imgRename : '/images/footer-logo.png'}"
+                    class="bg"
+                  />
+                </a>
+              </div>
+              <div class="text-info">
+                <p th:text="|${board.memberNickname} 님|"></p>
+                <a
+                  th:href="@{/board/{boardCode}/{boardNo}(boardCode=${board.boardCode}, boardNo=${board.boardNo})}"
+                  th:text="${board.boardTitle}"
+                  id="volun-title"
+                ></a>
+              </div>
+            </swiper-slide>
           </swiper-container>
         </div>
       </div>
-    </div>
+    </main>
+
     <th:block th:replace="~{common/footer}"></th:block>
-    <script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-element-bundle.min.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-element-bundle.min.js"></script>
-
     <script>
-      // 1. 스와이퍼 컨테이너가 있는지 먼저 확인
-      const swiperEl = document.querySelector("swiper-container");
-
-      // swiperEl이 존재할 때만 내부 로직 실행
-      if (swiperEl) {
-        // 2. 스와이퍼 객체 참조 (객체가 생성될 때까지 잠시 기다려야 할 수도 있음)
-        const swiper = swiperEl.swiper;
-
-        let appendNumber = 4;
-        let prependNumber = 1;
-
-        // 3. 각 버튼 존재 여부를 확인하며 이벤트 리스너 등록
-
-        // 두 개 앞에 추가 버튼
-        document
-          .querySelector(".prepend-2-slides")
-          ?.addEventListener("click", function (e) {
-            e.preventDefault();
-            swiper.prependSlide([
-              "<swiper-slide>Slide " + --prependNumber + "</swiper-slide>",
-              "<swiper-slide>Slide " + --prependNumber + "</swiper-slide>",
-            ]);
-          });
-
-        // 한 개 앞에 추가 버튼
-        document
-          .querySelector(".prepend-slide")
-          ?.addEventListener("click", function (e) {
-            e.preventDefault();
-            swiper.prependSlide(
-              "<swiper-slide>Slide " + --prependNumber + "</swiper-slide>"
-            );
-          });
-
-        // 한 개 뒤에 추가 버튼
-        document
-          .querySelector(".append-slide")
-          ?.addEventListener("click", function (e) {
-            e.preventDefault();
-            swiper.appendSlide(
-              "<swiper-slide>Slide " + ++appendNumber + "</swiper-slide>"
-            );
-          });
-
-        // 두 개 뒤에 추가 버튼
-        document
-          .querySelector(".append-2-slides")
-          ?.addEventListener("click", function (e) {
-            e.preventDefault();
-            swiper.appendSlide([
-              "<swiper-slide>Slide " + ++appendNumber + "</swiper-slide>",
-              "<swiper-slide>Slide " + ++appendNumber + "</swiper-slide>",
-            ]);
-          });
-      }
+      var swiper = new Swiper(".mySwiper", {
+        spaceBetween: 30,
+        effect: "fade",
+        loop: true,
+        autoplay: { delay: 3000, disableOnInteraction: false },
+        navigation: {
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
+        },
+        pagination: { el: ".swiper-pagination", clickable: true },
+      });
     </script>
   </body>
 </html>

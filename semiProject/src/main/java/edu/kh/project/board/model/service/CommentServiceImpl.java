@@ -71,4 +71,34 @@ public class CommentServiceImpl implements CommentService {
         // 2. 신고 등록
         return mapper.insertCommentReport(report);
     }
+
+    /* ============================================
+     *           댓글 좋아요 관련 메서드
+     * ============================================ */
+
+    /**
+     * 댓글 좋아요 토글
+     * @param commentNo 댓글 번호
+     * @param memberNo 회원 번호
+     * @return 좋아요 수
+     */
+    @Override
+    public int toggleCommentLike(int commentNo, int memberNo) {
+        
+        // 1. 이미 좋아요 눌렀는지 체크
+        int check = mapper.checkCommentLike(commentNo, memberNo);
+        
+        if (check > 0) {
+            // 좋아요 취소
+            mapper.deleteCommentLike(commentNo, memberNo);
+            log.debug("[댓글 좋아요] 취소 - commentNo: {}, memberNo: {}", commentNo, memberNo);
+        } else {
+            // 좋아요 등록
+            mapper.insertCommentLike(commentNo, memberNo);
+            log.debug("[댓글 좋아요] 등록 - commentNo: {}, memberNo: {}", commentNo, memberNo);
+        }
+        
+        // 2. 현재 좋아요 수 반환
+        return mapper.countCommentLike(commentNo);
+    }
 }

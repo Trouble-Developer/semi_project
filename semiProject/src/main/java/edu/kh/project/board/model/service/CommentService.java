@@ -45,4 +45,16 @@ public interface CommentService {
      * @return 1: 성공, 0: 실패, -1: 중복 신고
      */
     int reportComment(CommentReport report);
+
+    /* ============================================
+     *           댓글 좋아요 관련 메서드
+     * ============================================ */
+
+    /**
+     * 댓글 좋아요 토글 (눌렀으면 취소, 안눌렀으면 등록)
+     * @param commentNo 댓글 번호
+     * @param memberNo 회원 번호
+     * @return 좋아요 수
+     */
+    int toggleCommentLike(int commentNo, int memberNo);
 }

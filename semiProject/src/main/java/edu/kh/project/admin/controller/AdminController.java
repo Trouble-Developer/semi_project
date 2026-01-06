@@ -8,15 +8,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import edu.kh.project.admin.dto.AdminMember;
 import edu.kh.project.admin.dto.AdminNotice;
+import edu.kh.project.admin.dto.AdminReportComment;
 import edu.kh.project.admin.dto.AdminSupport;
+import edu.kh.project.admin.dto.Report;
 import edu.kh.project.admin.model.service.AdminService;
 import edu.kh.project.board.model.dto.Board;
 import edu.kh.project.board.model.dto.Pagination;
@@ -351,6 +355,123 @@ public class AdminController {
         model.addAttribute("content", "admin/reportManage");
 
         return "admin/adminLayout";
+    }
+    
+    // 신고 기각
+    @GetMapping("report/reject")
+    public String rejectReport(
+            @RequestParam("reportNo") int reportNo,
+            HttpSession session,
+            RedirectAttributes ra) {
+
+        if (!isAdmin(session, ra)) return "redirect:/";
+
+        adminService.rejectReport(reportNo);
+
+        ra.addFlashAttribute("message", "신고가 기각되었습니다.");
+        return "redirect:/admin/report";
+    }
+    
+    // 신고글 삭제
+    @GetMapping("report/delete")
+    public String deleteReport(
+            @RequestParam("targetNo") int targetNo,
+            @RequestParam("reportNo") int reportNo,
+            @RequestParam("reportType") String reportType,
+            HttpSession session,
+            RedirectAttributes ra) {
+
+        if (!isAdmin(session, ra)) return "redirect:/";
+
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("targetNo", targetNo);
+        paramMap.put("reportNo", reportNo);
+        paramMap.put("reportType", reportType);
+
+        adminService.deleteReport(paramMap);
+
+        ra.addFlashAttribute("message", "삭제 처리되었습니다.");
+        return "redirect:/admin/report";
+    }
+    
+    
+    // 신고글 상세 조회 페이지
+    // 신고글 상세 조회 (BOARD / COMMENT 완전 분리)
+    @GetMapping("report/{reportType}/{reportNo}")
+    public String reportDetail(
+            @PathVariable("reportType") String reportType,
+            @PathVariable("reportNo") int reportNo,
+            Model model,
+            HttpSession session,
+            RedirectAttributes ra) {
+
+        // 관리자 체크
+        if (!isAdmin(session, ra)) return "redirect:/";
+
+        Report report;
+
+        // 신고 유형에 따른 분기
+        if ("BOARD".equals(reportType)) {
+            report = adminService.selectBoardReportDetail(reportNo);
+
+        } else if ("COMMENT".equals(reportType)) {
+            report = adminService.selectCommentReportDetail(reportNo);
+
+        } else {
+            ra.addFlashAttribute("message", "잘못된 접근입니다.");
+            return "redirect:/admin/report";
+        }
+
+        if (report == null) {
+            ra.addFlashAttribute("message", "존재하지 않거나 처리된 신고입니다.");
+            return "redirect:/admin/report";
+        }
+
+        // 게시글 상세
+        Board board = adminService.selectBoardDetailForReport(report.getBoardNo());
+
+        if (board == null) {
+            ra.addFlashAttribute("message", "게시글이 존재하지 않습니다.");
+            return "redirect:/admin/report";
+        }
+
+        // 댓글 목록
+        List<AdminReportComment> commentList =
+                adminService.selectCommentListForReport(report.getBoardNo());
+        
+        // 이전글, 다음글
+        Integer prevReportNo = adminService.selectPrevReportNo(reportNo);
+        Integer nextReportNo = adminService.selectNextReportNo(reportNo);
+
+        String prevReportTitle = null;
+        String nextReportTitle = null;
+
+        if (prevReportNo != null) {
+            prevReportTitle =
+                adminService.selectReportTitle(prevReportNo, reportType);
+        }
+
+        if (nextReportNo != null) {
+            nextReportTitle =
+                adminService.selectReportTitle(nextReportNo, reportType);
+        }
+        
+
+        // View 전달
+        model.addAttribute("report", report);
+        model.addAttribute("board", board);
+        model.addAttribute("commentList", commentList);
+
+        model.addAttribute("reportType", reportType);
+        model.addAttribute("reportNo", reportNo);
+        
+        model.addAttribute("prevReportNo", prevReportNo);
+        model.addAttribute("nextReportNo", nextReportNo);
+        model.addAttribute("prevReportTitle", prevReportTitle);
+        model.addAttribute("nextReportTitle", nextReportTitle);
+        
+
+        return "admin/reportDetail";
     }
     
     

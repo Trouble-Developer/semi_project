@@ -24,4 +24,10 @@ public class Comment {
     // [고객지원 게시판 권한 체크용] 추가
     private int boardCode;          // 게시판 코드 (권한 체크용)
     private int boardWriter;        // 게시글 작성자 번호 (권한 체크용)
+    
+    // [좋아요 기능용] 추가
+    private int likeCount;          // 좋아요 수
+    private int likedByMe;          // 내가 좋아요 눌렀는지 (1: 눌름, 0: 안눌름)
+    
+    
 }

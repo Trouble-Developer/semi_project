@@ -1,133 +1,170 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <link rel="stylesheet" href="/css/common/common.css" />
     <link rel="stylesheet" href="/css/board/boardList.css" />
-</head>
-<body>
+  </head>
+  <body>
+    <div id="header"></div>
     <th:block th:replace="~{common/header}"></th:block>
 
     <div id="container">
-        <div id="title">
-            <th:block th:each="board : ${application.boardTypeList}">
-                <p id="title-text" th:if="${board.boardCode == boardCode}" th:text="${board.boardName}">게시판 유형</p>
-            </th:block>
-        </div>
-
-        <div id="write">
-            <button class="write-btn"
-                th:if="${session.loginMember != null 
-                        and (session.loginMember.authority == 2
-                        or (session.loginMember.authority == 1 and (boardCode == 1 or boardCode == 3 or boardCode == 5)))}">
-                글작성
-            </button>
-        </div>
-
-        <!-- 봉사후기일 때 -->
-        <th:block th:if="${boardCode == 3}">
-          <div th:if="${freeBoardList == null or #lists.isEmpty(freeBoardList)}" 
-                 style="text-align: center; padding: 100px 0;">
-                <p style="font-size: 20px; color: #666;">존재하지 않는 게시글입니다.</p>
-            </div>
-            <div id="volunteerReviewListContent" th:if="${freeBoardList != null and !#lists.isEmpty(freeBoardList)}">
-                <th:block th:each="board : ${freeBoardList}" th:object="${board}">
-                    <div id="content-1">
-                        <div id="content-img">
-                            <a th:href="@{/board/{boardCode}/{boardNo}(boardCode=${boardCode}, boardNo=*{boardNo}, cp=${pagination.currentPage})}">
-                                <img th:src="${board.thumbnailPath != null ? board.thumbnailPath : '/images/footer-logo.png'}" id="content-img-info" alt="썸네일">
-                            </a>
-                        </div>
-                        <div id="content-info">
-                            <a th:href="@{/board/{boardCode}/{boardNo}(boardCode=${boardCode}, boardNo=*{boardNo}, cp=${pagination.currentPage})}"
-                                id="content-title" th:text="*{boardTitle}">제목</a>
-                            <div>
-                                <p id="day-info-text" th:text="*{boardWriteDate}">작성일</p>
-                                <p id="view-info-text" th:text="*{readCount}">조회수</p>
-                            </div>
-                        </div>
-                    </div>
-                </th:block>
-            </div>
-            
+      <div id="title">
+        <th:block th:each="board : ${application.boardTypeList}">
+          <p
+            id="title-text"
+            th:if="${board.boardCode == boardCode}"
+            th:text="${board.boardName}"
+          >
+            게시판 유형
+          </p>
         </th:block>
+      </div>
 
-        <th:block th:if="${boardCode != 3}">
-            <div id="content">
-                <table id="free-board-table">
-                    <thead id="free-board-head">
-                        <tr>
-                            <th>번호</th>
-                            <th>제목</th>
-                            <th>닉네임</th>
-                            <th>작성일</th>
-                            <th>조회수</th>
-                            <th th:if="${boardCode != 4 && boardCode != 5}">좋아요</th>
-                        </tr>
-                    </thead>
-                    <tbody id="free-board-body">
-                        <tr th:if="${freeBoardList == null or #lists.isEmpty(freeBoardList)}">
-                            <td th:colspan="${boardCode != 4 and boardCode != 5} ? 6 : 5" 
-                                style="text-align: center; padding: 50px 0;">
-                                존재하지 않는 게시글입니다.
-                            </td>
-                        </tr>
-                        <tr th:unless="${freeBoardList == null or #lists.isEmpty(freeBoardList)}" 
-                            th:each="freeBoard : ${freeBoardList}" th:object="${freeBoard}">
-                            <td th:text="*{boardNo}">번호</td>
-                            <td id="board-title">
-                                <a th:href="@{/board/{boardCode}/{boardNo}(boardCode=${boardCode}, boardNo=*{boardNo}, cp=${pagination.currentPage})}"
-                                   th:text="${boardCode == 5 and #strings.equals(freeBoard.boardLock, 'Y') and (session.loginMember == null or (session.loginMember?.memberNo != freeBoard.memberNo and session.loginMember.authority != 2))} ? '🔒 비밀글입니다' : *{boardTitle}"
-                                   class="board-link">제목</a>
-                            </td>
-                            <td th:text="*{memberNickname}">닉네임</td>
-                            <td th:text="*{boardWriteDate}">작성일</td>
-                            <td th:text="*{readCount}">조회수</td>
-                            <td th:if="${boardCode != 4 && boardCode != 5}" th:text="*{likeCount}">좋아요수</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </th:block>
+      <div id="write">
+        <button
+          class="write-btn"
+          th:if="${session.loginMember != null 
+                and (
+                  session.loginMember.authority == 2
+                  or (
+                    session.loginMember.authority == 1
+                    and (boardCode == 1 or boardCode == 3 or boardCode == 5)
+                  )
+                )}"
+        >
+          글작성
+        </button>
+      </div>
 
-        <div id="page" th:if="${freeBoardList != null and !#lists.isEmpty(freeBoardList)}">
-            <ul th:with="queryParam=${param.key != null ? '&key=' + param.key + '&query=' + param.query : ''}">
-                <li><a th:href="@{/board/{boardCode}(boardCode=${boardCode}, cp=1) + ${queryParam}}" class="page-btn">&lt;&lt;</a></li>
-                <li><a th:href="@{/board/{boardCode}(boardCode=${boardCode}, cp=${pagination.prevPage}) + ${queryParam}}" class="page-btn">&lt;</a></li>
-                
-                <th:block th:each="i : ${#numbers.sequence(pagination.startPage, pagination.endPage)}">
-                    <li>
-                        <a th:href="@{/board/{boardCode}(boardCode=${boardCode}, cp=${i}) + ${queryParam}}" 
-                           th:text="${i}" class="page-btn"
-                           th:classappend="${i == pagination.currentPage} ? ' curr-page' : ''"></a>
-                    </li>
-                </th:block>
-
-                <li><a th:href="@{/board/{boardCode}(boardCode=${boardCode}, cp=${pagination.nextPage}) + ${queryParam}}" class="page-btn">&gt;</a></li>
-                <li><a th:href="@{/board/{boardCode}(boardCode=${boardCode}, cp=${pagination.maxPage}) + ${queryParam}}" class="page-btn">&gt;&gt;</a></li>
-            </ul>
+      <th:block th:if="${boardCode == 3}">
+        <div th:if="${freeBoardList == null or #lists.isEmpty(freeBoardList)}" 
+             id="notFoundBoard">
+            <p id="notFoundBoardText">존재하지 않는 게시글입니다.</p>
         </div>
 
-        <form th:action="@{/board/{boardCode}(boardCode=${boardCode})}" id="search" method="get">
-            <select name="key" id="search-box">
-                <option value="t" th:selected="${param.key == 't'}">제목</option>
-                <option value="c" th:selected="${param.key == 'c'}">내용</option>
-                <option value="tc" th:selected="${param.key == 'tc'}">제목 + 내용</option>
-                <option value="w" th:selected="${param.key == 'w'}">작성자</option>
-            </select>
-            <input type="text" name="query" id="search-input" placeholder="검색어를 입력해주세요" th:value="${param.query}" />
-            <button id="search-btn">검색</button>
-        </form>
+        <div
+          id="volunteerReviewListContent"
+          th:unless="${freeBoardList == null or #lists.isEmpty(freeBoardList)}"
+        >
+          <th:block th:each="board : ${freeBoardList}" th:object="${board}">
+            <div id="content-1">
+              <div id="content-img">
+                <a th:href="@{/board/{boardCode}/{boardNo}(boardCode=${boardCode}, boardNo=*{boardNo}, cp=${pagination.currentPage})}">
+                  <img th:src="${board.thumbnailPath != null ? board.thumbnailPath : '/images/footer-logo.png'}" 
+                       id="content-img-info" alt="썸네일">
+                </a>
+              </div>
+              <div id="content-info">
+                <a th:href="@{/board/{boardCode}/{boardNo}(boardCode=${boardCode}, boardNo=*{boardNo}, cp=${pagination.currentPage})}"
+                   id="content-title" th:text="*{boardTitle}">제목</a>
+                <div>
+                  <p id="day-info-text" th:text="*{boardWriteDate}">작성일</p>
+                  <div id="read-count-info">
+                  <span>조회수</span><p id="view-info-text" th:text="*{readCount}">조회수</p>
+                </div>
+                </div>
+              </div>
+            </div>
+          </th:block>
+        </div>
+      </th:block>
+
+      <th:block th:if="${boardCode != 3}">
+        <div id="content">
+          <table id="free-board-table">
+            <thead id="free-board-head">
+              <tr>
+                <th>번호</th>
+                <th>제목</th>
+                <th>닉네임</th>
+                <th>작성일</th>
+                <th>조회수</th>
+                <th th:if="${boardCode != 4 && boardCode != 5}">좋아요</th>
+              </tr>
+            </thead>
+           
+            <tbody id="free-board-body">
+              <tr th:if="${freeBoardList == null or #lists.isEmpty(freeBoardList)}">
+                <td th:colspan="${boardCode != 4 and boardCode != 5} ? 6 : 5" 
+                    style="text-align: center; padding: 50px 0;">
+                    존재하지 않는 게시글입니다.
+                </td>
+              </tr>
+
+              <th:block th:unless="${freeBoardList == null or #lists.isEmpty(freeBoardList)}"
+                        th:each="freeBoard : ${freeBoardList}" th:object="${freeBoard}">
+                <tr>
+                  <td th:text="*{boardNo}">게시판번호</td>
+                  <td id="board-title">
+                    <a th:href="@{/board/{boardCode}/{boardNo}(boardCode=${boardCode}, boardNo=*{boardNo}, cp=${pagination.currentPage})}"
+                       th:text="${boardCode == 5 and #strings.equals(freeBoard.boardLock, 'Y') and (session.loginMember == null or (session.loginMember?.memberNo != freeBoard.memberNo and session.loginMember.authority != 2))} ? '🔒 비밀글입니다' : *{boardTitle}"
+                       class="board-link"
+                       th:data-lock="*{boardLock}"
+                       th:data-writer="${freeBoard.memberNo == session.loginMember?.memberNo}"
+                       th:data-board-no="*{boardNo}"
+                    >게시판 제목</a>
+                  </td>
+                  <td th:text="*{memberNickname}">작성자 닉네임</td>
+                  <td th:text="*{boardWriteDate}">작성일</td>
+                  <td th:text="*{readCount}">조회수</td>
+                  <td th:if="${boardCode != 4 && boardCode != 5}" th:text="*{likeCount}">좋아요수</td>
+                </tr>
+              </th:block>
+            </tbody>
+          </table>
+        </div>
+      </th:block>
+
+      <div id="page" th:if="${param.key == null and freeBoardList != null and !#lists.isEmpty(freeBoardList)}">
+        <ul>
+          <li><a th:href="@{/board/{boardCode}(boardCode=${boardCode}, cp=1)}" class="page-btn">&lt;&lt;</a></li>
+          <li><a th:href="@{/board/{boardCode}(boardCode=${boardCode}, cp=${pagination.prevPage})}" class="page-btn">&lt;</a></li>
+          <th:block th:each="i : ${#numbers.sequence(pagination.startPage, pagination.endPage)}">
+            <li><a th:href="@{/board/{boardCode}(boardCode=${boardCode}, cp=${i})}" th:text="${i}" class="page-btn"
+                   th:classappend="${i == pagination.currentPage} ? ' curr-page' : ''"></a></li>
+          </th:block>
+          <li><a th:href="@{/board/{boardCode}(boardCode=${boardCode}, cp=${pagination.nextPage})}" class="page-btn">&gt;</a></li>
+          <li><a th:href="@{/board/{boardCode}(boardCode=${boardCode}, cp=${pagination.maxPage})}" class="page-btn">&gt;&gt;</a></li>
+        </ul>
+      </div>
+
+      <div id="page" th:if="${param.key != null and freeBoardList != null and !#lists.isEmpty(freeBoardList)}" th:object="${pagination}">
+        <ul>
+          <li><a th:href="@{/board/{boardCode}(boardCode=${boardCode}, cp=1, key=${param.key}, query=${param.query})}" class="page-btn">&lt;&lt;</a></li>
+          <li><a th:href="@{/board/{boardCode}(boardCode=${boardCode}, cp=*{prevPage}, key=${param.key}, query=${param.query})}" class="page-btn">&lt;</a></li>
+          <th:block th:each="i : ${#numbers.sequence(pagination.startPage, pagination.endPage)}">
+            <li><a th:href="@{/board/{boardCode}(boardCode=${boardCode}, cp=${i}, key=${param.key}, query=${param.query})}" th:text="${i}" class="page-btn"
+                   th:classappend="${i == pagination.currentPage} ? ' curr-page' : ''"></a></li>
+          </th:block>
+          <li><a th:href="@{/eboard/{boardCode}(boardCode=${boardCode}, cp=*{nextPage}, key=${param.key}, query=${param.query})}" class="page-btn">&gt;</a></li>
+          <li><a th:href="@{/board/{boardCode}(boardCode=${boardCode}, cp=*{maxPage}, key=${param.key}, query=${param.query})}" class="page-btn">&gt;&gt;</a></li>
+        </ul>
+      </div>
+
+      <form th:action="@{/board/{boardCode}(boardCode=${boardCode})}" id="search">
+        <select name="key" id="search-box">
+          <option value="t">제목</option>
+          <option value="c">내용</option>
+          <option value="tc">제목 + 내용</option>
+          <option value="w">작성자</option>
+        </select>
+        <input type="text" name="query" id="search-input" placeholder="검색어를 입력해주세요" />
+        <button id="search-btn">검색</button>
+      </form>
     </div>
 
     <th:block th:replace="~{common/footer}"></th:block>
 
     <script src="/js/board/boardList.js"></script>
     <script th:inline="javascript">
-        const boardCode = /*[[${boardCode}]]*/ "게시판 코드";
-        const loginMemberNo = /*[[${session.loginMember?.memberNo}]]*/ "회원 번호";
+      const boardCode = /*[[${boardCode}]]*/ "게시판 코드 번호";
+      const loginMemberNo = /*[[${session.loginMember?.memberNo}]]*/ "로그인한 회원 번호";
+      const boardList = /*[[${freeBoardList}]]*/ "보드 정보";
+      const loginMemberAuthority = /*[[${session.loginMember?.authority}]]*/ "권한정보";
     </script>
-</body>
+  </body>
 </html>

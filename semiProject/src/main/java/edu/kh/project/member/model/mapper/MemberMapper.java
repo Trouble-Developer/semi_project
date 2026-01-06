@@ -36,6 +36,13 @@ public interface MemberMapper {
      */
     int checkEmail(String memberEmail);
     
+	/**
+	 * 전화번호 중복 검사
+	 * @param memberTel
+	 * @return
+	 */
+	int checkTel(String memberTel);
+    
     /**
      * 회원가입
      * @param inputMember : 입력받은 회원 정보
@@ -77,4 +84,6 @@ public interface MemberMapper {
         @Param("memberId") String memberId,
         @Param("encPw") String encPw
     );
+
+
 }

@@ -1,9 +1,13 @@
 #container {
   width: 1168px;
-  margin-bottom: 0px;
+  margin-bottom: 150px;
 }
 #content {
   margin-bottom: 76px;
+  /* [추가] 본문 텍스트 강제 줄바꿈 */
+  word-wrap: break-word;
+  word-break: break-all;
+  overflow-wrap: break-word;
 }
 #content img {
   max-width: 100%;
@@ -19,6 +23,11 @@
 #board-title-text {
   font-size: 32px;
   margin: 12px 0px;
+  /* [추가] 줄바꿈 강제 설정 */
+  word-wrap: break-word; /* 긴 단어를 줄바꿈함 */
+  word-break: break-all; /* 특수문자/영문이 길어도 영역 끝에서 줄바꿈 */
+  overflow-wrap: break-word; /* 최신 브라우저 호환용 */
+  white-space: normal;
 }
 /* 스크랩 버튼 */
 #scrap-btn {

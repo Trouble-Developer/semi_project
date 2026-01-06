@@ -65,6 +65,13 @@ const selectCommentList = () => {
         const commentBtnArea = document.createElement("div");
         commentBtnArea.classList.add("comment-btn-area");
 
+        // 좋아요 버튼 (항상 표시)
+        const likeBtn = document.createElement("button");
+        likeBtn.classList.add("like-btn");
+        likeBtn.innerHTML = `♥ <span class="like-count">${comment.likeCount || 0}</span>`;
+        likeBtn.setAttribute("onclick", `toggleCommentLike(${comment.commentNo}, this)`);
+        commentBtnArea.append(likeBtn);
+
         // [UX] 고객지원 게시판: 작성자 또는 관리자만 답글 버튼 표시
         // (실제 권한은 서버에서 검증)
         if (boardCode != 5 || 
@@ -476,5 +483,45 @@ const reportComment = (commentNo, reason) => {
   .catch(err => {
     console.error("댓글 신고 에러:", err);
     alert("신고 처리 중 오류가 발생했습니다");
+  });
+};
+
+
+/* =========================================================
+ *              8. 댓글 좋아요
+ * =========================================================*/
+
+/**
+ * 댓글 좋아요 토글
+ * @param {number} commentNo - 댓글 번호
+ * @param {HTMLElement} btn - 좋아요 버튼 요소
+ */
+const toggleCommentLike = (commentNo, btn) => {
+  
+  // 로그인 체크
+  if (loginMemberNo == null) {
+    alert("로그인 후 이용해 주세요");
+    return;
+  }
+  
+  fetch("/comment/like", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: commentNo
+  })
+  .then(response => response.text())
+  .then(result => {
+    
+    console.log("좋아요 결과:", result);
+    
+    if (result == -1) {
+      alert("로그인이 필요합니다");
+      return;
+    }
+    
+    // 좋아요 수 업데이트
+    const likeCountSpan = btn.querySelector(".like-count");
+    likeCountSpan.innerText = result;
+    
   });
 };

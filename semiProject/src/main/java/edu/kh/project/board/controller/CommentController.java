@@ -175,5 +175,33 @@ public class CommentController {
         
         // 3) 신고 처리
         return service.reportComment(report);
+    };
+
+    /* ============================================
+     *           댓글 좋아요 (POST)
+     * ============================================ */
+    
+    /**
+     * 댓글 좋아요 (AJAX)
+     * 
+     * @param commentNo 댓글 번호
+     * @param loginMember 로그인 회원 정보 (세션)
+     * @return 좋아요 수 (성공) / -1 (로그인 필요)
+     */
+    @PostMapping("/like")
+    public int toggleCommentLike(
+            @RequestBody int commentNo,
+            @SessionAttribute(value = "loginMember", required = false) Member loginMember) {
+        
+        log.debug("[댓글 좋아요 요청] commentNo: {}", commentNo);
+        
+        // 로그인 체크
+        if (loginMember == null) {
+            log.warn("[댓글 좋아요] 로그인 필요");
+            return -1;
+        }
+        
+        // 좋아요 누른 후 현재 좋아요 수 반환
+        return service.toggleCommentLike(commentNo, loginMember.getMemberNo());
     }
 }

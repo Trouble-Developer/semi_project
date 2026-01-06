@@ -1,12 +1,24 @@
-@charset "UTF-8";
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
 
-/* 전체 레이아웃 잡기 */
+body {
+    display: flex;
+    flex-direction: column; 
+    min-height: 100vh;      
+    margin: 0;              
+}
+
+
 .mypage-container {
+    flex: 1;
     display: flex;
     width: 1200px;
-    margin: 50px auto;
-    min-height: 800px;
-    gap: 40px; 
+    margin: 0 auto;
+    padding: 50px 0;
+    gap: 40px;
 }
 
 /* 메인 콘텐츠 영역 */
@@ -78,7 +90,7 @@ h2 {
 
 .form-group label {
     display: block;
-    font-weight: 700; /* 라벨 좀 더 진하게 */
+    font-weight: 700;
     margin-bottom: 10px;
     color: #333;
     font-size: 15px;
@@ -97,8 +109,8 @@ h2 {
 
 .form-group input:focus {
     outline: none;
-    border-color: #4CAF50; /* 포커스 색상 */
-    border-width: 2px; /* 포커스 시 테두리 두껍게 */
+    border-color: #4CAF50; 
+    border-width: 2px; 
 }
 
 /* 읽기 전용 인풋 */
@@ -137,7 +149,7 @@ h2 {
 
 /* 주소 검색 버튼 */
 .btn-dark {
-    width: 120px; /* 버튼 너비 키움 */
+    width: 120px; 
     height: 50px;
     background-color: #333;
     color: #fff;
@@ -166,7 +178,7 @@ h2 {
 .btn-submit {
     width: 250px; 
     height: 55px;
-    background-color: #ffcd39; 
+    background-color: #ffd54f; 
     color: #333; 
     border: none;
     border-radius: 5px;

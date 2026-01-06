@@ -14,9 +14,10 @@
         <result property="parentCommentNo" column="PARENT_COMMENT_NO"/>
         <result property="profileImg" column="PROFILE_IMG"/>
         <result property="memberNickname" column="MEMBER_NICKNAME"/>
+        <result property="likeCount" column="LIKE_COUNT"/>
     </resultMap>
 
-    <!-- 댓글 목록 조회 -->
+    <!-- 댓글 목록 조회 (좋아요 수 포함) -->
     <select id="selectCommentList" resultMap="comment_rm">
         SELECT 
             C.COMMENT_NO,
@@ -27,7 +28,10 @@
             C.MEMBER_NO,
             NVL(C.PARENT_COMMENT_NO, 0) AS PARENT_COMMENT_NO,
             M.PROFILE_IMG,
-            M.MEMBER_NICKNAME
+            M.MEMBER_NICKNAME,
+            (SELECT COUNT(*) 
+             FROM COMMENT_LIKE CL 
+             WHERE CL.COMMENT_NO = C.COMMENT_NO) AS LIKE_COUNT
         FROM "COMMENT" C
         JOIN "MEMBER" M ON C.MEMBER_NO = M.MEMBER_NO
         WHERE C.BOARD_NO = #{boardNo}
@@ -102,5 +106,37 @@
 			#{commentNo}
 		)
 	</insert>
+		
+	<!-- ============================================
+	           댓글 좋아요 관련 
+	   ============================================ -->
+
+	<!-- 댓글 좋아요 체크 -->
+	<select id="checkCommentLike" resultType="int">
+		SELECT COUNT(*)
+		FROM COMMENT_LIKE
+		WHERE COMMENT_NO = #{commentNo}
+		  AND MEMBER_NO = #{memberNo}
+	</select>
+
+	<!-- 댓글 좋아요 등록 -->
+	<insert id="insertCommentLike">
+		INSERT INTO COMMENT_LIKE (COMMENT_NO, MEMBER_NO)
+		VALUES (#{commentNo}, #{memberNo})
+	</insert>
+
+	<!-- 댓글 좋아요 삭제 -->
+	<delete id="deleteCommentLike">
+		DELETE FROM COMMENT_LIKE
+		WHERE COMMENT_NO = #{commentNo}
+		  AND MEMBER_NO = #{memberNo}
+	</delete>
+
+	<!-- 댓글 좋아요 수 조회 -->
+	<select id="countCommentLike" resultType="int">
+		SELECT COUNT(*)
+		FROM COMMENT_LIKE
+		WHERE COMMENT_NO = #{commentNo}
+	</select>
 
 </mapper>

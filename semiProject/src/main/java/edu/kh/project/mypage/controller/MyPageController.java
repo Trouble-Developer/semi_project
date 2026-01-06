@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -72,20 +73,18 @@ public class MyPageController {
     
     /**
      * 프로필 정보 수정
-     * (비밀번호 검사 로직 제거 버전)
      */
     @PostMapping("/update")
     public String updateProfile(
             HttpSession session, 
             Member updateMember, 
-            @RequestParam("uploadFile") MultipartFile profileImg, // 니가 쓰던 변수명 유지
-            // @RequestParam("currentPw") String currentPw,  <-- 이거 삭제함
+            @RequestParam("uploadFile") MultipartFile profileImg,
             @RequestParam(value="postcode", required=false) String postcode,
             @RequestParam(value="address", required=false) String address,
             @RequestParam(value="detailAddress", required=false) String detailAddress,
             RedirectAttributes ra) throws IOException {
 
-        // 1. 로그인 검사 (그대로)
+        // 1. 로그인 검사 
         Member loginMember = (Member) session.getAttribute("loginMember");
 
         if (loginMember == null) {
@@ -96,7 +95,7 @@ public class MyPageController {
         // 2. 로그인한 회원의 번호(PK) 세팅 
         updateMember.setMemberNo(loginMember.getMemberNo());
         
-        // 3. 주소 합치기 (그대로)
+        // 3. 주소 합치기 
         if(postcode != null && address != null) {
             String memberAddress = String.join(",,", postcode, address, detailAddress);
             updateMember.setMemberAddress(memberAddress);
@@ -110,7 +109,7 @@ public class MyPageController {
         if(result > 0) {
             message = "회원 정보가 수정되었습니다.";
 
-            // 5. 세션 갱신 (그대로)
+            // 5. 세션 갱신
             loginMember.setMemberAddress(updateMember.getMemberAddress());
             loginMember.setMemberNickname(updateMember.getMemberNickname());
             loginMember.setMemberTel(updateMember.getMemberTel()); 
@@ -120,13 +119,12 @@ public class MyPageController {
             }
 
         } else {
-            // result == -1 (비번 불일치) 로직 삭제함
             message = "회원 정보 수정 실패";
         }
 
         ra.addFlashAttribute("message", message);
 
-        return "redirect:/mypage/profile"; // 경로 유지
+        return "redirect:/mypage/profile";
     }
     
     /**
@@ -151,11 +149,11 @@ public class MyPageController {
 		// 2. 서비스 호출 (회원번호, 현재페이지, 검색조건Map 전달)
 		Map<String, Object> paramMap = new HashMap<>();
 		
-		// 위에서 @RequestParam으로 받아온 key, query를 맵에 담는 거임
+		// 위에서 @RequestParam으로 받아온 key, query를 맵에 담기
 		paramMap.put("key", key);
 		paramMap.put("query", query);
 		
-		// 서비스에 paramMap 추가로 넘기기 (Service 인터페이스랑 구현체 수정했지?)
+		// 서비스에 paramMap 추가로 넘기기
 		Map<String, Object> map = service.selectPostList(loginMember.getMemberNo(), cp, paramMap);
 
 		model.addAttribute("map", map);
@@ -225,7 +223,7 @@ public class MyPageController {
 			@SessionAttribute(value="loginMember", required=false) Member loginMember,
 			RedirectAttributes ra) {
 		
-		// 1. 로그인 안 했으면 로그인 페이지로 쫓아냄
+		// 1. 로그인 안 했으면 로그인 페이지로 보냄
 		if(loginMember == null) {
 			ra.addFlashAttribute("message", "로그인 후 이용해주세요.");
 			return "redirect:/member/login";
@@ -269,4 +267,56 @@ public class MyPageController {
 		ra.addFlashAttribute("message", message);
 		return path;
 	}
+
+	/**
+	 * 회원 탈퇴 페이지 이동
+	 */
+	@GetMapping("/withdraw")
+	public String withdraw(
+			@SessionAttribute(value="loginMember", required=false) Member loginMember,
+			RedirectAttributes ra) {
+		
+		if(loginMember == null) {
+			ra.addFlashAttribute("message", "로그인 후 이용해주세요.");
+			return "redirect:/member/login";
+		}
+		
+		return "mypage/withdraw";
+	}
+
+	/**
+	 * 회원 탈퇴 수행
+	 */
+	@PostMapping("/withdraw")
+	public String withdrawProcess(
+			@RequestParam("memberPw") String memberPw,
+			@SessionAttribute(value="loginMember", required=false) Member loginMember,
+			RedirectAttributes ra,
+			HttpSession session,
+			SessionStatus status) {
+		
+		if(loginMember == null) {
+			ra.addFlashAttribute("message", "로그인 후 이용해주세요.");
+			return "redirect:/member/login";
+		}
+		
+		int memberNo = loginMember.getMemberNo();
+		int result = service.withdraw(memberPw, memberNo);
+		
+		String message = null;
+		String path = null;
+		
+		if(result > 0) {
+			message = "회원 탈퇴가 완료되었습니다.";
+			status.setComplete();  // @SessionAttributes 세션 정리
+			session.invalidate();   // HttpSession 무효화
+			path = "redirect:/";
+		} else {
+			message = "비밀번호가 일치하지 않습니다.";
+			path = "redirect:/mypage/withdraw";
+		}
+		
+		ra.addFlashAttribute("message", message);
+		return path;
+		}
 }

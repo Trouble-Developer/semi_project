@@ -1,0 +1,208 @@
+/* ========================================
+   회원 탈퇴 페이지 스타일
+   ======================================== */
+
+/* 기본 레이아웃 */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.mypage-main {
+    flex: 1; 
+    display: flex; 
+    width: 1200px; 
+    margin: 50px auto; 
+    gap: 40px; 
+}
+
+.mypage-content {
+    flex-grow: 1; 
+    width: 100%; 
+    margin: 0; 
+    padding: 0;
+}
+
+.mypage-title {
+    font-size: 32px;
+    font-weight: bold;
+    color: #000;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #000;
+    margin-bottom: 40px;
+}
+
+/* ========================================
+   경고 박스
+   ======================================== */
+.warning-box {
+    background-color: #fff9e6;
+    border: 1px solid #ffc107;
+    border-radius: 8px;
+    padding: 25px;
+    margin-bottom: 40px;
+    width: 60%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.warning-box h3 {
+    font-size: 16px;
+    font-weight: bold;
+    color: #d32f2f;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.warning-box ul {
+    margin: 0;
+    padding-left: 20px;
+    color: #555;
+    line-height: 1.8;
+}
+
+.warning-box li {
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+/* ========================================
+   기타 안내
+   ======================================== */
+.feature-notice {
+    background-color: #f5f5f5;
+    border-left: 4px solid #666;
+    padding: 15px 20px;
+    margin: 30px auto;
+    width: 60%;
+    border-radius: 4px;
+}
+
+.feature-notice p {
+    margin: 0;
+    font-size: 14px;
+    color: #666;
+    font-weight: 500;
+}
+
+/* ========================================
+   입력 폼
+   ======================================== */
+.myPage-row {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; 
+    width: 60%;            
+    margin: 0 auto 25px;   
+}
+
+/* 라벨 */
+.myPage-row label {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+/* 입력창 */
+.myPage-row input {
+    width: 100%; 
+    height: 50px;
+    padding: 0 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 15px;
+    box-sizing: border-box;
+    transition: 0.2s ease-in-out;
+}
+
+.myPage-row input:focus {
+    outline: none;
+    border-color: #aaa;
+}
+
+/* 읽기 전용 입력창 */
+.readonly-input {
+    background-color: #f5f5f5 !important;
+    color: #999 !important;
+    cursor: not-allowed !important;
+}
+
+/* 메시지 */
+.signUp-message {
+    display: block;
+    font-size: 13px;
+    margin-top: 10px;
+    margin-bottom: -10px;
+    padding-left: 5px;
+    letter-spacing: -0.5px;
+}
+
+.error { 
+    color: #e74c3c; 
+}
+
+.confirm { 
+    color: #07ce5a; 
+}
+
+/* ========================================
+   체크박스
+   ======================================== */
+.checkbox-wrapper {
+    width: 60%;
+    margin: 30px auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.checkbox-wrapper input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.checkbox-wrapper label {
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+    user-select: none;
+}
+
+/* ========================================
+   제출 버튼
+   ======================================== */
+.myPage-submit {
+    display: block;
+    width: 200px;
+    height: 50px;
+    margin: 50px auto 0;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+/* 탈퇴 버튼 (위험) */
+.myPage-submit.danger {
+    background-color: #ff9800;
+    color: white;
+}
+
+.myPage-submit.danger:hover:not(:disabled) {
+    background-color: #f57c00;
+}
+
+/* 비활성화 버튼 */
+.myPage-submit:disabled {
+    background-color: #ddd;
+    color: #999;
+    cursor: not-allowed;
+}

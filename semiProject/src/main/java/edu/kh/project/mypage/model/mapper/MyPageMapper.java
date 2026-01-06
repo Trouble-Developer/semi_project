@@ -49,4 +49,12 @@ public interface MyPageMapper {
 	
 
 	int changePw(Member member);
+
+	/**
+	 * 회원 탈퇴 (MEMBER_DEL_FL을 'Y'로 변경)
+	 * @param memberNo
+	 * @return 성공 1, 실패 0
+	 */
+	int withdraw(int memberNo);
+
 }

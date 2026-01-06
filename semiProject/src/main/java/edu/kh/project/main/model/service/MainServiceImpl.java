@@ -1,6 +1,5 @@
 package edu.kh.project.main.model.service;
 
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,11 +7,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import edu.kh.project.board.model.dto.Board;
+import edu.kh.project.info.model.dto.InfoBoard;
 import edu.kh.project.main.model.mapper.MainMapper;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
-public class MainServiceImpl implements MainService{
+public class MainServiceImpl implements MainService {
 	@Autowired
 	private MainMapper mapper;
 
@@ -28,9 +28,8 @@ public class MainServiceImpl implements MainService{
 	}
 
 	@Override
-	public List<Board> getInfoBoardList() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<InfoBoard> getInfoBoardList() {
+		return mapper.getInfoBoardList();
 	}
 
 	@Override
@@ -43,7 +42,4 @@ public class MainServiceImpl implements MainService{
 		return mapper.getReviewBestUser();
 	}
 
-
-	
-	
 }
