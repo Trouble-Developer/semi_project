@@ -1,13 +1,11 @@
 /* 1. 컨테이너 및 전체 레이아웃 */
 .info-list-container {
     width: 1100px;
-    /* 전체 중앙 정렬 폭 고정 */
     margin: 40px auto;
     font-family: 'Pretendard', sans-serif;
     color: #333;
 }
 
-/* 상단 게시판 대제목 (구분선 포함) */
 .main-title {
     font-size: 32px;
     font-weight: bold;
@@ -17,17 +15,14 @@
 }
 
 /* 2. 상단 5분할 필터바 영역 */
-/* 역할: 시도, 시군구, 봉사분야 등 주요 필터를 가로로 배치 */
 .search-filter-table {
     display: flex;
     width: 100%;
     border: 1px solid #ddd;
     border-top: 2px solid #666;
-    /* 상단 강조선 */
     margin-bottom: 25px;
 }
 
-/* 각 필터 항목 컬럼 단위 스타일 */
 .filter-column {
     flex: 1;
     border-right: 1px solid #ddd;
@@ -39,7 +34,6 @@
     border-right: none;
 }
 
-/* 필터 제목 라벨 (회색 배경) */
 .filter-label {
     background-color: #f8f8f8;
     padding: 12px;
@@ -48,7 +42,6 @@
     border-bottom: 1px solid #ddd;
 }
 
-/* 필터 내 select 박스 배치 영역 */
 .filter-select-box {
     padding: 15px;
     display: flex;
@@ -64,7 +57,6 @@
 }
 
 /* 3. 하단 상세 검색 박스 */
-/* 역할: 봉사기간, 검색어 입력 등 세부 조건 설정 공간 */
 .detail-search-container {
     border: 1px solid #ddd;
     padding: 35px;
@@ -72,21 +64,18 @@
     background-color: #fff;
 }
 
-/* 입력 폼 행 단위 배치 */
 .detail-row {
     display: flex;
     margin-bottom: 20px;
     align-items: center;
 }
 
-/* 개별 입력 항목 (아이콘 + 라벨 + 인풋) */
 .detail-item {
     display: flex;
     align-items: center;
     flex: 1;
 }
 
-/* 항목 강조용 오렌지색 도트 */
 .orange-dot {
     width: 8px;
     height: 8px;
@@ -108,49 +97,49 @@
 }
 
 /* 4. 버튼 그룹 스타일 */
-/* 역할: 검색, 초기화, 동기화 버튼의 정렬 및 크기 제어 */
 .btn-group {
     display: flex;
     justify-content: center;
     gap: 15px;
     margin-top: 25px;
+    flex-wrap: wrap;
 }
 
-/* [공통 버튼 베이스] - 크기 통일을 위해 공통 속성 정의 */
 .btn-search,
 .btn-reset-gray,
 .btn-sync {
     padding: 12px 70px;
-    /* 크기를 검색 버튼과 똑같이 고정 */
     border: none;
     border-radius: 30px;
-    /* 둥근 타원형 스타일 */
     font-size: 18px;
     font-weight: bold;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-/* 검색 버튼: 주황색 강조 */
-.btn-search {
-    background-color: #ed6d2d;
-    color: white;
-}
+.btn-search { background-color: #ed6d2d; color: white; }
+.btn-search:hover { background-color: #d45a1f; }
 
-/* 초기화 버튼: 회색 유지, 크기는 검색 버튼과 동일하게 적용됨 */
-.btn-reset-gray {
-    background-color: #888;
-    color: white;
-}
+.btn-reset-gray { background-color: #888; color: white; }
+.btn-reset-gray:hover { background-color: #666; }
 
-/* 동기화 버튼: 검정색 (관리자용) */
-.btn-sync {
-    background-color: #333;
-    color: white;
+.btn-sync { background-color: #333; color: white; }
+.btn-sync:hover { background-color: #000; }
+
+/* 동기화 아이콘 회전 애니메이션 */
+.fa-spin {
+    animation: spin 2s infinite linear;
+    margin-right: 8px;
+}
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
 /* 5. 봉사 정보 카드 리스트 */
-/* 역할: 검색된 봉사 정보를 개별 카드 형태로 출력 */
 .info-card {
     border-bottom: 1px solid #ddd;
     padding: 30px 0;
@@ -159,14 +148,12 @@
     align-items: center;
 }
 
-/* 분야/인증 여부 태그 */
 .card-tags {
     color: #ff7f00;
     font-size: 14px;
     margin-bottom: 10px;
 }
 
-/* 봉사 프로그램명 */
 .card-title {
     font-size: 20px;
     font-weight: bold;
@@ -174,17 +161,14 @@
     color: #000;
 }
 
-/* 카드 내부 정보 (기간, 시간, 장소 등) 격자 배치 */
 .card-info-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    /* 3열 배치 */
     gap: 10px 20px;
     font-size: 14px;
     color: #555;
 }
 
-/* 우측 상태 및 디데이 뱃지 영역 */
 .card-right {
     width: 120px;
     display: flex;
@@ -193,7 +177,6 @@
     justify-content: center;
 }
 
-/* 마감일 뱃지 박스 */
 .deadline-badge {
     border: 1px solid #999;
     padding: 8px 15px;
@@ -202,7 +185,6 @@
     margin-bottom: 10px;
 }
 
-/* 모집 상태 문구 (모집중) */
 .status-text {
     color: #d9534f;
     font-weight: bold;
@@ -210,7 +192,6 @@
 }
 
 /* 6. 페이지네이션 */
-/* 역할: 페이지 번호 표시 및 중앙 정렬 */
 .pagination {
     display: flex;
     justify-content: center;
@@ -226,11 +207,16 @@
     font-size: 15px;
 }
 
-/* 현재 활성화된 페이지 번호 강조 스타일 */
 .pagination li.active {
     background-color: #ed6d2d;
     color: white;
     border-radius: 50%;
-    /* 원형 강조 */
     font-weight: bold;
+}
+
+.no-data {
+    text-align: center;
+    padding: 100px 0;
+    font-size: 18px;
+    color: #999;
 }
