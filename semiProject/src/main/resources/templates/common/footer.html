@@ -30,8 +30,16 @@
       const message = /*[[${message}]]*/ null;
 
       if (message != null) {
-        alert(message);
-        history.replaceState(null, "", location.pathname + location.search);
+        const navigationEntries =
+          window.performance.getEntriesByType("navigation");
+        const isBackForward =
+          navigationEntries.length > 0 &&
+          navigationEntries[0].type === "back_forward";
+
+        if (!isBackForward) {
+          alert(message);
+          history.replaceState(null, "", location.pathname);
+        }
       }
     </script>
   </body>
