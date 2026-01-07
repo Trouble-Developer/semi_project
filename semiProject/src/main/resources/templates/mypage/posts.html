@@ -23,9 +23,9 @@
             <div class="board-list-area">
                 <table class="board-table">
                         <colgroup>
-                            <col style="width: 5%;">  <col style="width: 20%;"> <col style="width: 40%;"> 
-                            <col style="width: 10%;"> <col style="width: 10%;"> <col style="width: 7%;">  
-                            <col style="width: 8%;">  
+                            <col style="width: 5%;">  <col style="width: 15%;"> <col style="width: 40%;"> 
+                            <col style="width: 15%;"> <col style="width: 10%;"> <col style="width: 7%;">  
+                            <col style="width: 7%;">  
                         </colgroup>
                     <thead>
                         <tr>
@@ -47,15 +47,15 @@
                         <tr th:unless="${#lists.isEmpty(map.boardList)}" th:each="board : ${map.boardList}">
                             <td th:text="${board.boardNo}">10</td>
                             <td>
-																<th:block th:switch="${board.boardCode}">
-																		<span th:case="1">자유 게시판</span>
-																		<span th:case="2">정보 게시판</span>
-																		<span th:case="3">봉사후기</span>
-																		<span th:case="4">공지사항</span>
-																		<span th:case="5">고객지원</span>
-																		<span th:case="6">관리자</span>
-																		<span th:case="*">기타</span> </th:block>
-														</td>
+                                <th:block th:switch="${board.boardCode}">
+                                    <span th:case="1">자유 게시판</span>
+                                    <span th:case="2">정보 게시판</span>
+                                    <span th:case="3">봉사후기</span>
+                                    <span th:case="4">공지사항</span>
+                                    <span th:case="5">고객지원</span>
+                                    <span th:case="6">관리자</span>
+                                    <span th:case="*">기타</span> </th:block>
+							</td>
                             
                             <td class="title-col">
                                 <a th:href="@{/board/{boardCode}/{boardNo}(boardCode=${board.boardCode}, boardNo=${board.boardNo}, cp=${map.pagination.currentPage}, from='mypage')}" 

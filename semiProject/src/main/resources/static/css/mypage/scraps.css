@@ -36,8 +36,8 @@ body {
     text-align: center;
     font-size: 14px;
     border-top: 2px solid #333;
-		min-width: 800px;
-		table-layout: fixed;
+	min-width: 800px;
+	table-layout: fixed;
 }
 
 /* 헤더 배경색 */
@@ -74,6 +74,14 @@ body {
 .title-col a:hover {
     text-decoration: underline;
     color: #FF9F1C;
+}
+
+.nickname-col {
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    display: block; 
+    width: 100%;
 }
 
 /* 게시글 없음 */
@@ -135,6 +143,7 @@ body {
     display: flex;
     justify-content: center;
     gap: 5px;
+    margin-bottom: 100px;
 }
 
 .search-area select, .search-area input {
