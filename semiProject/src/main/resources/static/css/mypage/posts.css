@@ -136,6 +136,7 @@ body {
     display: flex;
     justify-content: center;
     gap: 5px;
+    margin-bottom: 100px;
 }
 
 .search-area select, .search-area input {

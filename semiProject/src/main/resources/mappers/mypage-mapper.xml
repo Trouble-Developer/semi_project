@@ -169,65 +169,82 @@
 	
 	
 	<select id="getScrapCount" resultType="_int">
-		SELECT COUNT(*)
-		FROM "SCRAP" S
-		JOIN "BOARD" B ON (S.BOARD_NO = B.BOARD_NO)
-		WHERE S.MEMBER_NO = #{memberNo}
-		AND B.BOARD_DEL_FL = 'N'
-		<if test="query != null and query != ''">
-			AND (B.BOARD_TITLE LIKE '%' || #{query} || '%'
-			OR B.BOARD_CONTENT LIKE '%' || #{query} || '%')
-		</if>
-	</select>
+    SELECT COUNT(*) FROM (
+      SELECT B.BOARD_NO
+      FROM "SCRAP" S
+      JOIN "BOARD" B ON (S.BOARD_NO = B.BOARD_NO)
+      WHERE S.MEMBER_NO = #{memberNo}
+      AND B.BOARD_DEL_FL = 'N'
+      <if test="query != null and query != ''">
+        AND (B.BOARD_TITLE LIKE '%' || #{query} || '%'
+        OR B.BOARD_CONTENT LIKE '%' || #{query} || '%')
+      </if>
 
-	<select id="selectScrapList" resultType="Board">
-		SELECT 
-			B.BOARD_NO,
-			B.BOARD_CODE,
-			B.BOARD_TITLE,
-			M.MEMBER_NICKNAME,
-			B.READ_COUNT,
-			(SELECT COUNT(*) FROM "BOARD_LIKE" L WHERE L.BOARD_NO = B.BOARD_NO) LIKE_COUNT,
-			
-			<![CDATA[
-			CASE  
-				WHEN SYSDATE - B.BOARD_WRITE_DATE < 1 / 24 / 60
-				THEN FLOOR((SYSDATE - B.BOARD_WRITE_DATE) * 24 * 60 * 60) || '초 전'
-				WHEN SYSDATE - B.BOARD_WRITE_DATE < 1 / 24
-				THEN FLOOR((SYSDATE - B.BOARD_WRITE_DATE) * 24 * 60) || '분 전'
-				WHEN SYSDATE - B.BOARD_WRITE_DATE < 1
-				THEN FLOOR((SYSDATE - B.BOARD_WRITE_DATE) * 24) || '시간 전'
-				ELSE TO_CHAR(B.BOARD_WRITE_DATE, 'YYYY-MM-DD')
-			END BOARD_WRITE_DATE
-			]]>
-			
-		FROM "SCRAP" S
-		JOIN "BOARD" B ON (S.BOARD_NO = B.BOARD_NO)
-		JOIN "MEMBER" M ON (B.MEMBER_NO = M.MEMBER_NO)
-		WHERE S.MEMBER_NO = #{memberNo}
-		AND B.BOARD_DEL_FL = 'N'
-		<if test="query != null and query != ''">
-			AND 
-			<choose>
-				<when test="key == 'title'"> B.BOARD_TITLE LIKE '%' || #{query} || '%' </when>
-				<when test="key == 'content'"> B.BOARD_CONTENT LIKE '%' || #{query} || '%' </when>
-				<when test="key == 'all'"> (B.BOARD_TITLE LIKE '%' || #{query} || '%' OR B.BOARD_CONTENT LIKE '%' || #{query} || '%') </when>
-			</choose>
-		</if>
-		ORDER BY B.BOARD_NO DESC
-	</select>
-	
-	<select id="selectEncPw" resultType="string">
-		SELECT MEMBER_PW
-		FROM "MEMBER"
-		WHERE MEMBER_NO = #{memberNo}
-	</select>
+      UNION ALL
 
-	<update id="changePw">
-		UPDATE "MEMBER" SET
-		MEMBER_PW = #{memberPw}
-		WHERE MEMBER_NO = #{memberNo}
-	</update>
+      SELECT I.INFO_BOARD_NO
+      FROM "INFO_SCRAP" S
+      JOIN "INFO_BOARD" I ON (S.INFO_BOARD_NO = I.INFO_BOARD_NO)
+      WHERE S.MEMBER_NO = #{memberNo}
+      <if test="query != null and query != ''">
+        AND (I.PROGRM_NM LIKE '%' || #{query} || '%'
+        OR I.PROGRM_CN LIKE '%' || #{query} || '%')
+      </if>
+    )
+  </select>
+
+  <select id="selectScrapList" resultType="Board">
+		SELECT * FROM (
+			SELECT 
+				B.BOARD_NO,
+				B.BOARD_CODE,
+				TO_CHAR(B.BOARD_TITLE) AS BOARD_TITLE,
+				TO_CHAR(M.MEMBER_NICKNAME) AS MEMBER_NICKNAME,
+				B.READ_COUNT,
+				(SELECT COUNT(*) FROM "BOARD_LIKE" L WHERE L.BOARD_NO = B.BOARD_NO) AS LIKE_COUNT,
+				TO_CHAR(B.BOARD_WRITE_DATE, 'YYYY-MM-DD') AS BOARD_WRITE_DATE,
+				
+				B.BOARD_WRITE_DATE AS ORIGINAL_DATE
+			FROM "SCRAP" S
+			JOIN "BOARD" B ON (S.BOARD_NO = B.BOARD_NO)
+			JOIN "MEMBER" M ON (B.MEMBER_NO = M.MEMBER_NO)
+			WHERE S.MEMBER_NO = #{memberNo}
+			AND B.BOARD_DEL_FL = 'N'
+			<if test="query != null and query != ''">
+				AND 
+				<choose>
+					<when test="key == 'title'"> B.BOARD_TITLE LIKE '%' || #{query} || '%' </when>
+					<when test="key == 'content'"> B.BOARD_CONTENT LIKE '%' || #{query} || '%' </when>
+					<when test="key == 'all'"> (B.BOARD_TITLE LIKE '%' || #{query} || '%' OR B.BOARD_CONTENT LIKE '%' || #{query} || '%') </when>
+				</choose>
+			</if>
+
+			UNION ALL
+			SELECT 
+				I.INFO_BOARD_NO AS BOARD_NO,
+				2 AS BOARD_CODE,
+				TO_CHAR(I.PROGRM_NM) AS BOARD_TITLE,
+				TO_CHAR(I.NANMM_BY_NM) AS MEMBER_NICKNAME,
+				0 AS READ_COUNT,
+				0 AS LIKE_COUNT,
+				
+				TO_CHAR(TO_DATE(I.NOTICE_BGN_DE, 'YYYYMMDD'), 'YYYY-MM-DD') AS BOARD_WRITE_DATE,
+				
+				TO_DATE(I.NOTICE_BGN_DE, 'YYYYMMDD') AS ORIGINAL_DATE
+			FROM "INFO_SCRAP" S
+			JOIN "INFO_BOARD" I ON (S.INFO_BOARD_NO = I.INFO_BOARD_NO)
+			WHERE S.MEMBER_NO = #{memberNo}
+			<if test="query != null and query != ''">
+				AND 
+				<choose>
+					<when test="key == 'title'"> I.PROGRM_NM LIKE '%' || #{query} || '%' </when>
+					<when test="key == 'content'"> I.PROGRM_CN LIKE '%' || #{query} || '%' </when>
+					<when test="key == 'all'"> (I.PROGRM_NM LIKE '%' || #{query} || '%' OR I.PROGRM_CN LIKE '%' || #{query} || '%') </when>
+				</choose>
+			</if>
+		)
+		ORDER BY ORIGINAL_DATE DESC
+	</select>
 	
 	
 	<!-- 회원 탈퇴 -->
