@@ -393,7 +393,17 @@ const updateComment = (commentNo, btn) => {
  *              6. 페이지 로드 시 초기화
  * =========================================================*/
 
-document.addEventListener("DOMContentLoaded", selectCommentList);
+document.addEventListener("DOMContentLoaded", () => {
+  
+  // [추가] 공지사항(boardCode 4)이면 댓글 기능 실행 안 함
+  if(boardCode == 4) {
+    console.log("공지사항에는 댓글 기능이 없습니다.");
+    return; // 여기서 종료
+  }
+  
+  // 댓글 목록 조회 실행
+  selectCommentList();
+});
 
 /* =========================================================
  *              7. 댓글 신고
