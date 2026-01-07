@@ -10,11 +10,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.kh.project.info.model.dto.AreaCode;
 import edu.kh.project.info.model.dto.InfoBoard;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * [역할] 공공데이터(1365 API)로부터 봉사 정보를 수집하고, DTO 객체로 보강/변환하는 서비스
+ * [역할] 공공데이터(1365 API)로부터 봉사 정보 및 지역 코드를 수집하고, DTO 객체로 보강/변환하는 서비스
  */
 @Slf4j
 @Service
@@ -24,6 +25,7 @@ public class InfoOpenApiService {
     private String serviceKey;
 
     private final String LIST_URL = "http://openapi.1365.go.kr/openapi/service/rest/VolunteerPartcptnService/getVltrSearchWordList";
+    private final String AREA_URL = "http://openapi.1365.go.kr/openapi/service/rest/VolunteerPartcptnService/getAreaList";
 
     /**
      * [기능] 대량의 봉사 데이터를 한 번에 요청하여 리스트로 반환
@@ -45,11 +47,41 @@ public class InfoOpenApiService {
                     totalList.add(convertToDto(item));
                 }
             }
-            log.info(">>> 총 {}건 수집 완료", totalList.size());
+            log.info(">>> 총 {}건 봉사 정보 수집 완료", totalList.size());
         } catch (Exception e) {
-            log.error(">>> [API 수집 에러] : {}", e.getMessage());
+            log.error(">>> [봉사 API 수집 에러] : {}", e.getMessage());
         }
         return totalList;
+    }
+
+    /**
+     * [기능추가] 특정 시도 코드에 해당하는 시군구 목록을 API에서 수집
+     */
+    public List<AreaCode> requestSigunGuList(String sidoCd) {
+        List<AreaCode> list = new ArrayList<>();
+        RestTemplate restTemplate = new RestTemplate();
+        ObjectMapper mapper = new ObjectMapper();
+
+        try {
+            String url = AREA_URL + "?serviceKey=" + serviceKey + "&schSido=" + sidoCd + "&_type=json";
+            String response = restTemplate.getForObject(new URI(url), String.class);
+            JsonNode items = mapper.readTree(response).path("response").path("body").path("items").path("item");
+
+            if (items.isArray()) {
+                for (JsonNode item : items) {
+                    if (!item.path("gugunCd").isMissingNode()) {
+                        AreaCode area = new AreaCode();
+                        area.setAreaCd(item.path("gugunCd").asText());
+                        area.setAreaNm(item.path("gugunNm").asText());
+                        area.setParentCd(sidoCd); 
+                        list.add(area);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            log.error(">>> [지역 API 수집 에러] 시도코드 {}: {}", sidoCd, e.getMessage());
+        }
+        return list;
     }
 
     /**
@@ -60,9 +92,7 @@ public class InfoOpenApiService {
         String detailPageUrl = "https://www.1365.go.kr/vols/P9210/partcptn/volsDetail.do?type=show&progrmRegistNo=" + registNo;
         String title = node.path("progrmSj").asText("제목없음");
 
-        // [핵심 수정] API가 0을 주므로 제목에서 "(10명)" 같은 패턴을 찾아 숫자를 추출합니다.
         int rcritNmpr = node.path("rcritNmpr").asInt(0);
-        
         if (rcritNmpr == 0) {
             rcritNmpr = extractCountFromTitle(title);
         }
@@ -101,6 +131,6 @@ public class InfoOpenApiService {
         } catch (Exception e) {
             return 0;
         }
-        return 0; // 못 찾으면 0
+        return 0;
     }
 }

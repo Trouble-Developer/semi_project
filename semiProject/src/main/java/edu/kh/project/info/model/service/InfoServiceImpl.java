@@ -34,18 +34,19 @@ public class InfoServiceImpl implements InfoService {
 
     /**
      * [기능: 1365 데이터 동기화]
-     * 역할: API를 통해 데이터를 가져와 DB에 MERGE 수행
+     * 역할: API를 통해 봉사 정보 및 시군구 지역 코드를 가져와 DB에 MERGE 수행
      */
     @Override
     public int syncFrom1365() throws Exception {
         List<InfoBoard> list = apiService.requestBatch();
-        if (list == null || list.isEmpty()) return 0;
-
         int result = 0;
-        for (InfoBoard info : list) {
-            try { result += mapper.mergeInfoBoard(info); } 
-            catch (Exception e) { log.debug("데이터 스킵: {}", info.getUrl()); }
+        if (list != null && !list.isEmpty()) {
+            for (InfoBoard info : list) {
+                try { result += mapper.mergeInfoBoard(info); } 
+                catch (Exception e) { log.debug("데이터 스킵: {}", info.getUrl()); }
+            }
         }
+        log.info(">>> 현재 DB 내 시도/시군구 데이터를 기반으로 서비스를 운영합니다.");
         return result;
     }
 
@@ -78,21 +79,39 @@ public class InfoServiceImpl implements InfoService {
         return mapper.selectInfoBoard(infoBoardNo);
     }
 
-    /**
-     * [기능: 시도 목록 조회 (반환 타입 통일)]
-     */
     @Override
     @Transactional(readOnly = true)
     public List<AreaCode> getSidoList() {
         return mapper.getSidoList();
     }
 
-    /**
-     * [기능: 시군구 목록 조회 (반환 타입 통일)]
-     */
     @Override
     @Transactional(readOnly = true)
     public List<AreaCode> getSignList(String sidoCd) {
         return mapper.getSignList(sidoCd);
+    }
+
+	@Override
+	public InfoBoard selectInfoDetail(int infoBoardNo, int memberNo) {
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("infoBoardNo", infoBoardNo);
+        paramMap.put("memberNo", memberNo);
+		return mapper.selectInfoDetail(paramMap);
+	}
+
+    /** [기능추가: 관심 봉사 스크랩 업데이트] */
+    @Override
+    public int updateScrap(Map<String, Object> paramMap) {
+        int result = 0;
+        // isScrapped가 true면 이미 스크랩 된 상태 -> 삭제(delete)
+        // isScrapped가 false면 스크랩 안 된 상태 -> 삽입(insert)
+        boolean isScrapped = (boolean)paramMap.get("isScrapped");
+
+        if(isScrapped) {
+            result = mapper.deleteScrap(paramMap);
+        } else {
+            result = mapper.insertScrap(paramMap);
+        }
+        return result;
     }
 }

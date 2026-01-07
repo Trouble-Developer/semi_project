@@ -6,12 +6,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import edu.kh.project.info.model.dto.AreaCode;
+import edu.kh.project.info.model.dto.InfoBoard;
 import edu.kh.project.info.model.service.InfoService;
+import edu.kh.project.member.model.dto.Member;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -71,5 +78,48 @@ public class InfoBoardController {
         int result = service.syncFrom1365();
         ra.addFlashAttribute("message", "총 " + result + "건의 데이터가 동기화되었습니다.");
         return "redirect:/info/listPage";
+    }
+    
+    /**
+     * [기능: 봉사 상세 조회]
+     * @param infoBoardNo : 게시글 번호
+     * @param model : 데이터 전달 객체
+     */
+    @GetMapping("detail/{infoBoardNo}")
+    public String infoDetail(
+            @PathVariable("infoBoardNo") int infoBoardNo,
+            @SessionAttribute(value="loginMember", required=false) Member loginMember,
+            Model model) {
+
+        // 로그인한 회원이 있을 경우 회원 번호를 같이 넘겨 스크랩 여부 확인
+        int memberNo = (loginMember != null) ? loginMember.getMemberNo() : 0;
+        
+        // 서비스 호출 시 memberNo를 함께 전달하여 scrapCheck를 조회하도록 수정
+        InfoBoard info = service.selectInfoDetail(infoBoardNo, memberNo);
+
+        if (info != null) {
+            model.addAttribute("info", info);
+            return "info/infoDetail";
+        } else {
+            return "redirect:/info/listPage";
+        }
+    }
+
+    /**
+     * [기능추가: 봉사 정보 스크랩/취소]
+     * @param paramMap : infoBoardNo, isScrapped 데이터를 담은 맵
+     * @param loginMember : 세션에서 가져온 로그인 회원 정보
+     * @return : 성공 시 1, 실패 시 0 (JSON)
+     */
+    @ResponseBody
+    @PostMapping("scrap")
+    public int infoScrap(@RequestBody Map<String, Object> paramMap,
+                        @SessionAttribute("loginMember") Member loginMember) {
+        
+        // 로그인한 유저 정보 추가
+        paramMap.put("memberNo", loginMember.getMemberNo());
+        
+        // 서비스 호출 (상태에 따라 INSERT 또는 DELETE 수행)
+        return service.updateScrap(paramMap);
     }
 }

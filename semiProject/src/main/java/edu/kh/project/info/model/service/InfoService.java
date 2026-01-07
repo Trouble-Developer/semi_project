@@ -21,4 +21,19 @@ public interface InfoService {
 
     /** [기능 5] 시군구 목록 조회 (AreaCode DTO 활용) */
     List<AreaCode> getSignList(String sidoCd);
+    
+    /**
+     * 봉사 상세 조회
+     * @param infoBoardNo
+     * @param memberNo (로그인 안되어있으면 0)
+     * @return info
+     */
+    InfoBoard selectInfoDetail(int infoBoardNo, int memberNo);
+
+    /**
+     * [기능추가] 관심 봉사 스크랩 업데이트
+     * @param paramMap
+     * @return result
+     */
+	int updateScrap(Map<String, Object> paramMap);
 }

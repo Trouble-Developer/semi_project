@@ -42,9 +42,11 @@ public class InfoBoard {
     private String searchTime;       // 활동시간 필터 조건
     private String volsType;         // 봉사자 대상 필터 조건
 
+    // [기능추가] 스크랩 여부 확인 필드
+    private int scrapCheck;          // 로그인한 회원이 해당 게시글을 스크랩했는지 여부 (1:함, 0:안함)
+
     /**
      * [비즈니스 로직: D-Day 계산]
-     * 모집 종료일까지 남은 일수를 계산하여 화면에 'D-7' 등으로 표시할 때 사용
      */
     public long getDDay() {
         if (noticeEndDe == null || noticeEndDe.trim().isEmpty()) return 0;
