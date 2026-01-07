@@ -5,11 +5,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import edu.kh.project.info.model.dto.AreaCode;
 import edu.kh.project.info.model.dto.InfoBoard;
 import lombok.extern.slf4j.Slf4j;
@@ -85,23 +90,33 @@ public class InfoOpenApiService {
     }
 
     /**
-     * [기능] JSON 데이터를 DTO로 변환 (인원수 파싱 로직 강화)
+     * [기능] JSON 데이터를 DTO로 변환
      */
     private InfoBoard convertToDto(JsonNode node) {
         String registNo = node.path("progrmRegistNo").asText("");
         String detailPageUrl = "https://www.1365.go.kr/vols/P9210/partcptn/volsDetail.do?type=show&progrmRegistNo=" + registNo;
         String title = node.path("progrmSj").asText("제목없음");
 
+        // 모집인원 데이터 추출
         int rcritNmpr = node.path("rcritNmpr").asInt(0);
-        if (rcritNmpr == 0) {
-            rcritNmpr = extractCountFromTitle(title);
+        if (rcritNmpr == 0) rcritNmpr = node.path("rcritNmprCo").asInt(0);
+        if (rcritNmpr == 0) rcritNmpr = extractCountFromTitle(title);
+        if (rcritNmpr <= 0) rcritNmpr = -1;
+
+        // 상세내용
+        String content = node.path("progrmCn").asText("").trim();
+        if (content.isEmpty() || content.equals("null")) {
+            content = "상세 활동 내용은 '신청하기' 버튼을 클릭하여 1365 포털에서 확인하실 수 있습니다.";
         }
+
+        String adultPosblAt = node.path("adultPosblAt").asText("UNK").trim();
+        String yngBgsPosblAt = node.path("yngBgsPosblAt").asText("UNK").trim();
 
         return InfoBoard.builder()
                 .url(detailPageUrl)
                 .progrmNm(title)
-                .progrmCn(node.path("progrmCn").asText("상세내용 참조"))
-                .nanmmByNm(node.path("nanmmbyNm").asText(""))
+                .progrmCn(content)
+                .nanmmByNm(node.path("nanmmbyNm").asText("")) 
                 .rcritNmpr(rcritNmpr) 
                 .progrmBgnde(node.path("progrmBgnde").asText(""))
                 .progrmEndde(node.path("progrmEndde").asText(""))
@@ -113,11 +128,11 @@ public class InfoOpenApiService {
                 .schSign(node.path("gugunCd").asText(""))
                 .actBeginTm(node.path("actBeginTm").asInt(0))
                 .actEndTm(node.path("actEndTm").asInt(0))
-                .adultPosblAt(node.path("adultPosblAt").asText("Y"))
-                .yngBgsPosblAt(node.path("yngBgsPosblAt").asText("Y"))
+                .adultPosblAt(adultPosblAt) 
+                .yngBgsPosblAt(yngBgsPosblAt)
                 .build();
     }
-
+    
     /**
      * [보조 기능] 제목에서 "00명" 패턴을 찾아 숫자로 변환
      */
@@ -133,4 +148,6 @@ public class InfoOpenApiService {
         }
         return 0;
     }
+    
+
 }

@@ -2,106 +2,148 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="edu.kh.project.info.model.mapper.InfoMapper">
 
-    <select id="getSidoList" resultType="edu.kh.project.info.model.dto.AreaCode">
-        SELECT AREA_CD AS areaCd, AREA_NM AS areaNm FROM TB_AREA_CODE WHERE PARENT_CD IS NULL ORDER BY AREA_NM ASC
-    </select>
+	<select id="getSidoList"
+		resultType="edu.kh.project.info.model.dto.AreaCode">
+		SELECT AREA_CD AS areaCd, AREA_NM AS areaNm FROM TB_AREA_CODE WHERE
+		PARENT_CD IS NULL ORDER BY AREA_NM ASC
+	</select>
 
-    <select id="getSignList" resultType="edu.kh.project.info.model.dto.AreaCode">
-        SELECT AREA_CD AS areaCd, AREA_NM AS areaNm FROM TB_AREA_CODE WHERE PARENT_CD = #{sidoCd} ORDER BY AREA_NM ASC
-    </select>
+	<select id="getSignList"
+		resultType="edu.kh.project.info.model.dto.AreaCode">
+		SELECT AREA_CD AS areaCd, AREA_NM AS areaNm FROM TB_AREA_CODE WHERE
+		PARENT_CD = #{sidoCd} ORDER BY AREA_NM ASC
+	</select>
 
-    <select id="getListCount" resultType="_int">
-        SELECT COUNT(*) FROM INFO_BOARD
-        <where>
-            <if test="progrmNm != null and progrmNm != ''"> AND PROGRM_NM LIKE '%' || #{progrmNm} || '%' </if>
-            <if test="nanmmByNm != null and nanmmByNm != ''"> AND NANMM_BY_NM LIKE '%' || #{nanmmByNm} || '%' </if>
-            <if test="schSido != null and schSido != ''"> AND SCH_SIDO = #{schSido} </if>
-            <if test="schSign != null and schSign != ''"> AND SCH_SIGN = #{schSign} </if>
-            <if test="actRm != null and actRm != ''">
-                <choose>
-                    <when test="actRm == '기타'">
-                        AND (ACT_RM NOT LIKE '%보건%' AND ACT_RM NOT LIKE '%생활%' AND ACT_RM NOT LIKE '%교육%' AND ACT_RM NOT LIKE '%환경%'
-                        AND ACT_RM NOT LIKE '%행정%' AND ACT_RM NOT LIKE '%문화%' AND ACT_RM NOT LIKE '%안전%' AND ACT_RM NOT LIKE '%인권%' AND ACT_RM NOT LIKE '%재난%')
-                    </when>
-                    <otherwise> AND ACT_RM LIKE '%' || #{actRm} || '%' </otherwise>
-                </choose>
-            </if>
-        </where>
-    </select>
+	<select id="getListCount" resultType="_int">
+		SELECT COUNT(*) FROM INFO_BOARD
+		<where>
+			<if test="progrmNm != null and progrmNm != ''"> AND PROGRM_NM LIKE '%' || #{progrmNm} || '%' </if>
+			<if test="nanmmByNm != null and nanmmByNm != ''"> AND NANMM_BY_NM LIKE '%' || #{nanmmByNm} || '%' </if>
+			<if test="schSido != null and schSido != ''"> AND SCH_SIDO = #{schSido} </if>
+			<if test="schSign != null and schSign != ''"> AND SCH_SIGN = #{schSign} </if>
+			<if test="actRm != null and actRm != ''">
+				<choose>
+					<when test="actRm == '기타'">
+						AND (ACT_RM NOT LIKE '%보건%' AND ACT_RM NOT LIKE '%생활%' AND ACT_RM NOT
+						LIKE '%교육%' AND ACT_RM NOT LIKE '%환경%'
+						AND ACT_RM NOT LIKE '%행정%' AND ACT_RM NOT LIKE '%문화%' AND ACT_RM NOT
+						LIKE '%안전%' AND ACT_RM NOT LIKE '%인권%' AND ACT_RM NOT LIKE '%재난%')
+					</when>
+					<otherwise> AND ACT_RM LIKE '%' || #{actRm} || '%' </otherwise>
+				</choose>
+			</if>
+		</where>
+	</select>
 
-    <select id="selectInfoList" resultType="InfoBoard">
-        SELECT * FROM (
-            SELECT ROWNUM AS RNUM, A.*
-            FROM (
-                SELECT * FROM INFO_BOARD
-                <where>
-                    <if test="progrmNm != null and progrmNm != ''"> AND PROGRM_NM LIKE '%' || #{progrmNm} || '%' </if>
-                    <if test="nanmmByNm != null and nanmmByNm != ''"> AND NANMM_BY_NM LIKE '%' || #{nanmmByNm} || '%' </if>
-                    <if test="schSido != null and schSido != ''"> AND SCH_SIDO = #{schSido} </if>
-                    <if test="schSign != null and schSign != ''"> AND SCH_SIGN = #{schSign} </if>
-                    <if test="actRm != null and actRm != ''">
-                        <choose>
-                            <when test="actRm == '기타'">
-                                AND (ACT_RM NOT LIKE '%보건%' AND ACT_RM NOT LIKE '%생활%' AND ACT_RM NOT LIKE '%교육%' AND ACT_RM NOT LIKE '%환경%'
-                                AND ACT_RM NOT LIKE '%행정%' AND ACT_RM NOT LIKE '%문화%' AND ACT_RM NOT LIKE '%안전%' AND ACT_RM NOT LIKE '%인권%' AND ACT_RM NOT LIKE '%재난%')
-                            </when>
-                            <otherwise> AND ACT_RM LIKE '%' || #{actRm} || '%' </otherwise>
-                        </choose>
-                    </if>
-                    <if test="searchTime != null and searchTime != '' and searchTime != 'all'">
-                        <choose>
-                            <when test="searchTime == '9'"> AND (ACT_END_TM - ACT_BEGIN_TM) >= 8 </when>
-                            <otherwise> AND (ACT_END_TM - ACT_BEGIN_TM) = #{searchTime} </otherwise>
-                        </choose>
-                    </if>
-                    <if test="volsType == 'adult'"> AND ADULT_POSBL_AT = 'Y' </if>
-                    <if test="volsType == 'teen'"> AND YNG_BGS_POSBL_AT = 'Y' </if>
-                </where>
-                ORDER BY INFO_BOARD_NO DESC
-            ) A
-        )
-        WHERE RNUM BETWEEN #{offset} + 1 AND #{offset} + #{limit}
-    </select>
+	<select id="selectInfoList" resultType="InfoBoard">
+		SELECT * FROM (
+		SELECT ROWNUM AS RNUM, A.*
+		FROM (
+		SELECT * FROM INFO_BOARD
+		<where>
+			<if test="progrmNm != null and progrmNm != ''"> AND PROGRM_NM LIKE '%' || #{progrmNm} || '%' </if>
+			<if test="nanmmByNm != null and nanmmByNm != ''"> AND NANMM_BY_NM LIKE '%' || #{nanmmByNm} || '%' </if>
+			<if test="schSido != null and schSido != ''"> AND SCH_SIDO = #{schSido} </if>
+			<if test="schSign != null and schSign != ''"> AND SCH_SIGN = #{schSign} </if>
+			<if test="actRm != null and actRm != ''">
+				<choose>
+					<when test="actRm == '기타'">
+						AND (ACT_RM NOT LIKE '%보건%' AND ACT_RM NOT LIKE '%생활%' AND ACT_RM NOT
+						LIKE '%교육%' AND ACT_RM NOT LIKE '%환경%'
+						AND ACT_RM NOT LIKE '%행정%' AND ACT_RM NOT LIKE '%문화%' AND ACT_RM NOT
+						LIKE '%안전%' AND ACT_RM NOT LIKE '%인권%' AND ACT_RM NOT LIKE '%재난%')
+					</when>
+					<otherwise> AND ACT_RM LIKE '%' || #{actRm} || '%' </otherwise>
+				</choose>
+			</if>
+			<if
+				test="searchTime != null and searchTime != '' and searchTime != 'all'">
+				<choose>
+					<when test="searchTime == '9'"> AND (ACT_END_TM - ACT_BEGIN_TM) >= 8 </when>
+					<otherwise> AND (ACT_END_TM - ACT_BEGIN_TM) = #{searchTime}
+					</otherwise>
+				</choose>
+			</if>
+			<if test="volsType == 'adult'"> AND ADULT_POSBL_AT = 'Y' </if>
+			<if test="volsType == 'teen'"> AND YNG_BGS_POSBL_AT = 'Y' </if>
+		</where>
+		ORDER BY INFO_BOARD_NO DESC
+		) A
+		)
+		WHERE RNUM BETWEEN #{offset} + 1 AND #{offset} + #{limit}
+	</select>
 
-    <select id="selectInfoDetail" resultType="InfoBoard">
-        SELECT 
-            B.INFO_BOARD_NO, B.URL, B.PROGRM_NM, B.PROGRM_CN, B.ACT_PLACE, B.NANMM_BY_NM, B.ACT_RM, 
-            B.RCRIT_NMPR, B.ACT_BEGIN_TM, B.ACT_END_TM, B.PROGRM_BGNDE, B.PROGRM_ENDDE, 
-            B.NOTICE_BGN_DE, B.NOTICE_END_DE, B.ADULT_POSBL_AT, B.YNG_BGS_POSBL_AT,
-            (SELECT AREA_NM FROM TB_AREA_CODE WHERE AREA_CD = B.SCH_SIDO) AS schSido,
-            (SELECT AREA_NM FROM TB_AREA_CODE WHERE AREA_CD = B.SCH_SIGN) AS schSign,
-            (TO_DATE(B.NOTICE_END_DE, 'YYYYMMDD') - TRUNC(SYSDATE)) AS dDay,
-            <choose>
-                <when test="memberNo != null">
-                    (SELECT COUNT(*) FROM INFO_SCRAP WHERE INFO_BOARD_NO = B.INFO_BOARD_NO AND MEMBER_NO = #{memberNo}) AS scrapCheck
-                </when>
-                <otherwise>0 AS scrapCheck</otherwise>
-            </choose>
-        FROM INFO_BOARD B
-        WHERE B.INFO_BOARD_NO = #{infoBoardNo}
-    </select>
+	<select id="selectInfoDetail" resultType="InfoBoard">
+		SELECT
+		B.INFO_BOARD_NO,
 
-    <insert id="insertScrap">
-        INSERT INTO INFO_SCRAP (MEMBER_NO, INFO_BOARD_NO) VALUES (#{memberNo}, #{infoBoardNo})
-    </insert>
+		'https://www.1365.go.kr/vols/1572247904127/partcptn/timeCptn.do?type=show&amp;progrmRegistNo='
+		||
+		SUBSTR(B.URL, INSTR(B.URL, '=', -1) + 1) AS URL,
 
-    <delete id="deleteScrap">
-        DELETE FROM INFO_SCRAP WHERE MEMBER_NO = #{memberNo} AND INFO_BOARD_NO = #{infoBoardNo}
-    </delete>
+		B.PROGRM_NM, B.PROGRM_CN,
 
-    <insert id="mergeInfoBoard" parameterType="InfoBoard">
-        MERGE INTO INFO_BOARD B
-        USING DUAL ON (B.URL = #{url})
-        WHEN MATCHED THEN
-            UPDATE SET PROGRM_NM = #{progrmNm}, PROGRM_CN = #{progrmCn}, NANMM_BY_NM = #{nanmmByNm}, RCRIT_NMPR = #{rcritNmpr},
-                PROGRM_BGNDE = #{progrmBgnde}, PROGRM_ENDDE = #{progrmEndde}, NOTICE_BGN_DE = #{noticeBgnDe}, NOTICE_END_DE = #{noticeEndDe},
-                ACT_BEGIN_TM = #{actBeginTm}, ACT_END_TM = #{actEndTm}, ACT_PLACE = #{actPlace}, ACT_RM = #{actRm},
-                SCH_SIDO = #{schSido}, SCH_SIGN = #{schSign}, ADULT_POSBL_AT = #{adultPosblAt}, YNG_BGS_POSBL_AT = #{yngBgsPosblAt}
-        WHEN NOT MATCHED THEN
-            INSERT (INFO_BOARD_NO, URL, SCH_SIDO, SCH_SIGN, PROGRM_NM, PROGRM_BGNDE, PROGRM_ENDDE, NOTICE_BGN_DE, NOTICE_END_DE,
-                ADULT_POSBL_AT, YNG_BGS_POSBL_AT, ACT_BEGIN_TM, ACT_END_TM, ACT_PLACE, NANMM_BY_NM, ACT_RM, PROGRM_CN, RCRIT_NMPR
-            ) VALUES (INFO_BOARD_SEQ.NEXTVAL, #{url}, #{schSido}, #{schSign}, #{progrmNm}, #{progrmBgnde}, #{progrmEndde}, #{noticeBgnDe}, #{noticeEndDe},
-                #{adultPosblAt}, #{yngBgsPosblAt}, #{actBeginTm}, #{actEndTm}, #{actPlace}, #{nanmmByNm}, #{actRm}, #{progrmCn}, #{rcritNmpr}
-            )
-    </insert>
+		CASE
+		WHEN B.ACT_PLACE IS NULL OR B.ACT_PLACE = '' THEN B.NANMM_BY_NM
+		ELSE B.ACT_PLACE
+		END AS ACT_PLACE,
+
+		B.NANMM_BY_NM, B.ACT_RM,
+
+		CASE
+		WHEN B.RCRIT_NMPR IS NULL OR B.RCRIT_NMPR = 0 THEN -1
+		ELSE B.RCRIT_NMPR
+		END AS rcritNmpr,
+
+		B.ACT_BEGIN_TM, B.ACT_END_TM, B.PROGRM_BGNDE, B.PROGRM_ENDDE,
+		B.NOTICE_BGN_DE, B.NOTICE_END_DE, B.ADULT_POSBL_AT, B.YNG_BGS_POSBL_AT,
+		(SELECT AREA_NM FROM TB_AREA_CODE WHERE AREA_CD = B.SCH_SIDO) AS schSido,
+		(SELECT AREA_NM FROM TB_AREA_CODE WHERE AREA_CD = B.SCH_SIGN) AS
+		schSign,
+		(TO_DATE(B.NOTICE_END_DE, 'YYYYMMDD') - TRUNC(SYSDATE)) AS dDay,
+		<choose>
+			<when test="memberNo != null">
+				(SELECT COUNT(*) FROM INFO_SCRAP WHERE INFO_BOARD_NO = B.INFO_BOARD_NO AND
+				MEMBER_NO = #{memberNo}) AS scrapCheck
+			</when>
+			<otherwise>0 AS scrapCheck</otherwise>
+		</choose>
+		FROM INFO_BOARD B
+		WHERE B.INFO_BOARD_NO = #{infoBoardNo}
+	</select>
+
+	<insert id="insertScrap">
+		INSERT INTO INFO_SCRAP (MEMBER_NO, INFO_BOARD_NO) VALUES (#{memberNo},
+		#{infoBoardNo})
+	</insert>
+
+	<delete id="deleteScrap">
+		DELETE FROM INFO_SCRAP WHERE MEMBER_NO = #{memberNo} AND INFO_BOARD_NO =
+		#{infoBoardNo}
+	</delete>
+
+	<insert id="mergeInfoBoard" parameterType="InfoBoard">
+		MERGE INTO INFO_BOARD B
+		USING DUAL ON (B.URL = #{url})
+		WHEN MATCHED THEN
+		UPDATE SET PROGRM_NM = #{progrmNm}, PROGRM_CN = #{progrmCn}, NANMM_BY_NM =
+		#{nanmmByNm}, RCRIT_NMPR = #{rcritNmpr},
+		PROGRM_BGNDE = #{progrmBgnde}, PROGRM_ENDDE = #{progrmEndde}, NOTICE_BGN_DE =
+		#{noticeBgnDe}, NOTICE_END_DE = #{noticeEndDe},
+		ACT_BEGIN_TM = #{actBeginTm}, ACT_END_TM = #{actEndTm}, ACT_PLACE = #{actPlace},
+		ACT_RM = #{actRm},
+		SCH_SIDO = #{schSido}, SCH_SIGN = #{schSign}, ADULT_POSBL_AT =
+		#{adultPosblAt}, YNG_BGS_POSBL_AT = #{yngBgsPosblAt}
+		WHEN NOT MATCHED THEN
+		INSERT (INFO_BOARD_NO, URL, SCH_SIDO, SCH_SIGN, PROGRM_NM, PROGRM_BGNDE,
+		PROGRM_ENDDE, NOTICE_BGN_DE, NOTICE_END_DE,
+		ADULT_POSBL_AT, YNG_BGS_POSBL_AT, ACT_BEGIN_TM, ACT_END_TM, ACT_PLACE, NANMM_BY_NM,
+		ACT_RM, PROGRM_CN, RCRIT_NMPR
+		) VALUES (INFO_BOARD_SEQ.NEXTVAL, #{url}, #{schSido}, #{schSign},
+		#{progrmNm}, #{progrmBgnde}, #{progrmEndde}, #{noticeBgnDe},
+		#{noticeEndDe},
+		#{adultPosblAt}, #{yngBgsPosblAt}, #{actBeginTm}, #{actEndTm}, #{actPlace},
+		#{nanmmByNm}, #{actRm}, #{progrmCn}, #{rcritNmpr}
+		)
+	</insert>
 </mapper>

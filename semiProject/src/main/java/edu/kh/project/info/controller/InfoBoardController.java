@@ -122,4 +122,16 @@ public class InfoBoardController {
         // 서비스 호출 (상태에 따라 INSERT 또는 DELETE 수행)
         return service.updateScrap(paramMap);
     }
+    
+    /**
+     * [기능: 1365 데이터 동기화 (JS 비동기 통신용)]
+     * 지난번과 동일하게 비동기(Fetch) 방식으로 호출되어 
+     * 서비스의 syncFrom1365를 실행하고 결과 건수를 반환합니다.
+     */
+    @ResponseBody
+    @GetMapping("api/refresh")
+    public int refreshApi() throws Exception {
+        // 이미 구현된 서비스 로직을 호출하여 API 데이터를 DB에 MERGE 합니다.
+        return service.syncFrom1365(); 
+    }
 }

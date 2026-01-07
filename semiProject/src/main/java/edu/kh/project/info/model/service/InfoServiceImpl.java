@@ -42,14 +42,18 @@ public class InfoServiceImpl implements InfoService {
         int result = 0;
         if (list != null && !list.isEmpty()) {
             for (InfoBoard info : list) {
-                try { result += mapper.mergeInfoBoard(info); } 
-                catch (Exception e) { log.debug("데이터 스킵: {}", info.getUrl()); }
+                try { 
+                    result += mapper.mergeInfoBoard(info); 
+                } 
+                catch (Exception e) { 
+                    log.debug("데이터 스킵(이미 존재하거나 에러): {}", info.getUrl()); 
+                }
             }
         }
-        log.info(">>> 현재 DB 내 시도/시군구 데이터를 기반으로 서비스를 운영합니다.");
+        log.info(">>> 총 {}건의 봉사 정보가 최신화되었습니다.", result);
         return result;
     }
-
+    
     /**
      * [기능: 페이징 처리된 봉사 목록 조회]
      */

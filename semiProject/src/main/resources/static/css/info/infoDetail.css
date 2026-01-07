@@ -5,14 +5,14 @@
     padding: 50px 20px;
 }
 
+/* [복구] 관리자 컨트롤 및 버튼 스타일 삭제됨 */
+
 /* [역할: 상단 제목 섹션] 프로그램 제목 배치 */
 .detail-header {
     border-bottom: 2px solid #333;
     padding-bottom: 15px;
     margin-bottom: 20px;
 }
-
-/* [역할: 프로그램 제목] */
 .program-title {
     font-size: 26px;
     color: #333;
@@ -20,22 +20,20 @@
     word-break: break-all;
 }
 
-/* [추가: 활동 장소 제목 컨테이너] 제목과 스크랩 버튼을 양 끝으로 정렬 */
+/* [역할: 활동 장소 제목 및 스크랩 버튼 레이아웃] */
 .section-title-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
 }
-
-/* [역할: 섹션 공통 소제목] 활동 장소 글자 마진 제거 */
 .section-title {
     font-size: 18px;
     margin-bottom: 0;
     color: #333;
 }
 
-/* [역할: 스크랩 버튼 - 팀원 디자인 통합] */
+/* [역할: 스크랩 버튼 스타일] */
 #scrapBtn {
     background: none;
     border: none;
@@ -44,20 +42,16 @@
     display: flex;
     align-items: center;
 }
-
 #scrapBtn i {
-    font-size: 26px; /* 팀원 디자인 사이즈 참고 */
+    font-size: 26px;
     color: #bbb;
     transition: transform 0.15s ease, color 0.15s ease;
 }
-
-/* [역할: 스크랩 활성화 상태] 오렌지색 별표 */
 #scrapBtn.scrapped i {
     color: #ffcc00;
 }
-
 #scrapBtn:hover i {
-    transform: scale(1.1); /* 호버 시 약간 확대 효과 */
+    transform: scale(1.1);
 }
 
 /* [역할: 지도 표시 영역] */
@@ -67,52 +61,47 @@
     border-radius: 12px;
     border: 1px solid #ddd;
 }
-
 .address-display {
     margin-top: 10px;
     color: #555;
     font-size: 15px;
 }
 
-/* [역할: 상세 정보 테이블] */
+/* [역할: 상세 정보 테이블 스타일] */
 .detail-info-table {
     width: 100%;
     border-top: 2px solid #444;
     margin-bottom: 30px;
     border-collapse: collapse;
 }
-
-.label-col { width: 20%; } 
-.content-col { width: 30%; } 
-
 .detail-info-table th {
     padding: 15px;
     border-bottom: 1px solid #eee;
     text-align: left;
     background: #fcfcfc;
+    width: 20%;
 }
-
 .detail-info-table td {
     padding: 15px;
     border-bottom: 1px solid #eee;
+    width: 30%;
 }
-
 .emp-text {
     font-weight: bold;
     color: #ff7f00;
 }
 
+/* [역할: 본문 상세 내용 박스] */
 .content-box { margin-top: 30px; }
 .content-text { line-height: 1.8; font-size: 16px; }
 
-/* [역할: 하단 버튼 영역] */
+/* [역할: 하단 목록/신청 버튼 영역] */
 .action-bar {
     text-align: center;
     border-top: 1px solid #eee;
     padding-top: 40px;
     margin-top: 40px;
 }
-
 .btn-list, .btn-apply {
     padding: 12px 40px;
     border-radius: 5px;
@@ -120,9 +109,10 @@
     font-size: 16px;
     transition: opacity 0.2s;
 }
-
-.btn-list:hover, .btn-apply:hover { opacity: 0.8; }
 .btn-list { background: #888; color: white; border: none; }
 .btn-apply { background: #ff7f00; color: white; border: none; font-weight: bold; margin-left: 15px; }
 
-.hidden-data { display: none; }
+/* [역할: 데이터 처리용 숨김 요소] */
+.hidden-data, #searchListCount {
+    display: none !important;
+}

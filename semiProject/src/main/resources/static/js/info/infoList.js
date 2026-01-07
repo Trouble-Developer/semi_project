@@ -112,6 +112,50 @@ document.addEventListener("DOMContentLoaded", () => {
         cpHidden.value = "1";
         infoSearchForm.appendChild(cpHidden);
     });
+
+    /**
+     * [기능 8] 관리자 전용 공공데이터 동기화
+     */
+    const initAdminSync = () => {
+        const syncBtn = document.getElementById("refreshOpenApi");
+        if (syncBtn) {
+            syncBtn.onclick = () => {
+                if (!confirm("1365 공공데이터와 동기화를 진행하시겠습니까?")) return;
+                syncBtn.disabled = true;
+                syncBtn.innerHTML = '<i class="fa-solid fa-sync fa-spin"></i> 동기화 중...';
+                fetch("/info/api/refresh")
+                    .then(resp => resp.json())
+                    .then(result => {
+                        alert(`동기화 완료! 총 ${result}건의 데이터가 업데이트되었습니다.`);
+                        location.reload(); 
+                    })
+                    .catch(() => alert("데이터 수집 중 오류가 발생했습니다."))
+                    .finally(() => {
+                        syncBtn.disabled = false;
+                        syncBtn.innerHTML = "동기화";
+                    });
+            };
+        }
+    };
+
+    /**
+     * [기능 9] 검색 결과 알림창 표시 
+     * URL에 파라미터가 하나라도 있으면(즉, 검색 버튼을 눌러서 로드되었다면) 무조건 알림
+     */
+    const checkSearchAlert = () => {
+        const countInput = document.getElementById("searchListCount");
+        
+        // URL의 쿼리 스트링(? 이후의 내용)이 비어있지 않으면 '검색 행위'로 간주
+        const hasParams = window.location.search.length > 0;
+
+        if (hasParams && countInput) {
+            const count = countInput.value;
+            alert(`총 ${count}건의 봉사 정보가 검색되었습니다.`);
+        }
+    };
+
+    initAdminSync();
+    checkSearchAlert();
 });
 
 /**
