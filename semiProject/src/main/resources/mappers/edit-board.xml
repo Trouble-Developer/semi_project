@@ -99,11 +99,9 @@
 		BOARD_TITLE = #{title},
 		BOARD_CONTENT = #{content},
 		BOARD_UPDATE_DATE = SYSDATE,
-		BOARD_LOCK =
-		#{boardLock}
+		BOARD_LOCK = #{boardLock}
 		WHERE BOARD_NO = #{boardNo}
-		AND BOARD_CODE =
-		#{boardCode}
+		AND BOARD_CODE = #{boardCode}
 		AND MEMBER_NO = #{memberNo}
 	</update>
 </mapper>
