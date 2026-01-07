@@ -1,118 +1,236 @@
-/* --- 원본 디자인 그대로 유지 --- */
-.info-container {
+/* 1. 컨테이너 및 전체 레이아웃 */
+.info-list-container {
     width: 1100px;
+    /* 전체 중앙 정렬 폭 고정 */
     margin: 40px auto;
-    min-height: 800px;
+    font-family: 'Pretendard', sans-serif;
+    color: #333;
 }
-.page-title {
-    font-size: 26px;
+
+/* 상단 게시판 대제목 (구분선 포함) */
+.main-title {
+    font-size: 32px;
+    font-weight: bold;
     margin-bottom: 30px;
-    font-weight: bold;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #333;
 }
 
-.search-container {
+/* 2. 상단 5분할 필터바 영역 */
+/* 역할: 시도, 시군구, 봉사분야 등 주요 필터를 가로로 배치 */
+.search-filter-table {
+    display: flex;
+    width: 100%;
     border: 1px solid #ddd;
-    border-top: 3px solid #f37321;
-    padding: 30px;
-    background-color: #fff;
-    margin-bottom: 50px;
-}
-.search-row {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 15px;
-}
-.search-label {
-    width: 110px;
-    font-weight: bold;
-    color: #444;
-}
-.search-container select, .search-container input {
-    padding: 8px 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-.input-full { flex: 1; }
-
-.btn-area {
-    text-align: center;
-    margin-top: 30px;
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-}
-.btn-search { background-color: #f37321; color: #fff; padding: 12px 45px; border: none; border-radius: 30px; font-weight: bold; cursor: pointer; }
-.btn-reset { background-color: #6c757d; color: #fff; padding: 12px 45px; border: none; border-radius: 30px; cursor: pointer; }
-.btn-sync { background-color: #28a745; color: #fff; padding: 12px 25px; border: none; border-radius: 30px; text-decoration: none; font-size: 0.9em; display: flex; align-items: center; }
-
-.info-card {
-    display: flex;
-    justify-content: space-between;
-    padding: 25px 0;
-    border-bottom: 1px solid #eee;
-}
-.card-content { flex: 1; }
-.card-category { color: #f37321; font-size: 0.85em; margin-bottom: 8px; font-weight: bold; }
-.card-title { font-size: 1.25em; font-weight: bold; color: #222; text-decoration: none; display: block; margin-bottom: 15px; }
-
-.card-info-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 10px 20px;
-    color: #666;
-    font-size: 0.92em;
+    border-top: 2px solid #666;
+    /* 상단 강조선 */
+    margin-bottom: 25px;
 }
 
-.status-badge {
-    min-width: 100px;
-    height: 100px;
-    border: 1px solid #ddd;
-    text-align: center;
+/* 각 필터 항목 컬럼 단위 스타일 */
+.filter-column {
+    flex: 1;
+    border-right: 1px solid #ddd;
     display: flex;
     flex-direction: column;
 }
-.d-day-info { flex: 2; padding: 10px; border-bottom: 1px solid #eee; display: flex; flex-direction: column; justify-content: center; }
-.highlight { color: #d9534f; font-size: 1.1em; }
-.status-text { flex: 1; color: #d9534f; font-weight: bold; display: flex; align-items: center; justify-content: center; font-size: 0.85em; }
 
-.no-data { text-align: center; padding: 100px; color: #888; border-bottom: 1px solid #eee; }
+.filter-column:last-child {
+    border-right: none;
+}
 
-/* --- [추가] 페이지네이션 스타일 (원본 퀄리티 최적화) --- */
-#pagination-box {
-    margin: 50px 0;
-    display: flex;
-    justify-content: center;
-}
-#pagination-box ul {
-    display: flex;
-    list-style: none;
-    padding: 0;
-    gap: 10px;
-    align-items: center;
-}
-.page-num {
-    width: 32px;
-    height: 32px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-decoration: none;
-    color: #555;
-    border-radius: 50%;
+/* 필터 제목 라벨 (회색 배경) */
+.filter-label {
+    background-color: #f8f8f8;
+    padding: 12px;
     font-weight: bold;
-    transition: 0.2s;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
 }
-.page-num.active {
-    background-color: #f37321;
+
+/* 필터 내 select 박스 배치 영역 */
+.filter-select-box {
+    padding: 15px;
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+}
+
+.filter-select-box select {
+    width: 95%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    background: #fff;
+}
+
+/* 3. 하단 상세 검색 박스 */
+/* 역할: 봉사기간, 검색어 입력 등 세부 조건 설정 공간 */
+.detail-search-container {
+    border: 1px solid #ddd;
+    padding: 35px;
+    margin-bottom: 40px;
+    background-color: #fff;
+}
+
+/* 입력 폼 행 단위 배치 */
+.detail-row {
+    display: flex;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+/* 개별 입력 항목 (아이콘 + 라벨 + 인풋) */
+.detail-item {
+    display: flex;
+    align-items: center;
+    flex: 1;
+}
+
+/* 항목 강조용 오렌지색 도트 */
+.orange-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #ff7f00;
+    border-radius: 50%;
+    margin-right: 12px;
+}
+
+.detail-item label {
+    font-weight: bold;
+    width: 90px;
+    font-size: 15px;
+}
+
+.detail-item input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    outline: none;
+}
+
+/* 4. 버튼 그룹 스타일 */
+/* 역할: 검색, 초기화, 동기화 버튼의 정렬 및 크기 제어 */
+.btn-group {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+/* [공통 버튼 베이스] - 크기 통일을 위해 공통 속성 정의 */
+.btn-search,
+.btn-reset-gray,
+.btn-sync {
+    padding: 12px 70px;
+    /* 크기를 검색 버튼과 똑같이 고정 */
+    border: none;
+    border-radius: 30px;
+    /* 둥근 타원형 스타일 */
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+/* 검색 버튼: 주황색 강조 */
+.btn-search {
+    background-color: #ed6d2d;
     color: white;
 }
-.page-num:hover:not(.active) {
-    background-color: #f0f0f0;
+
+/* 초기화 버튼: 회색 유지, 크기는 검색 버튼과 동일하게 적용됨 */
+.btn-reset-gray {
+    background-color: #888;
+    color: white;
 }
-.page-arrow {
-    text-decoration: none;
-    color: #999;
-    font-size: 1.1em;
-    padding: 0 10px;
+
+/* 동기화 버튼: 검정색 (관리자용) */
+.btn-sync {
+    background-color: #333;
+    color: white;
+}
+
+/* 5. 봉사 정보 카드 리스트 */
+/* 역할: 검색된 봉사 정보를 개별 카드 형태로 출력 */
+.info-card {
+    border-bottom: 1px solid #ddd;
+    padding: 30px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* 분야/인증 여부 태그 */
+.card-tags {
+    color: #ff7f00;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+/* 봉사 프로그램명 */
+.card-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #000;
+}
+
+/* 카드 내부 정보 (기간, 시간, 장소 등) 격자 배치 */
+.card-info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    /* 3열 배치 */
+    gap: 10px 20px;
+    font-size: 14px;
+    color: #555;
+}
+
+/* 우측 상태 및 디데이 뱃지 영역 */
+.card-right {
+    width: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 마감일 뱃지 박스 */
+.deadline-badge {
+    border: 1px solid #999;
+    padding: 8px 15px;
+    text-align: center;
+    font-size: 13px;
+    margin-bottom: 10px;
+}
+
+/* 모집 상태 문구 (모집중) */
+.status-text {
+    color: #d9534f;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+/* 6. 페이지네이션 */
+/* 역할: 페이지 번호 표시 및 중앙 정렬 */
+.pagination {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    margin-top: 50px;
+    gap: 8px;
+    padding: 0;
+}
+
+.pagination li {
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+/* 현재 활성화된 페이지 번호 강조 스타일 */
+.pagination li.active {
+    background-color: #ed6d2d;
+    color: white;
+    border-radius: 50%;
+    /* 원형 강조 */
+    font-weight: bold;
 }

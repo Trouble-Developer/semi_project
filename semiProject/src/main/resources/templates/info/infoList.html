@@ -1,104 +1,142 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>정보게시판 | 목록</title>
+    <title>봉사 참여 정보</title>
     <link rel="stylesheet" th:href="@{/css/info/infoList.css}">
 </head>
 <body>
     <th:block th:replace="~{common/header}"></th:block>
 
-    <main class="info-container">
-        <h2 class="page-title">정보게시판</h2>
+    <main class="info-list-container">
+        <h1 class="main-title">정보게시판</h1>
 
-        <section class="search-container">
-            <form th:action="@{/info/listPage}" method="get" id="searchForm">
-                <input type="hidden" name="cp" value="1">
-                
-                <div class="search-row">
-                    <span class="search-label">● 봉사지역</span>
-                    <select name="schSido">
-                        <option value="">전체(시도)</option>
-                        <option value="6110000" th:selected="${param.schSido == '6110000'}">서울</option>
-                        <option value="6410000" th:selected="${param.schSido == '6410000'}">경기</option>
-                        <option value="6260000" th:selected="${param.schSido == '6260000'}">부산</option>
-                    </select>
-                    <select name="schSign"><option value="">전체(시군구)</option></select>
-                    <span class="search-label">● 봉사분야</span>
-                    <select name="actRm">
-                        <option value="">전체</option>
-                        <option value="교육봉사" th:selected="${param.actRm == '교육봉사'}">교육봉사</option>
-                        <option value="환경정화" th:selected="${param.actRm == '환경정화'}">환경정화</option>
-                        <option value="행정지원" th:selected="${param.actRm == '행정지원'}">행정지원</option>
-                        <option value="문화행사" th:selected="${param.actRm == '문화행사'}">문화행사</option>
-                    </select>
+        <form th:action="@{/info/listPage}" method="get" id="infoSearchForm">
+            <div class="search-filter-table">
+                <div class="filter-column">
+                    <div class="filter-label">봉사지역</div>
+                    <div class="filter-select-box">
+                        <select name="schSido" id="sidoCode"><option value="">전체(시도)</option></select>
+                        <select name="schSign" id="gugunCode"><option value="">전체(시군구)</option></select>
+                    </div>
+                </div>
+                <div class="filter-column">
+                    <div class="filter-label">봉사분야</div>
+                    <div class="filter-select-box"><select name="actRm" id="category"><option value="">전체</option></select></div>
+                </div>
+                <div class="filter-column">
+                    <div class="filter-label">활동구분</div>
+                    <div class="filter-select-box"><select name="actType" id="actType"><option value="">전체</option></select></div>
+                </div>
+                <div class="filter-column">
+                    <div class="filter-label">봉사대상</div>
+                    <div class="filter-select-box"><select name="target" id="target"><option value="">전체</option></select></div>
+                </div>
+                <div class="filter-column">
+                    <div class="filter-label">모집상태</div>
+                    <div class="filter-select-box"><select name="status"><option value="모집중">모집중</option></select></div>
+                </div>
+            </div>
+
+            <div class="detail-search-container">
+                <div class="detail-row">
+                    <div class="detail-item">
+                        <span class="orange-dot"></span><label>봉사기간</label>
+                        <input type="date" name="bgnde" th:value="${param.bgnde}"> &nbsp;~&nbsp; <input type="date" name="endde" th:value="${param.endde}">
+                    </div>
+                    <div class="detail-item">
+                        <span class="orange-dot"></span><label>봉사자유형</label>
+                        <label><input type="checkbox" name="volsType" value="adult" onclick="checkOnlyOne(this)" th:checked="${param.volsType == 'adult'}"> 성인</label> &nbsp;
+                        <label><input type="checkbox" name="volsType" value="teen" onclick="checkOnlyOne(this)" th:checked="${param.volsType == 'teen'}"> 청소년</label>
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-item" style="flex: 1;">
+                        <span class="orange-dot"></span><label>인정시간</label>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" name="searchTime" value="all" onclick="checkOnlyOne(this)" th:checked="${param.searchTime == null || param.searchTime == 'all'}"> 전체</label> &nbsp;
+                            <th:block th:each="num : ${#numbers.sequence(1, 7)}">
+                                <label><input type="checkbox" name="searchTime" th:value="${num}" onclick="checkOnlyOne(this)" th:checked="${param.searchTime != null && param.searchTime[0] == #strings.toString(num)}"> [[${num}]]시간</label> &nbsp;
+                            </th:block>
+                            <label><input type="checkbox" name="searchTime" value="9" onclick="checkOnlyOne(this)" th:checked="${param.searchTime != null && param.searchTime[0] == '9'}"> 8시간 이상</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-item">
+                        <span class="orange-dot"></span><label>봉사명</label>
+                        <input type="text" name="progrmNm" placeholder="봉사명을 입력하세요" style="width: 350px;" th:value="${param.progrmNm}">
+                    </div>
+                    <div class="detail-item">
+                        <span class="orange-dot"></span><label>활동기관</label>
+                        <input type="text" name="nanmmByNm" style="width: 350px;" th:value="${param.nanmmByNm}">
+                    </div>
                 </div>
                 
-                <div class="search-row">
-                    <span class="search-label">● 봉사명</span>
-                    <input type="text" name="progrmNm" placeholder="봉사명을 입력해주세요" 
-                           class="input-full" th:value="${param.progrmNm}">
-                    <span class="search-label">● 활동처명</span>
-                    <input type="text" name="actPlace" th:value="${param.actPlace}">
-                </div>
-
-                <div class="btn-area">
+                <div class="btn-group">
                     <button type="submit" class="btn-search">검색</button>
-                    <button type="reset" class="btn-reset">초기화</button>
-                    
-                    <th:block th:if="${session.loginMember != null and session.loginMember.authority == 2}">
-                        <a th:href="@{/info/sync}" class="btn-sync">데이터 새로고침</a>
-                    </th:block>
+                    <button type="reset" class="btn-reset-gray">초기화</button>
+                    <button type="button" class="btn-sync" id="refreshOpenApi" 
+                            sec:authorize="hasRole('ADMIN')">동기화</button>
                 </div>
-            </form>
-        </section>
+            </div>
+        </form>
 
-        <section class="info-list-area">
-            <div th:unless="${#lists.isEmpty(infoList)}" th:each="info : ${infoList}" class="info-card">
-                <div class="card-content">
-                    <div class="card-category" th:text="${info.actRm != null ? info.actRm : '봉사활동'}">분류</div>
-                    <a th:href="@{/info/detail/{no}(no=${info.infoBoardNo})}" class="card-title" th:text="${info.progrmNm}">제목</a>
-                    <div class="card-info-grid">
-                        <div class="info-item"><strong>[모집기간]</strong> [[${info.noticeBgnDe}]] ~ [[${info.noticeEndDe}]]</div>
-                        <div class="info-item"><strong>[봉사기간]</strong> [[${info.progrmBgnde}]] ~ [[${info.progrmEndde}]]</div>
-                        <div class="info-item"><strong>[봉사시간]</strong> [[${info.actBeginTm}]]시 ~ [[${info.actEndTm}]]시</div>
-                        <div class="info-item"><strong>[등록기관]</strong> [[${info.nanmmByNm}]]</div>
-                        <div class="info-item"><strong>[활동장소]</strong> [[${info.actPlace}]]</div>
-                       <div class="info-item">
-                        <strong>[인정시간]</strong> 
-                        <th:block th:if="${info.actEndTm != null and info.actBeginTm != null}">
-                            최대 [[${T(java.lang.Integer).parseInt(info.actEndTm) - T(java.lang.Integer).parseInt(info.actBeginTm)}]]시간
-                        </th:block>
-                        <th:block th:unless="${info.actEndTm != null and info.actBeginTm != null}">시간협의</th:block>
+        <div class="card-list-wrapper">
+            <div th:if="${#lists.isEmpty(infoList)}" class="no-data">조회된 정보가 없습니다.</div>
+            
+            <div th:each="info : ${infoList}" class="info-card">
+                <div class="card-left">
+                    <div class="card-tags">시간인증 | 오프라인 | [[${info.actRm}]]</div>
+                    <div class="card-title">
+                        <a th:href="@{/info/detail/{no}(no=${info.infoBoardNo})}" 
+                           th:text="${info.progrmNm}" style="text-decoration: none; color: inherit; cursor: pointer;">봉사 제목</a>
                     </div>
+                    <div class="card-info-grid">
+                        <span><b>[모집기간]</b> [[${info.noticeBgnDe}]]~[[${info.noticeEndDe}]]</span>
+                        <span><b>[봉사기간]</b> [[${info.progrmBgnde}]]~[[${info.progrmEndde}]]</span>
+                        <span><b>[봉사시간]</b> [[${info.actBeginTm}]]:00 ~ [[${info.actEndTm}]]:00</span>
+                        <span><b>[등록기관]</b> [[${info.nanmmByNm}]]</span>
+                        <span><b>[모집인원]</b> <span class="rcrit-nmpr">[[${info.rcritNmpr}]]</span></span>
+                        <span><b>[인정시간]</b> 최대 [[${info.actEndTm - info.actBeginTm}]]시간</span>
                     </div>
                 </div>
-                <div class="status-badge">
-                    <div class="d-day-info"><span>상태</span><strong class="highlight">D-Day</strong></div>
+                <div class="card-right">
+                    <div class="deadline-badge" th:if="${info.dDay > 0}">마감<br><b>[[${info.dDay}]]</b>일전</div>
+                    <div class="deadline-badge" th:if="${info.dDay == 0}">금일<br><b>마감</b></div>
                     <div class="status-text">모집중</div>
                 </div>
             </div>
+        </div>
 
-            <div th:if="${#lists.isEmpty(infoList)}" class="no-data">조회된 봉사 정보가 없습니다.</div>
-
-            <div id="pagination-box" th:if="${not #lists.isEmpty(infoList) and pagination != null}">
-                <ul>
-                    <li><a th:href="@{/info/listPage(cp=${pagination.prevPage}, progrmNm=${param.progrmNm}, actPlace=${param.actPlace}, schSido=${param.schSido}, actRm=${param.actRm})}" class="page-arrow">&lt;</a></li>
-                    
-                    <li th:each="i : ${#numbers.sequence(pagination.startPage, pagination.endPage)}">
-                        <a th:if="${i == pagination.currentPage}" class="page-num active" th:text="${i}">1</a>
-                        <a th:unless="${i == pagination.currentPage}" 
-                           th:href="@{/info/listPage(cp=${i}, progrmNm=${param.progrmNm}, actPlace=${param.actPlace}, schSido=${param.schSido}, actRm=${param.actRm})}" 
-                           class="page-num" th:text="${i}">2</a>
+        <ul class="pagination" th:if="${not #lists.isEmpty(infoList)}">
+            <th:block th:with="queryStr='schSido=' + ${param.schSido != null ? param.schSido : ''} + 
+                                       '&schSign=' + ${param.schSign != null ? param.schSign : ''} + 
+                                       '&actRm=' + ${param.actRm != null ? param.actRm : ''} + 
+                                       '&progrmNm=' + ${param.progrmNm != null ? param.progrmNm : ''} + 
+                                       '&nanmmByNm=' + ${param.nanmmByNm != null ? param.nanmmByNm : ''} + 
+                                       '&bgnde=' + ${param.bgnde != null ? param.bgnde : ''} + 
+                                       '&endde=' + ${param.endde != null ? param.endde : ''} + 
+                                       '&searchTime=' + ${param.searchTime != null ? param.searchTime : ''}">
+                
+                <li><a th:href="|/info/listPage?cp=1&${queryStr}|">&lt;&lt;</a></li>
+                <li><a th:href="|/info/listPage?cp=${pagination.prevPage}&${queryStr}|">&lt;</a></li>
+                
+                <th:block th:each="i : ${#numbers.sequence(pagination.startPage, pagination.endPage)}">
+                    <li th:classappend="${i == pagination.currentPage} ? 'active'">
+                        <a th:href="|/info/listPage?cp=${i}&${queryStr}|" th:text="${i}">1</a>
                     </li>
-                    
-                    <li><a th:href="@{/info/listPage(cp=${pagination.nextPage}, progrmNm=${param.progrmNm}, actPlace=${param.actPlace}, schSido=${param.schSido}, actRm=${param.actRm})}" class="page-arrow">&gt;</a></li>
-                </ul>
-            </div>
-        </section>
+                </th:block>
+                
+                <li><a th:href="|/info/listPage?cp=${pagination.nextPage}&${queryStr}|">&gt;</a></li>
+                <li><a th:href="|/info/listPage?cp=${pagination.maxPage}&${queryStr}|">&gt;&gt;</a></li>
+            </th:block>
+        </ul>
     </main>
 
-    <th:block th:replace="~{common/header}"></th:block>
+    <th:block th:replace="~{common/footer}"></th:block>
     <script th:src="@{/js/info/infoList.js}"></script>
 </body>
 </html>
