@@ -47,7 +47,6 @@ $(document).ready(function () {
     ],
 
     callbacks: {
-      // 내용이 변경될 때마다 바이트 수 체크
       onChange: function (contents) {
         const currentByte = getByteLength(contents);
         const $byteCounter = $("#current-byte");
@@ -56,7 +55,6 @@ $(document).ready(function () {
           $byteCounter.css("color", currentByte > MAX_BYTE ? "red" : "black");
         }
       },
-      // 이미지 업로드 시 실행
       onImageUpload: function (files) {
         for (let i = 0; i < files.length; i++) {
           uploadImage(files[i]);
@@ -127,15 +125,15 @@ $(document).ready(function () {
         .replace(/<[^>]*>?/g, "")
         .replace(/&nbsp;/g, "")
         .trim();
-
-      const currentByte = getByteLength(contents);
-
-      if ($("#summernote").summernote("isEmpty") || pureText.length === 0) {
+      const hasImage = contents.includes("<img");
+      if (pureText.length === 0 && !hasImage) {
         e.preventDefault();
-        alert("내용을 입력해주세요!");
+        alert("사진 또는 내용을 입력해주세요!");
         $("#summernote").summernote("focus");
         return false;
       }
+
+      const currentByte = getByteLength(contents);
 
       if (currentByte > MAX_BYTE) {
         e.preventDefault();
@@ -214,6 +212,7 @@ $(document).ready(function () {
  */
 function uploadImage(file) {
   const formData = new FormData();
+
   formData.append("file", file);
   $.ajax({
     url: "/editBoard/image/upload",
@@ -228,5 +227,19 @@ function uploadImage(file) {
     error: function () {
       alert("이미지 업로드 중 오류가 발생했습니다.");
     },
+  });
+}
+const secretCheckbox = document.querySelector("#checkbox");
+const boardPwInput = document.querySelector("#board-pw");
+
+if (secretCheckbox && boardPwInput) {
+  secretCheckbox.addEventListener("change", function () {
+    if (secretCheckbox.checked) {
+      boardPwInput.disabled = false;
+      boardPwInput.focus();
+    } else {
+      boardPwInput.disabled = true;
+      boardPwInput.value = "";
+    }
   });
 }

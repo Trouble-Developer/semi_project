@@ -18,9 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import edu.kh.project.admin.controller.AdminController;
 import edu.kh.project.board.model.dto.Board;
-import edu.kh.project.board.model.dto.BoardImg;
 import edu.kh.project.board.model.service.BoardService;
 import edu.kh.project.board.model.service.EditBoardService;
 import edu.kh.project.common.util.Utility;
@@ -165,7 +163,7 @@ public class EditBoardController {
 		String rename = Utility.fileRename(file.getOriginalFilename());
 
 		File target = new File(boardImageFolderPath + rename);
-		file.transferTo(target);
+		file.transferTo(target); // 서버 컴퓨터에 이미지 저장
 
 		Map<String, Object> map = new HashMap<>();
 		map.put("url", boardImageWebPath + rename); // /upload/board/xxx.jpg 형식으로 서버컴퓨터에 저장
