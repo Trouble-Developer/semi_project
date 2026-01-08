@@ -22,6 +22,7 @@ function deleteReport(btn) {
     + "&reportType=" + reportType;
 }
 
+// 신고 유형 분류
 document.getElementById("reportTypeSelect").addEventListener("change", function () {
 
     const reportType = this.value;

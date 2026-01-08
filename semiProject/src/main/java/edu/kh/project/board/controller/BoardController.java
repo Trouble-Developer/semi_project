@@ -158,12 +158,7 @@ public class BoardController {
 			// 게시글 클릭 위치로 돌아가기 - 전재민
 			model.addAttribute("from", from);
 			
-			// 관리자 여부 판단 - 현동근
-			boolean isAdminView =
-			        loginMember != null && loginMember.getAuthority() == 2;
-
-			// View에 관리자 관점 여부 전달 - 현동근
-			model.addAttribute("isAdminView", isAdminView);
+			// 관리자 계정 로그인 관련 코드 삭제 - 현동근, 26.01.08 수정
 			
 			log.debug("memberNo = " + selectedBoard.getMemberNo());
 

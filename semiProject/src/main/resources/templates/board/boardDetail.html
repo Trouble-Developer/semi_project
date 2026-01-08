@@ -177,21 +177,25 @@
         <th:block
           th:unless="${from == 'mypage' or from == 'comments' or from == 'scrap'}"
         >
-          <!-- 목록 버튼 클릭 시 관리자면 해당 관리자 게시판으로, 일반 사용자면 해당 게시판으로 - 현동근 -->
-          <!-- 관리자 관점일 때 -->
-          <a
-            th:if="${isAdminView}"
-            th:href="
-              ${boardCode == 4} ? '/admin/notice' :
-              (${boardCode == 5} ? '/admin/support' :
-              (${boardCode == 6} ? '/admin/report' : '/'))"
-          >
-            목록
-          </a>
+          <!-- 목록 버튼 클릭 시 관리자 게시판에서 이동한 거면 관리자 전용으로, 일반 게시판에서 이동한 거면 해당 게시판으로 - 현동근, 26.01.08 수정 -->
+            <a th:if="${from == 'adminNotice'}"
+              th:href="@{/admin/notice}">
+              목록
+            </a>
 
-          <!-- 일반 사용자 관점일 때 -->
+            <a th:if="${from == 'adminSupport'}"
+              th:href="@{/admin/support}">
+              목록
+            </a>
+
+            <a th:if="${from == 'adminReport'}"
+              th:href="@{/admin/report}">
+              목록
+            </a>
+
+          <!-- 일반 사용자 관점일 때 - 관리자 계정 로그인일 때 경로를 보고 목록 버튼의 요청주소 구별을 위해 th:if문 한 줄 추가. - 현동근, 26.01.08 수정 -->
           <a
-            th:if="${!isAdminView}"
+            th:if="${from != 'adminNotice' and from != 'adminSupport' and from != 'adminReport'}" 
             th:href="@{/board/{boardCode}(boardCode=${boardCode}, cp=${cp})}"
           >
             목록

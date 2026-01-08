@@ -33,10 +33,13 @@
 
         <!-- 기존 공지사항 상세 페이지로 이동 (board 재사용) -->
         <td>
-          <a th:href="@{/board/4/{boardNo}(boardNo=${notice.boardNo})}"
-             th:text="${notice.boardTitle}">
-            공지사항 제목
-          </a>
+            <a th:href="@{/board/4/{boardNo}(
+                  boardNo=${notice.boardNo},
+                  from='adminNotice',
+                  cp=${pagination.currentPage})}"
+                th:text="${notice.boardTitle}">
+                공지사항 제목
+            </a>
         </td>
 
         <td th:text="${notice.memberNickname}">관리자</td>
