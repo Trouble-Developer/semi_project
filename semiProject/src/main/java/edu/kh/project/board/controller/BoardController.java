@@ -111,13 +111,7 @@ public class BoardController {
 			ra.addFlashAttribute("message", message);
 		} else {
 
-			// 본인이 작성한 글만 삭제 가능
-			if (loginMember != null && (loginMember.getMemberNo() != selectedBoard.getMemberNo())
-					&& loginMember.getAuthority() == 1) {
-				message = "본인이 작성한 글만 삭제할 수 있습니다.";
-				ra.addFlashAttribute("message", message);
-				return "redirect:/board/" + board.getBoardCode() + "?cp=" + cp;
-			}
+			
 			if (loginMember == null || loginMember.getMemberNo() != selectedBoard.getMemberNo()) {
 				Cookie[] cookies = req.getCookies();
 				Cookie c = null;

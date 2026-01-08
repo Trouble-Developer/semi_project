@@ -73,6 +73,7 @@ public class EditBoardController {
 
 		Board selectedBoard = boardService.freeBoardDetil(board);
 
+		
 		// 본인이 작성한 글만 삭제 가능
 		if (loginMember != null && (loginMember.getMemberNo() != selectedBoard.getMemberNo())
 				&& loginMember.getAuthority() == 1) {
