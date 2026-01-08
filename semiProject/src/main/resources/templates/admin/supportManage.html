@@ -26,9 +26,12 @@
         <td th:text="${s.boardNo}">1</td>
 
         <td>
-          <a th:href="@{/board/5/{boardNo}(boardNo=${s.boardNo}, cp=${pagination.currentPage})}"
-             th:text="${s.boardTitle}">
-            제목
+          <a th:href="@{/board/5/{boardNo}(
+                boardNo=${s.boardNo},
+                from='adminSupport',
+                cp=${pagination.currentPage})}"
+              th:text="${s.boardTitle}">
+              제목
           </a>
         </td>
 
