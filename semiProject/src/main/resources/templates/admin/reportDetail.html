@@ -44,11 +44,6 @@
         <th>신고자</th>
         <td th:text="${report.reporterNickname}"></td>
 
-        <th>처리 상태</th>
-        <td th:text="${report.reportStatus == 'N' ? '미처리' : '처리완료'}"></td>
-      </tr>
-
-      <tr>
         <th>신고 사유</th>
         <td colspan="3" th:text="${report.reportReason}"></td>
       </tr>
