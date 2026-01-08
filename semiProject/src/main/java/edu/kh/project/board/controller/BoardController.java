@@ -90,7 +90,17 @@ public class BoardController {
 			board.setMemberNo(loginMember.getMemberNo());
 		}
 		Board selectedBoard = service.freeBoardDetil(board);
+		// 본인이 작성한 글만 삭제 가능
 
+		if (board.getBoardCode() == 5 && "Y".equals(selectedBoard.getBoardLock())) {
+
+			if (loginMember == null
+					|| (selectedBoard.getMemberNo() != loginMember.getMemberNo() && loginMember.getAuthority() != 2)) {
+
+				ra.addFlashAttribute("message", "비밀글은 작성자만 확인할 수 있습니다.");
+				return "redirect:/board/" + board.getBoardCode() + "?cp=" + cp;
+			}
+		}
 		String path = null;
 		String message = null;
 
