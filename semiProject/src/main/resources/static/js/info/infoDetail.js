@@ -32,7 +32,12 @@ document.addEventListener("DOMContentLoaded", function() {
             const displayLocation = (coords) => {
                 new kakao.maps.Marker({ map, position: coords });
                 map.setCenter(coords);
-                setTimeout(() => map.relayout(), 300);
+                
+                // IP 주소 접속 시 지도가 잘리는 현상 방지 (리레이아웃)
+                setTimeout(() => {
+                    map.relayout();
+                    map.setCenter(coords);
+                }, 500);
             };
 
             geocoder.addressSearch(searchByAddr, (result, status) => {
@@ -88,7 +93,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const scrapBtn = document.getElementById("scrapBtn");
         if(scrapBtn) {
             scrapBtn.onclick = function() {
-                if (!loginMemberNo) {
+                if (typeof loginMemberNo === 'undefined' || loginMemberNo === null) {
                     alert("로그인 후 이용 가능한 기능입니다.");
                     return;
                 }
@@ -132,7 +137,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     };
 
-    /** [기능 4] 참여 여부 한글화 */
+    /** [기능 4] 참여 여부 */
     const handleTargetAt = () => {
         const updateUI = (el) => {
             if(!el) return;

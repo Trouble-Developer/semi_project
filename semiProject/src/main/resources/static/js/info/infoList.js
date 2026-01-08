@@ -2,7 +2,7 @@
  * [역할: 정보게시판 동적 UI 제어 및 필터 데이터 삽입]
  */
 document.addEventListener("DOMContentLoaded", () => {
-    
+
     // 1. [요소 획득]
     const sidoSelect = document.getElementById("sidoCode");
     const gugunSelect = document.getElementById("gugunCode");
@@ -12,7 +12,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const progrmNmInput = document.getElementsByName("progrmNm")[0];
     const infoSearchForm = document.getElementById("infoSearchForm");
 
-    // 현재 URL의 쿼리 스트링 분석 (검색 조건 유지를 위함)
     const urlParams = new URLSearchParams(window.location.search);
 
     // 2. [고정 데이터 정의]
@@ -59,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             const schSido = urlParams.get("schSido");
-            if(schSido && sidoSelect) {
+            if (schSido && sidoSelect) {
                 sidoSelect.value = schSido;
                 sidoSelect.dispatchEvent(new Event('change'));
             }
@@ -69,8 +68,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // 5. [지역 연동] 시도 변경 시 시군구 로드
     sidoSelect?.addEventListener("change", (e) => {
         const sidoCd = e.target.value;
-        if(gugunSelect) gugunSelect.innerHTML = '<option value="">전체(시군구)</option>';
-        
+        if (gugunSelect) gugunSelect.innerHTML = '<option value="">전체(시군구)</option>';
+
         if (!sidoCd) return;
 
         fetch(`/info/getSignList?sidoCd=${sidoCd}`)
@@ -80,9 +79,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     const opt = new Option(item.areaNm, item.areaCd);
                     gugunSelect?.appendChild(opt);
                 });
-                
+
                 const schSign = urlParams.get("schSign");
-                if(schSign && gugunSelect) {
+                if (schSign && gugunSelect) {
                     gugunSelect.value = schSign;
                 }
             })
@@ -117,22 +116,37 @@ document.addEventListener("DOMContentLoaded", () => {
      * [기능 8] 관리자 전용 공공데이터 동기화
      */
     const initAdminSync = () => {
+        
         const syncBtn = document.getElementById("refreshOpenApi");
+        
         if (syncBtn) {
             syncBtn.onclick = () => {
                 if (!confirm("1365 공공데이터와 동기화를 진행하시겠습니까?")) return;
+                
                 syncBtn.disabled = true;
+                const originalText = syncBtn.innerHTML;
                 syncBtn.innerHTML = '<i class="fa-solid fa-sync fa-spin"></i> 동기화 중...';
+
                 fetch("/info/api/refresh")
-                    .then(resp => resp.json())
-                    .then(result => {
-                        alert(`동기화 완료! 총 ${result}건의 데이터가 업데이트되었습니다.`);
-                        location.reload(); 
+                    .then(resp => {
+                        if(!resp.ok) throw new Error("동기화 실패");
+                        return resp.json(); 
                     })
-                    .catch(() => alert("데이터 수집 중 오류가 발생했습니다."))
+                    .then(result => {
+                        if (result > 0) {
+                            alert(`동기화 완료! 총 ${result}건의 데이터가 업데이트되었습니다.`);
+                        } else {
+                            alert("동기화 완료! 최신 데이터가 이미 반영되어 있습니다.");
+                        }
+                        location.reload();
+                    })
+                    .catch((err) => {
+                        console.error(err);
+                        alert("데이터 수집 중 오류가 발생했습니다.");
+                    })
                     .finally(() => {
                         syncBtn.disabled = false;
-                        syncBtn.innerHTML = "동기화";
+                        syncBtn.innerHTML = originalText;
                     });
             };
         }
@@ -140,21 +154,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /**
      * [기능 9] 검색 결과 알림창 표시 
-     * URL에 파라미터가 하나라도 있으면(즉, 검색 버튼을 눌러서 로드되었다면) 무조건 알림
      */
     const checkSearchAlert = () => {
         const countInput = document.getElementById("searchListCount");
-        
-        // URL의 쿼리 스트링(? 이후의 내용)이 비어있지 않으면 '검색 행위'로 간주
-        const hasParams = window.location.search.length > 0;
+        const urlParams = new URLSearchParams(window.location.search);
 
-        if (hasParams && countInput) {
+        const hasSearchCondition = Array.from(urlParams.keys()).some(key =>
+            key !== 'cp' && urlParams.get(key) !== ""
+        );
+
+        if (hasSearchCondition && countInput) {
             const count = countInput.value;
             alert(`총 ${count}건의 봉사 정보가 검색되었습니다.`);
         }
     };
 
-    initAdminSync();
+    initAdminSync();   
     checkSearchAlert();
 });
 
@@ -163,7 +178,7 @@ document.addEventListener("DOMContentLoaded", () => {
  */
 function checkOnlyOne(element) {
     const checkboxes = document.getElementsByName(element.name);
-    checkboxes.forEach((cb) => { 
-        if (cb !== element) cb.checked = false; 
+    checkboxes.forEach((cb) => {
+        if (cb !== element) cb.checked = false;
     });
 }

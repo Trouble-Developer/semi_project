@@ -5,8 +5,6 @@
     padding: 50px 20px;
 }
 
-/* [복구] 관리자 컨트롤 및 버튼 스타일 삭제됨 */
-
 /* [역할: 상단 제목 섹션] 프로그램 제목 배치 */
 .detail-header {
     border-bottom: 2px solid #333;
@@ -18,6 +16,7 @@
     color: #333;
     margin: 0;
     word-break: break-all;
+    font-weight: bold;
 }
 
 /* [역할: 활동 장소 제목 및 스크랩 버튼 레이아웃] */
@@ -31,6 +30,7 @@
     font-size: 18px;
     margin-bottom: 0;
     color: #333;
+    font-weight: bold;
 }
 
 /* [역할: 스크랩 버튼 스타일] */
@@ -48,7 +48,7 @@
     transition: transform 0.15s ease, color 0.15s ease;
 }
 #scrapBtn.scrapped i {
-    color: #ffcc00;
+    color: #ffcc00; /* 활성화 시 노란색 */
 }
 #scrapBtn:hover i {
     transform: scale(1.1);
@@ -88,12 +88,40 @@
 }
 .emp-text {
     font-weight: bold;
-    color: #ff7f00;
+    color: #ff5900; /* 팀 공통 컬러로 수정 */
 }
 
 /* [역할: 본문 상세 내용 박스] */
 .content-box { margin-top: 30px; }
-.content-text { line-height: 1.8; font-size: 16px; }
+
+/* 활동 상세 안내 문구 스타일 추가 */
+.simple-guide-text {
+    font-size: 14.5px;
+    color: #777;
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+.simple-guide-text b {
+    color: #ff5900;
+}
+
+.content-text { 
+    line-height: 1.8; 
+    font-size: 16px; 
+    padding: 20px 0;
+    border-top: 1px solid #eee;
+}
+
+/* 내용이 없을 때 스타일 추가 */
+.content-text-empty {
+    padding: 60px 0;
+    text-align: center;
+    color: #999;
+    font-size: 15px;
+    border-top: 1px solid #eee;
+    background-color: #fafafa;
+    border-radius: 8px;
+}
 
 /* [역할: 하단 목록/신청 버튼 영역] */
 .action-bar {
@@ -104,15 +132,30 @@
 }
 .btn-list, .btn-apply {
     padding: 12px 40px;
-    border-radius: 5px;
+    border-radius: 20px; /* 게시판 버튼과 통일 */
     cursor: pointer;
     font-size: 16px;
-    transition: opacity 0.2s;
+    transition: all 0.2s;
+    border: none;
+    font-weight: bold;
 }
-.btn-list { background: #888; color: white; border: none; }
-.btn-apply { background: #ff7f00; color: white; border: none; font-weight: bold; margin-left: 15px; }
+.btn-list { background: #888; color: white; }
+.btn-list:hover { background: #666; }
+
+.btn-apply { background: #ff5900; color: white; margin-left: 15px; }
+.btn-apply:hover { background: #ffd879; color: #ff5900; }
 
 /* [역할: 데이터 처리용 숨김 요소] */
 .hidden-data, #searchListCount {
     display: none !important;
+}
+
+/* 지도 에러 메시지 */
+.map-error-msg {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    background-color: #f5f5f5;
+    color: #999;
 }
