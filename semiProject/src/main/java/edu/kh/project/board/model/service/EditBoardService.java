@@ -10,6 +10,6 @@ public interface EditBoardService {
 
 	int boardDelete(int boardNo);
 
-	int boardUpdate(Map<String, Object> paramMap);
+	int boardUpdate(Map<String, Object> paramMap, MultipartFile thumbnail) throws Exception;
 
 }

@@ -1,6 +1,7 @@
 package edu.kh.project.board.model.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -16,9 +17,11 @@ import org.springframework.web.multipart.MultipartFile;
 import edu.kh.project.board.model.dto.BoardImg;
 import edu.kh.project.board.model.mapper.EditBoardMapper;
 import edu.kh.project.common.util.Utility;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
+@Slf4j
 public class EditBoardServiceImpl implements EditBoardService {
 	@Autowired
 	private EditBoardMapper mapper;
@@ -67,6 +70,7 @@ public class EditBoardServiceImpl implements EditBoardService {
 		int order = 1;
 		while (matcher.find()) {
 			String fullSrc = matcher.group(1);
+			log.debug("fullSrc = " + fullSrc);
 			String fileName = fullSrc.replace("/upload/board/", "");
 
 			BoardImg img = new BoardImg();
@@ -74,7 +78,7 @@ public class EditBoardServiceImpl implements EditBoardService {
 			img.setImgPath("/upload/board/");
 			img.setImgRename(fileName);
 			img.setImgOriginal(fileName);
-			img.setImgOrder(order++); // 본문 이미지는 1, 2, 3...
+			img.setImgOrder(order++); 
 			imgList.add(img);
 		}
 
@@ -92,8 +96,58 @@ public class EditBoardServiceImpl implements EditBoardService {
 	}
 
 	@Override
-	public int boardUpdate(Map<String, Object> paramMap) {
-		return mapper.boardUpdate(paramMap);
+	public int boardUpdate(Map<String, Object> paramMap, MultipartFile thumbnail) throws Exception {
+
+		int result = mapper.boardUpdate(paramMap);
+
+		if (result > 0) { // 수정 성공 시 이미지 처리
+			int boardNo = Integer.parseInt(paramMap.get("boardNo").toString());
+
+			List<BoardImg> imgList = new ArrayList<>();
+
+			if (thumbnail != null && !thumbnail.isEmpty()) {
+				String rename = Utility.fileRename(thumbnail.getOriginalFilename());
+				thumbnail.transferTo(new java.io.File(boardImageFolderPath + rename));
+
+				BoardImg img = new BoardImg();
+				img.setBoardNo(boardNo);
+				img.setImgPath(boardImageWebPath);
+				img.setImgRename(rename);
+				img.setImgOriginal(thumbnail.getOriginalFilename());
+				img.setImgOrder(0); // 썸네일은 0번
+				imgList.add(img);
+
+				Map<String, Object> delMap = new HashMap<>();
+				delMap.put("boardNo", boardNo);
+				delMap.put("imgOrder", 0);
+			}
+
+			String content = (String) paramMap.get("content");
+			Pattern pattern = Pattern.compile("<img[^>]+src=\"(/upload/board/[^\"\\s>]+)\"");
+			Matcher matcher = pattern.matcher(content);
+
+			int order = 1;
+			while (matcher.find()) {
+				String fullSrc = matcher.group(1);
+				String fileName = fullSrc.replace("/upload/board/", "");
+
+				BoardImg img = new BoardImg();
+				img.setBoardNo(boardNo);
+				img.setImgPath("/upload/board/");
+				img.setImgRename(fileName);
+				img.setImgOriginal(fileName);
+				img.setImgOrder(order++);
+				imgList.add(img);
+			}
+
+			mapper.deleteBoardImg(boardNo);
+
+			if (!imgList.isEmpty()) {
+				result = mapper.insertUploadList(imgList);
+			}
+		}
+
+		return result;
 	}
 
 }

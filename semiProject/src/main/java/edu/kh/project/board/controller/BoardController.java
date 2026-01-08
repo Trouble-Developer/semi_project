@@ -90,7 +90,17 @@ public class BoardController {
 			board.setMemberNo(loginMember.getMemberNo());
 		}
 		Board selectedBoard = service.freeBoardDetil(board);
+		// 본인이 작성한 글만 삭제 가능
 
+		if (board.getBoardCode() == 5 && "Y".equals(selectedBoard.getBoardLock())) {
+
+			if (loginMember == null
+					|| (selectedBoard.getMemberNo() != loginMember.getMemberNo() && loginMember.getAuthority() != 2)) {
+
+				ra.addFlashAttribute("message", "비밀글은 작성자만 확인할 수 있습니다.");
+				return "redirect:/board/" + board.getBoardCode() + "?cp=" + cp;
+			}
+		}
 		String path = null;
 		String message = null;
 
@@ -101,15 +111,17 @@ public class BoardController {
 			ra.addFlashAttribute("message", message);
 		} else {
 
+			
 			if (loginMember == null || loginMember.getMemberNo() != selectedBoard.getMemberNo()) {
 				Cookie[] cookies = req.getCookies();
-
 				Cookie c = null;
-
-				for (Cookie temp : cookies) {
-					if (temp.getName().equals("readBoardNo")) {
-						c = temp;
-						break;
+				// 머지 테스트
+				if (cookies != null) {
+					for (Cookie temp : cookies) {
+						if (temp.getName().equals("readBoardNo")) {
+							c = temp;
+							break;
+						}
 					}
 				}
 
@@ -118,27 +130,24 @@ public class BoardController {
 				if (c == null) {
 					c = new Cookie("readBoardNo", "[" + board.getBoardNo() + "]");
 					result = service.updateReadCount(board.getBoardNo());
-
 				} else {
 					if (c.getValue().indexOf("[" + board.getBoardNo() + "]") == -1) {
 						c.setValue(c.getValue() + "[" + board.getBoardNo() + "]");
 						result = service.updateReadCount(board.getBoardNo());
 					}
 				}
+
 				if (result > 0) {
 					board.setReadCount(result);
-
 					c.setPath("/");
 					LocalDateTime now = LocalDateTime.now();
 					LocalDateTime nextDayMidnight = now.plusDays(1).withHour(0).withMinute(0).withSecond(0).withNano(0);
 					long secondsUntilNextDay = Duration.between(now, nextDayMidnight).getSeconds();
 
 					c.setMaxAge((int) secondsUntilNextDay);
-
 					resp.addCookie(c);
 					selectedBoard.setReadCount(result);
 				}
-
 			}
 
 			Board prevBoard = service.getPrevBoard(board);
@@ -154,17 +163,12 @@ public class BoardController {
 			model.addAttribute("boardInfo", selectedBoard);
 			model.addAttribute("boardCode", board.getBoardCode());
 			model.addAttribute("cp", cp);
-			
+
 			// 게시글 클릭 위치로 돌아가기 - 전재민
 			model.addAttribute("from", from);
-			
-			// 관리자 여부 판단 - 현동근
-			boolean isAdminView =
-			        loginMember != null && loginMember.getAuthority() == 2;
 
-			// View에 관리자 관점 여부 전달 - 현동근
-			model.addAttribute("isAdminView", isAdminView);
-			
+			// 관리자 계정 로그인 관련 코드 삭제 - 현동근, 26.01.08 수정
+
 			log.debug("memberNo = " + selectedBoard.getMemberNo());
 
 			log.debug("board = " + selectedBoard);

@@ -18,9 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import edu.kh.project.admin.controller.AdminController;
 import edu.kh.project.board.model.dto.Board;
-import edu.kh.project.board.model.dto.BoardImg;
 import edu.kh.project.board.model.service.BoardService;
 import edu.kh.project.board.model.service.EditBoardService;
 import edu.kh.project.common.util.Utility;
@@ -75,6 +73,7 @@ public class EditBoardController {
 
 		Board selectedBoard = boardService.freeBoardDetil(board);
 
+		
 		// 본인이 작성한 글만 삭제 가능
 		if (loginMember != null && (loginMember.getMemberNo() != selectedBoard.getMemberNo())
 				&& loginMember.getAuthority() == 1) {
@@ -100,14 +99,14 @@ public class EditBoardController {
 	@GetMapping("{boardCode:[0-9]+}/insert")
 	public String insertForm(@PathVariable("boardCode") int boardCode,
 			@SessionAttribute(value = "loginMember", required = false) Member loginMember, RedirectAttributes ra,
-			Model model) {
+			@RequestParam(value = "cp", required = false, defaultValue = "1") int cp, Model model) {
 		String message = null;
 
 		if (boardCode == 4 && loginMember.getAuthority() == 1) {
 			message = "공지사항은 관리자만이 작성할 수 있습니다.";
 			ra.addFlashAttribute("message", message);
-
-			return "redirect:/";
+			// http://localhost/board/4?cp=4
+			return "redirect:/board/" + boardCode + "?cp=" + cp;
 		}
 		if (loginMember == null) {
 			ra.addFlashAttribute("message", "로그인 후 이용해주세요");
@@ -165,7 +164,7 @@ public class EditBoardController {
 		String rename = Utility.fileRename(file.getOriginalFilename());
 
 		File target = new File(boardImageFolderPath + rename);
-		file.transferTo(target);
+		file.transferTo(target); // 서버 컴퓨터에 이미지 저장
 
 		Map<String, Object> map = new HashMap<>();
 		map.put("url", boardImageWebPath + rename); // /upload/board/xxx.jpg 형식으로 서버컴퓨터에 저장
@@ -206,14 +205,13 @@ public class EditBoardController {
 
 	@PostMapping("{boardCode:[0-9]+}/{boardNo:[0-9]+}/update")
 	public String boardUpdate(@PathVariable("boardCode") int boardCode, @PathVariable("boardNo") int boardNo,
-			Model model, @SessionAttribute(value = "loginMember", required = false) Member loginMember,
-			RedirectAttributes ra, @RequestParam Map<String, Object> paramMap) {
-
-		String message = null;
+			@RequestParam Map<String, Object> paramMap,
+			@RequestParam(value = "thumbnail", required = false) MultipartFile thumbnail, // 추가
+			@SessionAttribute(value = "loginMember", required = false) Member loginMember, RedirectAttributes ra)
+			throws Exception { // throws Exception 추가
 
 		if (loginMember == null) {
-			message = "로그인 후 이용해주세요.";
-			ra.addFlashAttribute("message", message);
+			ra.addFlashAttribute("message", "로그인 후 이용해주세요.");
 			return "redirect:/member/login";
 		}
 
@@ -223,14 +221,12 @@ public class EditBoardController {
 		paramMap.put("content", paramMap.get("editordata"));
 		paramMap.put("boardLock", paramMap.get("checkbox") != null ? "Y" : "N");
 
-		int result = service.boardUpdate(paramMap);
+		// 서비스 호출 시 thumbnail 전달 (Service 인터페이스/구현체 수정 필요)
+		int result = service.boardUpdate(paramMap, thumbnail);
 
-		if (result > 0) {
-			message = "게시글이 수정되었습니다.";
-		} else {
-			message = "게시글 수정 실패..";
-		}
+		String message = result > 0 ? "게시글이 수정되었습니다." : "게시글 수정 실패..";
 		ra.addFlashAttribute("message", message);
+
 		return "redirect:/board/" + boardCode + "/" + boardNo;
 	}
 }
