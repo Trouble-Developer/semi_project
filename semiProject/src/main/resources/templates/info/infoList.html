@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>봉사 참여 정보</title>
     <link rel="stylesheet" th:href="@{/css/info/infoList.css}">
+    <script src="https://kit.fontawesome.com/c0777c617e.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -139,7 +140,7 @@
             </div>
         </div>
 
-        <ul class="pagination" th:if="${not #lists.isEmpty(infoList)}">
+        <div id="page" th:if="${not #lists.isEmpty(infoList)}">
             <th:block th:with="queryStr='schSido=' + ${param.schSido != null ? param.schSido : ''} + 
                                        '&schSign=' + ${param.schSign != null ? param.schSign : ''} + 
                                        '&actRm=' + ${param.actRm != null ? param.actRm : ''} + 
@@ -147,21 +148,24 @@
                                        '&nanmmByNm=' + ${param.nanmmByNm != null ? param.nanmmByNm : ''} + 
                                        '&bgnde=' + ${param.bgnde != null ? param.bgnde : ''} + 
                                        '&endde=' + ${param.endde != null ? param.endde : ''} + 
-                                       '&searchTime=' + ${param.searchTime != null ? param.searchTime : ''}">
+                                       '&searchTime=' + ${param.searchTime != null ? param.searchTime : ''} +
+                                       '&volsType=' + ${param.volsType != null ? param.volsType : ''}">
+                <ul>
+                    <li><a th:href="|/info/listPage?cp=1&${queryStr}|" class="page-btn">&lt;&lt;</a></li>
+                    <li><a th:href="|/info/listPage?cp=${pagination.prevPage}&${queryStr}|" class="page-btn">&lt;</a></li>
 
-                <li><a th:href="|/info/listPage?cp=1&${queryStr}|">&lt;&lt;</a></li>
-                <li><a th:href="|/info/listPage?cp=${pagination.prevPage}&${queryStr}|">&lt;</a></li>
+                    <th:block th:each="i : ${#numbers.sequence(pagination.startPage, pagination.endPage)}">
+                        <li>
+                            <a th:href="|/info/listPage?cp=${i}&${queryStr}|" th:text="${i}" 
+                               class="page-btn" th:classappend="${i == pagination.currentPage} ? 'curr-page'">1</a>
+                        </li>
+                    </th:block>
 
-                <th:block th:each="i : ${#numbers.sequence(pagination.startPage, pagination.endPage)}">
-                    <li th:classappend="${i == pagination.currentPage} ? 'active'">
-                        <a th:href="|/info/listPage?cp=${i}&${queryStr}|" th:text="${i}">1</a>
-                    </li>
-                </th:block>
-
-                <li><a th:href="|/info/listPage?cp=${pagination.nextPage}&${queryStr}|">&gt;</a></li>
-                <li><a th:href="|/info/listPage?cp=${pagination.maxPage}&${queryStr}|">&gt;&gt;</a></li>
+                    <li><a th:href="|/info/listPage?cp=${pagination.nextPage}&${queryStr}|" class="page-btn">&gt;</a></li>
+                    <li><a th:href="|/info/listPage?cp=${pagination.maxPage}&${queryStr}|" class="page-btn">&gt;&gt;</a></li>
+                </ul>
             </th:block>
-        </ul>
+        </div>
 
         <input type="hidden" id="searchListCount" th:if="${pagination != null}" th:value="${pagination.listCount}">
     </main>
@@ -169,5 +173,4 @@
     <th:block th:replace="~{common/footer}"></th:block>
     <script th:src="@{/js/info/infoList.js}"></script>
 </body>
-
 </html>

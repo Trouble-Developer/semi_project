@@ -125,7 +125,6 @@ public class InfoBoardController {
     
     /**
      * [기능: 1365 데이터 동기화 (JS 비동기 통신용)]
-     * 지난번과 동일하게 비동기(Fetch) 방식으로 호출되어 
      * 서비스의 syncFrom1365를 실행하고 결과 건수를 반환합니다.
      */
     @ResponseBody
