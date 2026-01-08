@@ -9,7 +9,6 @@ import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,8 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 public class EditBoardServiceImpl implements EditBoardService {
 	@Autowired
 	private EditBoardMapper mapper;
-	@Autowired
-	private BCryptPasswordEncoder bcrypt;
 
 	@Value("${board.image.web-path}")
 	private String boardImageWebPath;
@@ -36,22 +33,20 @@ public class EditBoardServiceImpl implements EditBoardService {
 
 	@Override
 	public int boardInsert(Map<String, Object> map, MultipartFile thumbnail) throws Exception {
-		if ("Y".equals(map.get("boardLock"))) {
-			map.put("encPw", bcrypt.encode((CharSequence) map.get("boardPw")));
-		} else {
-			map.put("encPw", null);
-		}
+		// 비밀번호를 사용하지 않으므로 null 세팅 (IllegalArgumentException 방지)
+		map.put("encPw", null);
 
 		int result = mapper.boardInsert(map);
+
 		if (result == 0)
 			return 0;
 
 		int boardNo = Integer.parseInt(map.get("boardNo").toString());
 		List<BoardImg> imgList = new ArrayList<>();
 
+		// 썸네일 처리
 		if (thumbnail != null && !thumbnail.isEmpty()) {
 			String rename = Utility.fileRename(thumbnail.getOriginalFilename());
-
 			thumbnail.transferTo(new java.io.File(boardImageFolderPath + rename));
 
 			BoardImg img = new BoardImg();
@@ -59,10 +54,11 @@ public class EditBoardServiceImpl implements EditBoardService {
 			img.setImgPath(boardImageWebPath);
 			img.setImgRename(rename);
 			img.setImgOriginal(thumbnail.getOriginalFilename());
-			img.setImgOrder(0); // 썸네일은 무조건 0번
+			img.setImgOrder(0);
 			imgList.add(img);
 		}
 
+		// 본문 이미지 추출
 		String content = (String) map.get("content");
 		Pattern pattern = Pattern.compile("<img[^>]+src=\"(/upload/board/[^\"\\s>]+)\"");
 		Matcher matcher = pattern.matcher(content);
@@ -70,7 +66,6 @@ public class EditBoardServiceImpl implements EditBoardService {
 		int order = 1;
 		while (matcher.find()) {
 			String fullSrc = matcher.group(1);
-			log.debug("fullSrc = " + fullSrc);
 			String fileName = fullSrc.replace("/upload/board/", "");
 
 			BoardImg img = new BoardImg();
@@ -78,7 +73,7 @@ public class EditBoardServiceImpl implements EditBoardService {
 			img.setImgPath("/upload/board/");
 			img.setImgRename(fileName);
 			img.setImgOriginal(fileName);
-			img.setImgOrder(order++); 
+			img.setImgOrder(order++);
 			imgList.add(img);
 		}
 
@@ -98,13 +93,14 @@ public class EditBoardServiceImpl implements EditBoardService {
 	@Override
 	public int boardUpdate(Map<String, Object> paramMap, MultipartFile thumbnail) throws Exception {
 
+		// 1. 게시글 기본 정보 및 봉사 정보 업데이트
 		int result = mapper.boardUpdate(paramMap);
 
-		if (result > 0) { // 수정 성공 시 이미지 처리
+		if (result > 0) {
 			int boardNo = Integer.parseInt(paramMap.get("boardNo").toString());
-
 			List<BoardImg> imgList = new ArrayList<>();
 
+			// 2. 썸네일 업데이트
 			if (thumbnail != null && !thumbnail.isEmpty()) {
 				String rename = Utility.fileRename(thumbnail.getOriginalFilename());
 				thumbnail.transferTo(new java.io.File(boardImageFolderPath + rename));
@@ -114,14 +110,11 @@ public class EditBoardServiceImpl implements EditBoardService {
 				img.setImgPath(boardImageWebPath);
 				img.setImgRename(rename);
 				img.setImgOriginal(thumbnail.getOriginalFilename());
-				img.setImgOrder(0); // 썸네일은 0번
+				img.setImgOrder(0);
 				imgList.add(img);
-
-				Map<String, Object> delMap = new HashMap<>();
-				delMap.put("boardNo", boardNo);
-				delMap.put("imgOrder", 0);
 			}
 
+			// 3. 본문 이미지 추출
 			String content = (String) paramMap.get("content");
 			Pattern pattern = Pattern.compile("<img[^>]+src=\"(/upload/board/[^\"\\s>]+)\"");
 			Matcher matcher = pattern.matcher(content);
@@ -140,14 +133,12 @@ public class EditBoardServiceImpl implements EditBoardService {
 				imgList.add(img);
 			}
 
+			// 4. 이미지 기록 갱신 (중복 변수 선언 result 삭제함)
 			mapper.deleteBoardImg(boardNo);
-
 			if (!imgList.isEmpty()) {
-				result = mapper.insertUploadList(imgList);
+				mapper.insertUploadList(imgList);
 			}
 		}
-
 		return result;
 	}
-
 }
