@@ -101,6 +101,13 @@ public class BoardController {
 			ra.addFlashAttribute("message", message);
 		} else {
 
+			// 본인이 작성한 글만 삭제 가능
+			if (loginMember != null && (loginMember.getMemberNo() != selectedBoard.getMemberNo())
+					&& loginMember.getAuthority() == 1) {
+				message = "본인이 작성한 글만 삭제할 수 있습니다.";
+				ra.addFlashAttribute("message", message);
+				return "redirect:/board/" + board.getBoardCode() + "?cp=" + cp;
+			}
 			if (loginMember == null || loginMember.getMemberNo() != selectedBoard.getMemberNo()) {
 				Cookie[] cookies = req.getCookies();
 
@@ -154,12 +161,12 @@ public class BoardController {
 			model.addAttribute("boardInfo", selectedBoard);
 			model.addAttribute("boardCode", board.getBoardCode());
 			model.addAttribute("cp", cp);
-			
+
 			// 게시글 클릭 위치로 돌아가기 - 전재민
 			model.addAttribute("from", from);
-			
+
 			// 관리자 계정 로그인 관련 코드 삭제 - 현동근, 26.01.08 수정
-			
+
 			log.debug("memberNo = " + selectedBoard.getMemberNo());
 
 			log.debug("board = " + selectedBoard);

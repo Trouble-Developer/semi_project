@@ -17,9 +17,11 @@ import org.springframework.web.multipart.MultipartFile;
 import edu.kh.project.board.model.dto.BoardImg;
 import edu.kh.project.board.model.mapper.EditBoardMapper;
 import edu.kh.project.common.util.Utility;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
+@Slf4j
 public class EditBoardServiceImpl implements EditBoardService {
 	@Autowired
 	private EditBoardMapper mapper;
@@ -68,6 +70,7 @@ public class EditBoardServiceImpl implements EditBoardService {
 		int order = 1;
 		while (matcher.find()) {
 			String fullSrc = matcher.group(1);
+			log.debug("fullSrc = " + fullSrc);
 			String fileName = fullSrc.replace("/upload/board/", "");
 
 			BoardImg img = new BoardImg();
@@ -75,7 +78,7 @@ public class EditBoardServiceImpl implements EditBoardService {
 			img.setImgPath("/upload/board/");
 			img.setImgRename(fileName);
 			img.setImgOriginal(fileName);
-			img.setImgOrder(order++); // 본문 이미지는 1, 2, 3...
+			img.setImgOrder(order++); 
 			imgList.add(img);
 		}
 
@@ -92,7 +95,6 @@ public class EditBoardServiceImpl implements EditBoardService {
 		return mapper.boardDelete(boardNo);
 	}
 
-	// edu.kh.project.board.model.service.EditBoardServiceImpl
 	@Override
 	public int boardUpdate(Map<String, Object> paramMap, MultipartFile thumbnail) throws Exception {
 

@@ -18,7 +18,7 @@ public class Board {
 	private int readCount;
 	private char boardDelFl;
 	private String boardPw;
-	private char boardLock;
+	private String boardLock;
 	private int boardCode;
 	private int memberNo;
 	
