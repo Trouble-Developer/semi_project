@@ -3,7 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title
+      th:each="board : ${application.boardTypeList}"
+      th:if="${board.boardCode == boardCode}"
+      th:text="${board.boardName}"
+    >
+      게시판 이름
+    </title>
     <link rel="stylesheet" href="/css/common/common.css" />
     <link rel="stylesheet" href="/css/board/boardDetail.css" />
     <link rel="stylesheet" href="/css/board/comment.css" />
@@ -159,43 +165,36 @@
       </div>
 
       <div id="list-btn">
-
         <!-- from 값에 따라 목록 버튼 경로 변경(마이페이지 - 전재민) -->
         <a th:if="${from == 'mypage'}" th:href="@{/mypage/posts(cp=${cp})}"
           >목록</a
         >
-        <a
-          th:if="${from == 'comments'}"
-          th:href="@{/mypage/comments(cp=${cp})}"
+        <a th:if="${from == 'comments'}" th:href="@{/mypage/comments(cp=${cp})}"
           >목록</a
         >
         <a th:if="${from == 'scrap'}" th:href="@{/mypage/scraps(cp=${cp})}"
           >목록</a
-
         >
 
         <th:block
           th:unless="${from == 'mypage' or from == 'comments' or from == 'scrap'}"
         >
           <!-- 목록 버튼 클릭 시 관리자 게시판에서 이동한 거면 관리자 전용으로, 일반 게시판에서 이동한 거면 해당 게시판으로 - 현동근, 26.01.08 수정 -->
-            <a th:if="${from == 'adminNotice'}"
-              th:href="@{/admin/notice}">
-              목록
-            </a>
+          <a th:if="${from == 'adminNotice'}" th:href="@{/admin/notice}">
+            목록
+          </a>
 
-            <a th:if="${from == 'adminSupport'}"
-              th:href="@{/admin/support}">
-              목록
-            </a>
+          <a th:if="${from == 'adminSupport'}" th:href="@{/admin/support}">
+            목록
+          </a>
 
-            <a th:if="${from == 'adminReport'}"
-              th:href="@{/admin/report}">
-              목록
-            </a>
+          <a th:if="${from == 'adminReport'}" th:href="@{/admin/report}">
+            목록
+          </a>
 
           <!-- 일반 사용자 관점일 때 - 관리자 계정 로그인일 때 경로를 보고 목록 버튼의 요청주소 구별을 위해 th:if문 한 줄 추가. - 현동근, 26.01.08 수정 -->
           <a
-            th:if="${from != 'adminNotice' and from != 'adminSupport' and from != 'adminReport'}" 
+            th:if="${from != 'adminNotice' and from != 'adminSupport' and from != 'adminReport'}"
             th:href="@{/board/{boardCode}(boardCode=${boardCode}, cp=${cp})}"
           >
             목록

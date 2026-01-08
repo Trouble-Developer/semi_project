@@ -3,7 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title th:each="board : ${application.boardTypeList}" 
+       th:if="${board.boardCode == boardCode}" 
+       th:text="${board.boardName}">게시판 이름</title>
     <link rel="stylesheet" href="/css/common/common.css" />
     <link rel="stylesheet" href="/css/board/boardList.css" />
   </head>
