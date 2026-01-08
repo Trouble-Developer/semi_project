@@ -111,7 +111,7 @@ public class BoardController {
 			if (loginMember == null || loginMember.getMemberNo() != selectedBoard.getMemberNo()) {
 				Cookie[] cookies = req.getCookies();
 				Cookie c = null;
-
+				// 머지 테스트
 				if (cookies != null) {
 					for (Cookie temp : cookies) {
 						if (temp.getName().equals("readBoardNo")) {
