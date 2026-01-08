@@ -6,15 +6,17 @@ function getByteLength(s) {
   return new TextEncoder().encode(s).length;
 }
 
-$(document).ready(function () {
+// document.ready 대신 DOMContentLoaded 사용
+document.addEventListener("DOMContentLoaded", function () {
   const MAX_BYTE = 4000;
   const profileImg = document.getElementById("profileImg");
   const imageInput = document.getElementById("imageInput");
   const deleteImage = document.getElementById("deleteImage");
   const defaultImageUrl = `/images/footer-logo.png`;
+  const summernoteElement = document.getElementById("summernote");
 
-  // Summernote 초기화
-  $("#summernote").summernote({
+  // 1. Summernote 초기화 (라이브러리 특성상 jQuery 객체 필요)
+  $(summernoteElement).summernote({
     width: 1130,
     height: 500,
     lang: "ko-KR",
@@ -44,10 +46,10 @@ $(document).ready(function () {
     callbacks: {
       onChange: function (contents) {
         const currentByte = getByteLength(contents);
-        const $byteCounter = $("#current-byte");
-        if ($byteCounter.length > 0) {
-          $byteCounter.text(currentByte);
-          $byteCounter.css("color", currentByte > MAX_BYTE ? "red" : "black");
+        const byteCounter = document.getElementById("current-byte");
+        if (byteCounter) {
+          byteCounter.innerText = currentByte;
+          byteCounter.style.color = currentByte > MAX_BYTE ? "red" : "black";
         }
       },
       onImageUpload: function (files) {
@@ -65,13 +67,11 @@ $(document).ready(function () {
     }
   }
 
-  // -------------------------------------------------------------------------
-  // 폼 제출 시 유효성 검사 (비밀번호 로직 제거 버전)
-  // -------------------------------------------------------------------------
+  // 2. 폼 제출 유효성 검사
   const form = document.querySelector("#summernote-write");
   if (form) {
     form.addEventListener("submit", (e) => {
-      // 1. 제목 검사
+      // 제목 검사
       const boardTitle = document.querySelector("#board-title");
       if (boardTitle.value.trim() === "") {
         e.preventDefault();
@@ -80,9 +80,7 @@ $(document).ready(function () {
         return false;
       }
 
-      // [삭제됨] 비밀글 체크 시 비밀번호 검사 로직은 이제 필요 없음 (단순 Y/N 처리)
-
-      // 2. 봉사 기간 유효성 검사 (시작일/종료일 세트 체크)
+      // 봉사 기간 유효성 검사
       const sdate = document.querySelector("#sdate");
       const edate = document.querySelector("#edate");
       if (sdate && edate) {
@@ -97,8 +95,7 @@ $(document).ready(function () {
           alert(
             "봉사 기간을 설정하시려면 시작 날짜와 종료 날짜를 모두 입력하셔야 합니다."
           );
-          if (startVal === "") sdate.focus();
-          else edate.focus();
+          startVal === "" ? sdate.focus() : edate.focus();
           return false;
         }
 
@@ -110,23 +107,23 @@ $(document).ready(function () {
         }
       }
 
-      // 3. 내용 검사 (텍스트가 없어도 이미지가 있으면 허용)
-      const contents = $("#summernote").summernote("code");
+      // 내용 검사 (Summernote API 호출은 jQuery 방식 유지)
+      const contents = $(summernoteElement).summernote("code");
       const pureText = contents
         .replace(/<[^>]*>?/g, "")
         .replace(/&nbsp;/g, "")
         .trim();
 
-      const hasImage = contents.includes("<img"); // 에디터 내 이미지 포함 여부
+      const hasImage = contents.includes("<img");
 
       if (pureText.length === 0 && !hasImage) {
         e.preventDefault();
         alert("내용 또는 사진을 입력해주세요!");
-        $("#summernote").summernote("focus");
+        $(summernoteElement).summernote("focus");
         return false;
       }
 
-      // 4. 용량(바이트) 검사
+      // 용량 검사
       const currentByte = getByteLength(contents);
       if (currentByte > MAX_BYTE) {
         e.preventDefault();
@@ -138,7 +135,7 @@ $(document).ready(function () {
     });
   }
 
-  // 비밀글 체크박스 노출 제어 (문의게시판 등)
+  // 비밀글 체크박스 제어
   const secretWrapper = document.querySelector("#secret-wrapper");
   function toggleSecret() {
     if (secretWrapper) {
@@ -153,10 +150,9 @@ $(document).ready(function () {
   }
   toggleSecret();
 
-  // 썸네일 이미지 업로드 미리보기 로직
+  // 썸네일 업로드 로직 (이벤트 바인딩 변경)
   if (imageInput) {
     let previousImage = profileImg ? profileImg.src : defaultImageUrl;
-    let previousFile = null;
 
     imageInput.addEventListener("change", () => {
       const file = imageInput.files[0];
@@ -165,7 +161,6 @@ $(document).ready(function () {
           const newImageUrl = URL.createObjectURL(file);
           profileImg.src = newImageUrl;
           previousImage = newImageUrl;
-          previousFile = file;
           if (deleteImage) deleteImage.style.display = "flex";
         } else {
           alert("5MB 이하의 이미지를 선택해주세요!");
@@ -179,7 +174,6 @@ $(document).ready(function () {
       deleteImage.addEventListener("click", () => {
         imageInput.value = "";
         profileImg.src = defaultImageUrl;
-        previousFile = null;
         previousImage = defaultImageUrl;
         deleteImage.style.display = "none";
       });
@@ -188,22 +182,27 @@ $(document).ready(function () {
 });
 
 /**
- * 에디터 내 본문 이미지 업로드 (AJAX)
+ * 3. 에디터 내 본문 이미지 업로드 ($.ajax를 fetch API로 변경)
  */
-function uploadImage(file) {
+async function uploadImage(file) {
   const formData = new FormData();
   formData.append("file", file);
-  $.ajax({
-    url: "/editBoard/image/upload",
-    type: "POST",
-    data: formData,
-    contentType: false,
-    processData: false,
-    success: function (res) {
+
+  try {
+    const response = await fetch("/editBoard/image/upload", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (response.ok) {
+      const res = await response.json();
+      // Summernote 내부 메서드 실행은 jQuery 객체 필요
       $("#summernote").summernote("insertImage", res.url);
-    },
-    error: function () {
-      alert("이미지 업로드 중 오류가 발생했습니다.");
-    },
-  });
+    } else {
+      throw new Error("서버 응답 오류");
+    }
+  } catch (error) {
+    console.error(error);
+    alert("이미지 업로드 중 오류가 발생했습니다.");
+  }
 }
