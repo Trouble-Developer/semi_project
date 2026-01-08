@@ -147,7 +147,7 @@
     <!-- 비밀번호 재설정 -->
     <!-- ===================================== -->
     
-    <update id="resetPw">
+    <update id="changePw">
         UPDATE MEMBER
         SET MEMBER_PW = #{encPw}
         WHERE MEMBER_ID = #{memberId}
