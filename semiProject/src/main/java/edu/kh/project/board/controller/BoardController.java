@@ -110,13 +110,14 @@ public class BoardController {
 			}
 			if (loginMember == null || loginMember.getMemberNo() != selectedBoard.getMemberNo()) {
 				Cookie[] cookies = req.getCookies();
-
 				Cookie c = null;
 
-				for (Cookie temp : cookies) {
-					if (temp.getName().equals("readBoardNo")) {
-						c = temp;
-						break;
+				if (cookies != null) {
+					for (Cookie temp : cookies) {
+						if (temp.getName().equals("readBoardNo")) {
+							c = temp;
+							break;
+						}
 					}
 				}
 
@@ -125,27 +126,24 @@ public class BoardController {
 				if (c == null) {
 					c = new Cookie("readBoardNo", "[" + board.getBoardNo() + "]");
 					result = service.updateReadCount(board.getBoardNo());
-
 				} else {
 					if (c.getValue().indexOf("[" + board.getBoardNo() + "]") == -1) {
 						c.setValue(c.getValue() + "[" + board.getBoardNo() + "]");
 						result = service.updateReadCount(board.getBoardNo());
 					}
 				}
+
 				if (result > 0) {
 					board.setReadCount(result);
-
 					c.setPath("/");
 					LocalDateTime now = LocalDateTime.now();
 					LocalDateTime nextDayMidnight = now.plusDays(1).withHour(0).withMinute(0).withSecond(0).withNano(0);
 					long secondsUntilNextDay = Duration.between(now, nextDayMidnight).getSeconds();
 
 					c.setMaxAge((int) secondsUntilNextDay);
-
 					resp.addCookie(c);
 					selectedBoard.setReadCount(result);
 				}
-
 			}
 
 			Board prevBoard = service.getPrevBoard(board);
