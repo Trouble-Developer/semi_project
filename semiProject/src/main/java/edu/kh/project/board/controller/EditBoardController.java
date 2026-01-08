@@ -221,6 +221,8 @@ public class EditBoardController {
 		paramMap.put("content", paramMap.get("editordata"));
 		paramMap.put("boardLock", paramMap.get("checkbox") != null ? "Y" : "N");
 
+		log.info("paramMap : {}", paramMap);
+		
 		// 서비스 호출 시 thumbnail 전달 (Service 인터페이스/구현체 수정 필요)
 		int result = service.boardUpdate(paramMap, thumbnail);
 
