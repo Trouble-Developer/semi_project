@@ -21,50 +21,48 @@ document.addEventListener("DOMContentLoaded", function() {
         const searchByAddr = `${sido} ${sign} ${rawAddr}`.trim(); 
         const searchByOrg = `${sido} ${sign} ${orgNm}`.trim();   
 
-        kakao.maps.load(() => {
-            const map = new kakao.maps.Map(mapContainer, {
-                center: new kakao.maps.LatLng(37.5665, 126.9780),
-                level: 3
-            });
-            const geocoder = new kakao.maps.services.Geocoder(); 
-            const ps = new kakao.maps.services.Places();         
+        // [복구] 직접 Map 객체 생성 (autoload 미사용 대응)
+        const map = new kakao.maps.Map(mapContainer, {
+            center: new kakao.maps.LatLng(37.5665, 126.9780),
+            level: 3
+        });
+        const geocoder = new kakao.maps.services.Geocoder(); 
+        const ps = new kakao.maps.services.Places();         
 
-            const displayLocation = (coords) => {
-                new kakao.maps.Marker({ map, position: coords });
+        const displayLocation = (coords) => {
+            new kakao.maps.Marker({ map, position: coords });
+            map.setCenter(coords);
+            
+            setTimeout(() => {
+                map.relayout();
                 map.setCenter(coords);
-                
-                // IP 주소 접속 시 지도가 잘리는 현상 방지 (리레이아웃)
-                setTimeout(() => {
-                    map.relayout();
-                    map.setCenter(coords);
-                }, 500);
-            };
+            }, 500);
+        };
 
-            geocoder.addressSearch(searchByAddr, (result, status) => {
-                if (status === kakao.maps.services.Status.OK) {
-                    displayLocation(new kakao.maps.LatLng(result[0].y, result[0].x));
-                } else {
-                    ps.keywordSearch(searchByAddr, (data, status) => {
-                        if (status === kakao.maps.services.Status.OK) {
-                            displayLocation(new kakao.maps.LatLng(data[0].y, data[0].x));
-                        } else {
-                            ps.keywordSearch(searchByOrg, (dataOrg, statusOrg) => {
-                                if (statusOrg === kakao.maps.services.Status.OK) {
-                                    displayLocation(new kakao.maps.LatLng(dataOrg[0].y, dataOrg[0].x));
-                                } else {
-                                    ps.keywordSearch(rawAddr, (dataFinal, statusFinal) => {
-                                        if (statusFinal === kakao.maps.services.Status.OK) {
-                                            displayLocation(new kakao.maps.LatLng(dataFinal[0].y, dataFinal[0].x));
-                                        } else {
-                                            mapContainer.innerHTML = `<div class="map-error-msg">📍 위치를 찾을 수 없습니다.</div>`;
-                                        }
-                                    });
-                                }
-                            });
-                        }
-                    });
-                }
-            });
+        geocoder.addressSearch(searchByAddr, (result, status) => {
+            if (status === kakao.maps.services.Status.OK) {
+                displayLocation(new kakao.maps.LatLng(result[0].y, result[0].x));
+            } else {
+                ps.keywordSearch(searchByAddr, (data, status) => {
+                    if (status === kakao.maps.services.Status.OK) {
+                        displayLocation(new kakao.maps.LatLng(data[0].y, data[0].x));
+                    } else {
+                        ps.keywordSearch(searchByOrg, (dataOrg, statusOrg) => {
+                            if (statusOrg === kakao.maps.services.Status.OK) {
+                                displayLocation(new kakao.maps.LatLng(dataOrg[0].y, dataOrg[0].x));
+                            } else {
+                                ps.keywordSearch(rawAddr, (dataFinal, statusFinal) => {
+                                    if (statusFinal === kakao.maps.services.Status.OK) {
+                                        displayLocation(new kakao.maps.LatLng(dataFinal[0].y, dataFinal[0].x));
+                                    } else {
+                                        mapContainer.innerHTML = `<div class="map-error-msg">📍 위치를 찾을 수 없습니다.</div>`;
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            }
         });
     };
 
