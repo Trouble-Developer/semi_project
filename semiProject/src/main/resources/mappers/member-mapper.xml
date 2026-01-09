@@ -143,15 +143,12 @@
           AND MEMBER_DEL_FL = 'N'
     </select>
 
-    <!-- ===================================== -->
-    <!-- 비밀번호 재설정 -->
-    <!-- ===================================== -->
     
-    <update id="changePw">
-        UPDATE MEMBER
-        SET MEMBER_PW = #{encPw}
-        WHERE MEMBER_ID = #{memberId}
-          AND MEMBER_DEL_FL = 'N'
-    </update>
+<update id="resetPw">
+    UPDATE MEMBER
+    SET MEMBER_PW = #{encPw}
+    WHERE MEMBER_ID = #{memberId}
+    AND MEMBER_DEL_FL = 'N'
+</update>
 
 </mapper>
