@@ -1,12 +1,8 @@
-/**
- * 문자열의 바이트 길이를 계산 (UTF-8 기준)
- */
 function getByteLength(s) {
   if (s == null || s.length === 0) return 0;
   return new TextEncoder().encode(s).length;
 }
 
-// document.ready 대신 DOMContentLoaded 사용
 document.addEventListener("DOMContentLoaded", function () {
   const MAX_BYTE = 4000;
   const profileImg = document.getElementById("profileImg");
@@ -15,7 +11,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const defaultImageUrl = `/images/footer-logo.png`;
   const summernoteElement = document.getElementById("summernote");
 
-  // 1. Summernote 초기화 (라이브러리 특성상 jQuery 객체 필요)
   $(summernoteElement).summernote({
     width: 1130,
     height: 500,
@@ -60,18 +55,15 @@ document.addEventListener("DOMContentLoaded", function () {
     },
   });
 
-  // 썸네일 삭제 버튼 노출 여부
   if (profileImg && deleteImage) {
     if (profileImg.getAttribute("src") !== defaultImageUrl) {
       deleteImage.style.display = "flex";
     }
   }
 
-  // 2. 폼 제출 유효성 검사
   const form = document.querySelector("#summernote-write");
   if (form) {
     form.addEventListener("submit", (e) => {
-      // 제목 검사
       const boardTitle = document.querySelector("#board-title");
       if (boardTitle.value.trim() === "") {
         e.preventDefault();
@@ -80,7 +72,6 @@ document.addEventListener("DOMContentLoaded", function () {
         return false;
       }
 
-      // 봉사 기간 유효성 검사
       const sdate = document.querySelector("#sdate");
       const edate = document.querySelector("#edate");
       if (sdate && edate) {
@@ -107,13 +98,11 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       }
 
-      // 내용 검사 (Summernote API 호출은 jQuery 방식 유지)
       const contents = $(summernoteElement).summernote("code");
       const pureText = contents
         .replace(/<[^>]*>?/g, "")
         .replace(/&nbsp;/g, "")
         .trim();
-
       const hasImage = contents.includes("<img");
 
       if (pureText.length === 0 && !hasImage) {
@@ -123,7 +112,6 @@ document.addEventListener("DOMContentLoaded", function () {
         return false;
       }
 
-      // 용량 검사
       const currentByte = getByteLength(contents);
       if (currentByte > MAX_BYTE) {
         e.preventDefault();
@@ -135,7 +123,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // 비밀글 체크박스 제어
   const secretWrapper = document.querySelector("#secret-wrapper");
   function toggleSecret() {
     if (secretWrapper) {
@@ -150,20 +137,20 @@ document.addEventListener("DOMContentLoaded", function () {
   }
   toggleSecret();
 
-  // 썸네일 업로드 로직 (이벤트 바인딩 변경)
   if (imageInput) {
     let previousImage = profileImg ? profileImg.src : defaultImageUrl;
 
     imageInput.addEventListener("change", () => {
       const file = imageInput.files[0];
       if (file) {
-        if (file.size <= 1024 * 1024 * 5) {
+        const maxSize = 1024 * 1024 * 10;
+        if (file.size <= maxSize) {
           const newImageUrl = URL.createObjectURL(file);
           profileImg.src = newImageUrl;
           previousImage = newImageUrl;
           if (deleteImage) deleteImage.style.display = "flex";
         } else {
-          alert("5MB 이하의 이미지를 선택해주세요!");
+          alert("10MB 이하의 이미지를 선택해주세요!");
           imageInput.value = "";
           profileImg.src = previousImage;
         }
@@ -181,9 +168,6 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
-/**
- * 3. 에디터 내 본문 이미지 업로드 ($.ajax를 fetch API로 변경)
- */
 async function uploadImage(file) {
   const formData = new FormData();
   formData.append("file", file);
@@ -196,10 +180,13 @@ async function uploadImage(file) {
 
     if (response.ok) {
       const res = await response.json();
-      // Summernote 내부 메서드 실행은 jQuery 객체 필요
       $("#summernote").summernote("insertImage", res.url);
     } else {
-      throw new Error("서버 응답 오류");
+      if (response.status === 413) {
+        alert("이미지 용량이 너무 큽니다.");
+      } else {
+        throw new Error("서버 응답 오류");
+      }
     }
   } catch (error) {
     console.error(error);
