@@ -1,8 +1,14 @@
-/* [역할: 전체 페이지 레이아웃] 중앙 정렬 및 가독성을 위한 여백 설정 */
+/* [역할: 전체 페이지 레이아웃] 중앙 정렬 및 푸터 고정 */
 .info-detail-container {
+    /* [핵심] 푸터 들뜸 방지: 화면 전체 높이에서 헤더/푸터 대략적인 높이를 제외한 최소 높이 설정 */
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 250px); 
+    
     max-width: 1000px;
-    margin: 0 auto;
-    padding: 50px 20px;
+    margin: 0 auto 0; /* 팀원들 구조에 맞춰 상단 중앙 정렬 */
+    padding: 50px 20px 100px; /* 하단 패딩 100px로 푸터와의 여백 확보 */
+    box-sizing: border-box;
 }
 
 /* [역할: 상단 제목 섹션] 프로그램 제목 배치 */
@@ -88,13 +94,13 @@
 }
 .emp-text {
     font-weight: bold;
-    color: #ff5900; /* 팀 공통 컬러로 수정 */
+    color: #ff5900; /* 팀 공통 오렌지 컬러 */
 }
 
 /* [역할: 본문 상세 내용 박스] */
 .content-box { margin-top: 30px; }
 
-/* 활동 상세 안내 문구 스타일 추가 */
+/* 활동 상세 안내 문구 스타일 */
 .simple-guide-text {
     font-size: 14.5px;
     color: #777;
@@ -112,7 +118,7 @@
     border-top: 1px solid #eee;
 }
 
-/* 내용이 없을 때 스타일 추가 */
+/* 내용이 없을 때 스타일 */
 .content-text-empty {
     padding: 60px 0;
     text-align: center;
@@ -132,7 +138,7 @@
 }
 .btn-list, .btn-apply {
     padding: 12px 40px;
-    border-radius: 20px; /* 게시판 버튼과 통일 */
+    border-radius: 20px;
     cursor: pointer;
     font-size: 16px;
     transition: all 0.2s;
