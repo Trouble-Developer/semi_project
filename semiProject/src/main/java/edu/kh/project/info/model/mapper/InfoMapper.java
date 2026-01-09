@@ -64,4 +64,18 @@ public interface InfoMapper {
 	 * @return result
 	 */
 	int deleteScrap(Map<String, Object> paramMap);
+	
+	
+	/**
+     * [기능 추가] 마감된 봉사 정보 삭제
+     * 역할: 현재 날짜 기준으로 모집 종료일(NOTICE_END_DE)이 지난 데이터를 DB에서 제거
+     * @return 삭제된 행의 수
+     */
+    int deleteExpiredInfo();
+    
+    /**
+     * [기능: 봉사 정보 MERGE] 역할: API 중복 체크 후 저장/수정
+     */
+    int mergeInfoBoard1(InfoBoard info);
+	
 }

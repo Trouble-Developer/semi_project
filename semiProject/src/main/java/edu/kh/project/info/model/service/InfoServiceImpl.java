@@ -29,34 +29,56 @@ public class InfoServiceImpl implements InfoService {
      */
     @PostConstruct
     public void init() {
-        try { syncFrom1365(); } catch (Exception e) { log.error("초기 동기화 에러: {}", e.getMessage()); }
+        try { 
+            syncFrom1365(); 
+        } catch (Exception e) { 
+            log.error("초기 동기화 에러: {}", e.getMessage()); 
+        }
     }
 
     /**
      * [기능: 1365 데이터 동기화]
-     * 역할: API를 통해 봉사 정보 및 시군구 지역 코드를 가져와 DB에 MERGE 수행
      */
     @Override
     public int syncFrom1365() throws Exception {
+        
+        // 1. 마감된 데이터 선행 삭제
+        int deletedCount = mapper.deleteExpiredInfo();
+        if(deletedCount > 0) {
+            log.info(">>> 마감된 봉사 정보 {}건이 정리되었습니다.", deletedCount);
+        }
+
+        // 2. API를 통해 데이터 가져오기
         List<InfoBoard> list = apiService.requestBatch();
         int result = 0;
+        
         if (list != null && !list.isEmpty()) {
             for (InfoBoard info : list) {
                 try { 
+                    // [데이터 정제 로직 추가]
+                    // DB 제약조건(예: CHAR(1)) 위반 방지를 위해 Y/N 값 정제
+                    
+                    // 성인 가능 여부 정제 (Y가 아니면 무조건 N)
+                    String adultAt = info.getAdultPosblAt();
+                    info.setAdultPosblAt("Y".equalsIgnoreCase(adultAt) ? "Y" : "N");
+                    
+                    // 청소년 가능 여부 정제 (Y가 아니면 무조건 N, UNK 방지)
+                    String teenAt = info.getYngBgsPosblAt(); // DTO 필드명 확인 필요 (YNG_BGS_POSBL_AT 기준)
+                    info.setYngBgsPosblAt("Y".equalsIgnoreCase(teenAt) ? "Y" : "N");
+
+                    // 3. Upsert 실행
                     result += mapper.mergeInfoBoard(info); 
                 } 
                 catch (Exception e) { 
-                    log.debug("데이터 스킵(이미 존재하거나 에러): {}", info.getUrl()); 
+                    // 에러 발생 시 상세 원인 로그 출력 (트러블슈팅용)
+                    log.error("데이터 저장 실패 - URL: {}, 원인: {}", info.getUrl(), e.getMessage());
                 }
             }
         }
-        log.info(">>> 총 {}건의 봉사 정보가 최신화되었습니다.", result);
+        log.info(">>> 총 {}건의 봉사 정보가 동기화(삽입/수정)되었습니다.", result);
         return result;
     }
     
-    /**
-     * [기능: 페이징 처리된 봉사 목록 조회]
-     */
     @Override
     @Transactional(readOnly = true)
     public Map<String, Object> selectInfoList(int cp, Map<String, Object> paramMap) {
@@ -95,20 +117,18 @@ public class InfoServiceImpl implements InfoService {
         return mapper.getSignList(sidoCd);
     }
 
-	@Override
-	public InfoBoard selectInfoDetail(int infoBoardNo, int memberNo) {
+    @Override
+    @Transactional(readOnly = true)
+    public InfoBoard selectInfoDetail(int infoBoardNo, int memberNo) {
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("infoBoardNo", infoBoardNo);
         paramMap.put("memberNo", memberNo);
-		return mapper.selectInfoDetail(paramMap);
-	}
+        return mapper.selectInfoDetail(paramMap);
+    }
 
-    /** [기능추가: 관심 봉사 스크랩 업데이트] */
     @Override
     public int updateScrap(Map<String, Object> paramMap) {
         int result = 0;
-        // isScrapped가 true면 이미 스크랩 된 상태 -> 삭제(delete)
-        // isScrapped가 false면 스크랩 안 된 상태 -> 삽입(insert)
         boolean isScrapped = (boolean)paramMap.get("isScrapped");
 
         if(isScrapped) {

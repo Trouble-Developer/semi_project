@@ -103,34 +103,40 @@ document.addEventListener("DOMContentLoaded", () => {
     };
     processRcritNmpr();
 
-    // 7. [검색 시 페이지 초기화] 검색 버튼 누르면 무조건 1페이지로
+    /**
+ * [수정된 기능 7] 검색 시 페이지 초기화 및 알림 예약
+ */
     infoSearchForm?.addEventListener("submit", () => {
+        // 1. 페이지 번호 초기화
         const cpHidden = document.createElement("input");
         cpHidden.type = "hidden";
         cpHidden.name = "cp";
         cpHidden.value = "1";
         infoSearchForm.appendChild(cpHidden);
+
+        // 2. 검색 버튼을 눌렀음을 세션에 기록 (알림 표시 예약)
+        sessionStorage.setItem("isSearching", "true");
     });
 
     /**
      * [기능 8] 관리자 전용 공공데이터 동기화
      */
     const initAdminSync = () => {
-        
+
         const syncBtn = document.getElementById("refreshOpenApi");
-        
+
         if (syncBtn) {
             syncBtn.onclick = () => {
                 if (!confirm("1365 공공데이터와 동기화를 진행하시겠습니까?")) return;
-                
+
                 syncBtn.disabled = true;
                 const originalText = syncBtn.innerHTML;
                 syncBtn.innerHTML = '<i class="fa-solid fa-sync fa-spin"></i> 동기화 중...';
 
                 fetch("/info/api/refresh")
                     .then(resp => {
-                        if(!resp.ok) throw new Error("동기화 실패");
-                        return resp.json(); 
+                        if (!resp.ok) throw new Error("동기화 실패");
+                        return resp.json();
                     })
                     .then(result => {
                         if (result > 0) {
@@ -151,25 +157,26 @@ document.addEventListener("DOMContentLoaded", () => {
             };
         }
     };
-
     /**
-     * [기능 9] 검색 결과 알림창 표시 
+     * [수정된 기능 9] 검색 결과 알림창 표시 (세션 체크 방식)
      */
     const checkSearchAlert = () => {
         const countInput = document.getElementById("searchListCount");
-        const urlParams = new URLSearchParams(window.location.search);
 
-        const hasSearchCondition = Array.from(urlParams.keys()).some(key =>
-            key !== 'cp' && urlParams.get(key) !== ""
-        );
+        // 세션스토리지에 'isSearching' 값이 있을 때만 실행
+        const isSearching = sessionStorage.getItem("isSearching");
 
-        if (hasSearchCondition && countInput) {
+        if (isSearching === "true" && countInput) {
             const count = countInput.value;
             alert(`총 ${count}건의 봉사 정보가 검색되었습니다.`);
+
+            // 중요: 알림을 띄운 후에는 세션에서 삭제 (페이지네이션 이동 시에는 안 뜨게 함)
+            sessionStorage.removeItem("isSearching");
         }
     };
 
-    initAdminSync();   
+
+    initAdminSync();
     checkSearchAlert();
 });
 
