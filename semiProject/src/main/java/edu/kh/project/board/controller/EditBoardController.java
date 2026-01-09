@@ -73,7 +73,6 @@ public class EditBoardController {
 
 		Board selectedBoard = boardService.freeBoardDetil(board);
 
-		
 		// 본인이 작성한 글만 삭제 가능
 		if (loginMember != null && (loginMember.getMemberNo() != selectedBoard.getMemberNo())
 				&& loginMember.getAuthority() == 1) {
@@ -206,9 +205,9 @@ public class EditBoardController {
 	@PostMapping("{boardCode:[0-9]+}/{boardNo:[0-9]+}/update")
 	public String boardUpdate(@PathVariable("boardCode") int boardCode, @PathVariable("boardNo") int boardNo,
 			@RequestParam Map<String, Object> paramMap,
-			@RequestParam(value = "thumbnail", required = false) MultipartFile thumbnail, // 추가
+			@RequestParam(value = "thumbnail", required = false) MultipartFile thumbnail,
 			@SessionAttribute(value = "loginMember", required = false) Member loginMember, RedirectAttributes ra)
-			throws Exception { // throws Exception 추가
+			throws Exception {
 
 		if (loginMember == null) {
 			ra.addFlashAttribute("message", "로그인 후 이용해주세요.");
@@ -219,9 +218,10 @@ public class EditBoardController {
 		paramMap.put("boardCode", boardCode);
 		paramMap.put("memberNo", loginMember.getMemberNo());
 		paramMap.put("content", paramMap.get("editordata"));
+
+		// 비밀번호 입력이 없으므로 체크박스 유무로 'Y'/'N'만 결정
 		paramMap.put("boardLock", paramMap.get("checkbox") != null ? "Y" : "N");
 
-		// 서비스 호출 시 thumbnail 전달 (Service 인터페이스/구현체 수정 필요)
 		int result = service.boardUpdate(paramMap, thumbnail);
 
 		String message = result > 0 ? "게시글이 수정되었습니다." : "게시글 수정 실패..";

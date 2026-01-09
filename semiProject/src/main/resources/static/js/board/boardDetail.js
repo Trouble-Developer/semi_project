@@ -7,7 +7,6 @@ if (updateBtn !== null) {
     location.href = url;
   });
 }
-console.log(`보드 정보 = ${JSON.stringify(boardInfo)}`);
 if (deleteBtn !== null) {
   deleteBtn.addEventListener("click", () => {
     // /editBoard/2/1997/delete?cp=1
@@ -31,9 +30,7 @@ if (likeBtn !== null) {
       alert("로그인 후 이용 가능합니다.");
       return;
     }
-    console.log(
-      `memberNo = ${memberNo}, boardNo = ${boardNo}, likeCheck = ${likeCheck}`
-    );
+
     const param = {
       memberNo: memberNo,
       boardNo: boardNo,
@@ -48,7 +45,6 @@ if (likeBtn !== null) {
       .then((resp) => resp.text())
       .then((result) => {
         if (result == -1) {
-          console.log("좋아요 처리 실패..!");
           return;
         }
         likeCheck = likeCheck === 1 ? 0 : 1;
@@ -66,7 +62,6 @@ if (scrapBtn) {
   const icon = scrapBtn.querySelector("i");
 
   scrapBtn.addEventListener("click", () => {
-    console.log("스크랩 버튼 클릭");
     if (memberNo == null) {
       alert("로그인 후 이용 가능합니다.");
       return;
@@ -84,7 +79,6 @@ if (scrapBtn) {
       .then((resp) => resp.text())
       .then((result) => {
         if (result == -1) {
-          console.log("스크랩 처리 실패");
           return;
         }
 

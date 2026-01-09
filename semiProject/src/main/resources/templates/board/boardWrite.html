@@ -95,9 +95,8 @@
                                th:value="${boardInfo?.boardTitle}" maxlength="30" />
                     </div>
                     <div id="secret-wrapper" style="display: none;">
-                        <input type="checkbox" id="checkbox" name="checkbox" />
-                        <label id="secret-check" for="checkbox">비밀글</label>
-                        <input type="password" placeholder="비밀글 설정시 비밀번호를 입력해주세요." id="board-pw" name="boardPw" disabled />
+                        <input type="checkbox" id="checkbox" name="checkbox" th:checked="${boardInfo?.boardLock == 'Y'}" />
+                        <label id="secret-check" for="checkbox">비밀글(작성자와 관리자만 볼 수 있습니다)</label>
                     </div>
                 </div>
             </div>

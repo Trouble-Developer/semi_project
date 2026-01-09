@@ -2,11 +2,26 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="edu.kh.project.mypage.model.mapper.MyPageMapper">
 
+	<select id="selectEncPw" resultType="string">
+		SELECT MEMBER_PW
+		FROM "MEMBER"
+		WHERE MEMBER_NO = #{memberNo}
+	</select>
+	
+	<!-- 새로 추가: 회원 탈퇴용 암호화된 비밀번호 조회 -->
 	<select id="selectEncryptedPw" resultType="string">
 		SELECT MEMBER_PW
 		FROM "MEMBER"
 		WHERE MEMBER_NO = #{memberNo}
 	</select>
+	
+	
+	
+	<update id="changePw" parameterType="Member">
+		UPDATE "MEMBER"
+		SET MEMBER_PW = #{memberPw}
+		WHERE MEMBER_NO = #{memberNo}
+	</update>
 
 	<update id="updateProfile" parameterType="Member">
 		UPDATE "MEMBER"

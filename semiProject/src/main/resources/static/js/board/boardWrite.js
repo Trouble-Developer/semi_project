@@ -1,25 +1,21 @@
-/**
- * 문자열의 바이트 길이를 계산 (UTF-8 기준)
- */
 function getByteLength(s) {
   if (s == null || s.length === 0) return 0;
   return new TextEncoder().encode(s).length;
 }
 
-$(document).ready(function () {
+document.addEventListener("DOMContentLoaded", function () {
   const MAX_BYTE = 4000;
   const profileImg = document.getElementById("profileImg");
   const imageInput = document.getElementById("imageInput");
   const deleteImage = document.getElementById("deleteImage");
   const defaultImageUrl = `/images/footer-logo.png`;
+  const summernoteElement = document.getElementById("summernote");
 
-  $("#summernote").summernote({
+  $(summernoteElement).summernote({
     width: 1130,
     height: 500,
     lang: "ko-KR",
     placeholder: "내용을 입력해주세요.",
-
-    // 사용 가능한 폰트 목록
     fontNames: [
       "Arial",
       "Arial Black",
@@ -31,28 +27,24 @@ $(document).ready(function () {
       "돋움체",
       "바탕체",
     ],
-    // 시스템에 해당 폰트가 있는지 확인하지 않고 바로 목록에 노출
     fontNamesIgnoreCheck: ["맑은 고딕", "궁서", "굴림체", "돋움체", "바탕체"],
-
-    // 툴바 구성 정의
     toolbar: [
-      ["fontname", ["fontname"]], // 글꼴 설정
-      ["fontsize", ["fontsize"]], // 글자 크기
-      ["style", ["bold", "italic", "underline", "strikethrough", "clear"]], // 서식
-      ["color", ["forecolor", "color"]], // 글자색/배경색
-      ["para", ["ul", "ol", "paragraph"]], // 정렬/목록
-      ["height", ["height"]], // 줄간격
-      ["insert", ["picture", "link"]], // 이미지/링크/동영상
-      ["view", ["fullscreen", "help"]], // 도구
+      ["fontname", ["fontname"]],
+      ["fontsize", ["fontsize"]],
+      ["style", ["bold", "italic", "underline", "strikethrough", "clear"]],
+      ["color", ["forecolor", "color"]],
+      ["para", ["ul", "ol", "paragraph"]],
+      ["height", ["height"]],
+      ["insert", ["picture", "link"]],
+      ["view", ["fullscreen", "help"]],
     ],
-
     callbacks: {
       onChange: function (contents) {
         const currentByte = getByteLength(contents);
-        const $byteCounter = $("#current-byte");
-        if ($byteCounter.length > 0) {
-          $byteCounter.text(currentByte);
-          $byteCounter.css("color", currentByte > MAX_BYTE ? "red" : "black");
+        const byteCounter = document.getElementById("current-byte");
+        if (byteCounter) {
+          byteCounter.innerText = currentByte;
+          byteCounter.style.color = currentByte > MAX_BYTE ? "red" : "black";
         }
       },
       onImageUpload: function (files) {
@@ -72,7 +64,6 @@ $(document).ready(function () {
   const form = document.querySelector("#summernote-write");
   if (form) {
     form.addEventListener("submit", (e) => {
-      // 제목 검사
       const boardTitle = document.querySelector("#board-title");
       if (boardTitle.value.trim() === "") {
         e.preventDefault();
@@ -81,24 +72,12 @@ $(document).ready(function () {
         return false;
       }
 
-      // 비밀글 체크 시 비밀번호 검사
-      const secretCheck = document.querySelector("#checkbox");
-      const boardPw = document.querySelector("#board-pw");
-      if (secretCheck && secretCheck.checked) {
-        if (boardPw.value.trim() === "") {
-          e.preventDefault();
-          alert("비밀번호를 입력해주세요!");
-          boardPw.focus();
-          return false;
-        }
-      }
-
-      // 봉사 기간 유효성 검사 (시작일/종료일 세트 체크)
       const sdate = document.querySelector("#sdate");
       const edate = document.querySelector("#edate");
       if (sdate && edate) {
         const startVal = sdate.value.trim();
         const endVal = edate.value.trim();
+
         if (
           (startVal !== "" && endVal === "") ||
           (startVal === "" && endVal !== "")
@@ -107,10 +86,10 @@ $(document).ready(function () {
           alert(
             "봉사 기간을 설정하시려면 시작 날짜와 종료 날짜를 모두 입력하셔야 합니다."
           );
-          if (startVal === "") sdate.focus();
-          else edate.focus();
+          startVal === "" ? sdate.focus() : edate.focus();
           return false;
         }
+
         if (startVal !== "" && endVal !== "" && startVal > endVal) {
           e.preventDefault();
           alert("시작 날짜는 종료 날짜보다 빠르거나 같아야 합니다.");
@@ -119,22 +98,21 @@ $(document).ready(function () {
         }
       }
 
-      const contents = $("#summernote").summernote("code");
-
+      const contents = $(summernoteElement).summernote("code");
       const pureText = contents
         .replace(/<[^>]*>?/g, "")
         .replace(/&nbsp;/g, "")
         .trim();
       const hasImage = contents.includes("<img");
+
       if (pureText.length === 0 && !hasImage) {
         e.preventDefault();
-        alert("사진 또는 내용을 입력해주세요!");
-        $("#summernote").summernote("focus");
+        alert("내용 또는 사진을 입력해주세요!");
+        $(summernoteElement).summernote("focus");
         return false;
       }
 
       const currentByte = getByteLength(contents);
-
       if (currentByte > MAX_BYTE) {
         e.preventDefault();
         alert(
@@ -148,7 +126,6 @@ $(document).ready(function () {
   const secretWrapper = document.querySelector("#secret-wrapper");
   function toggleSecret() {
     if (secretWrapper) {
-      // boardCode가 5(예: 문의 게시판)인 경우에만 비밀글 활성화
       if (typeof boardCode !== "undefined" && boardCode == 5) {
         secretWrapper.style.display = "block";
       } else {
@@ -162,44 +139,28 @@ $(document).ready(function () {
 
   if (imageInput) {
     let previousImage = profileImg ? profileImg.src : defaultImageUrl;
-    let previousFile = null;
 
     imageInput.addEventListener("change", () => {
       const file = imageInput.files[0];
       if (file) {
-        // 용량 제한 (5MB)
-        if (file.size <= 1024 * 1024 * 5) {
+        const maxSize = 1024 * 1024 * 10;
+        if (file.size <= maxSize) {
           const newImageUrl = URL.createObjectURL(file);
           profileImg.src = newImageUrl;
           previousImage = newImageUrl;
-          previousFile = file;
           if (deleteImage) deleteImage.style.display = "flex";
         } else {
-          alert("5MB 이하의 이미지를 선택해주세요!");
+          alert("10MB 이하의 이미지를 선택해주세요!");
           imageInput.value = "";
           profileImg.src = previousImage;
-          if (previousFile) {
-            const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(previousFile);
-            imageInput.files = dataTransfer.files;
-          }
-        }
-      } else {
-        profileImg.src = previousImage;
-        if (previousFile) {
-          const dataTransfer = new DataTransfer();
-          dataTransfer.items.add(previousFile);
-          imageInput.files = dataTransfer.files;
         }
       }
     });
 
-    // 썸네일 삭제 버튼 클릭 이벤트
     if (deleteImage) {
       deleteImage.addEventListener("click", () => {
         imageInput.value = "";
         profileImg.src = defaultImageUrl;
-        previousFile = null;
         previousImage = defaultImageUrl;
         deleteImage.style.display = "none";
       });
@@ -207,39 +168,28 @@ $(document).ready(function () {
   }
 });
 
-/**
- * 에디터 내 본문 이미지 업로드 (서버 전송)
- */
-function uploadImage(file) {
+async function uploadImage(file) {
   const formData = new FormData();
-
   formData.append("file", file);
-  $.ajax({
-    url: "/editBoard/image/upload",
-    type: "POST",
-    data: formData,
-    contentType: false,
-    processData: false,
-    success: function (res) {
-      // 서버에서 반환한 이미지 URL을 에디터에 삽입
-      $("#summernote").summernote("insertImage", res.url);
-    },
-    error: function () {
-      alert("이미지 업로드 중 오류가 발생했습니다.");
-    },
-  });
-}
-const secretCheckbox = document.querySelector("#checkbox");
-const boardPwInput = document.querySelector("#board-pw");
 
-if (secretCheckbox && boardPwInput) {
-  secretCheckbox.addEventListener("change", function () {
-    if (secretCheckbox.checked) {
-      boardPwInput.disabled = false;
-      boardPwInput.focus();
+  try {
+    const response = await fetch("/editBoard/image/upload", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (response.ok) {
+      const res = await response.json();
+      $("#summernote").summernote("insertImage", res.url);
     } else {
-      boardPwInput.disabled = true;
-      boardPwInput.value = "";
+      if (response.status === 413) {
+        alert("이미지 용량이 너무 큽니다.");
+      } else {
+        throw new Error("서버 응답 오류");
+      }
     }
-  });
+  } catch (error) {
+    console.error(error);
+    alert("이미지 업로드 중 오류가 발생했습니다.");
+  }
 }

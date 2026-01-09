@@ -100,6 +100,13 @@
 		BOARD_CONTENT = #{content},
 		BOARD_UPDATE_DATE = SYSDATE,
 		BOARD_LOCK = #{boardLock}
+		<if test="boardCode == 3">
+			,VOLUNTEER_START = #{volunteerStart}
+			,VOLUNTEER_END = #{volunteerEnd}
+			,VOLUNTEER_CATEGORY = #{volunteerCategory}
+			,VOLUNTEER_AGENCY = #{volunteerAgency}
+			,VOLUNTEER_TYPE = #{volunteerType}
+		</if>
 		WHERE BOARD_NO = #{boardNo}
 		AND BOARD_CODE = #{boardCode}
 		AND MEMBER_NO = #{memberNo}
