@@ -1,0 +1,56 @@
+package edu.kh.project.board.model.dto;
+
+import java.util.List;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Board {
+	private int boardNo;
+	private String boardTitle;
+	private String boardContent;
+	private String boardWriteDate;
+	private String boardUpdateDate;
+	private int readCount;
+	private char boardDelFl;
+	private String boardPw;
+	private String boardLock;
+	private int boardCode;
+	private int memberNo;
+	
+	// BOARD_IMG 조인
+	private String imgPath;
+	private String imgRename;
+	
+	
+	// MEMBER 테이블 조인
+	private String memberNickname;
+	
+	private int likeCount; // 좋아요 수
+	private int likeCheck; // 좋아요 여부
+	
+	private int scrapCheck; // 0: 스크랩 X, 1: 스크랩 O
+	
+	// 봉사왕 게시글 개수
+	private int postCount;
+	private String profileImg; // 봉사왕 프로필 이미지
+	
+	// 봉사후기 상세정보
+	private String volunteerStart;
+	private String volunteerEnd;
+	private String volunteerCategory;
+	private String volunteerAgency;
+	private String volunteerType;
+	
+	
+	private String thumbnailPath;
+	// 추후 이미지 리스트, 댓글 리스트 추가
+	// 우선은 글 가져오는 것 부터!
+	
+	// 댓글 리스트 추가!
+	private List<Comment> commentList; // 게시글의 댓글 목록
+}

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>신고글 상세</title>
+
+  <!-- 공통 CSS -->
+  <link rel="stylesheet" href="/css/common/common.css">
+
+  <!-- 게시글 상세 CSS 재사용 -->
+  <link rel="stylesheet" href="/css/board/boardDetail.css">
+
+  <!-- 관리자 신고 상세 전용 CSS -->
+  <link rel="stylesheet" href="/css/admin/reportDetail.css">
+
+  <!-- 댓글 css 적용-->
+  <link rel="stylesheet" href="/css/board/comment.css">
+
+  <!-- 관리자 댓글 오버라이드 -->
+  <link rel="stylesheet" href="/css/admin/adminComment.css">
+
+</head>
+<body>
+
+<!-- ================= 공통 헤더 ================= -->
+<th:block th:replace="~{common/header}"></th:block>
+
+<!-- ================= 신고 정보 ================= -->
+<section class="report-info-area">
+
+  <h1 class="page-title">신고 상세 정보</h1>
+
+  <table class="report-info-table">
+    <tbody>
+      <tr>
+        <th>신고 유형</th>
+        <td th:text="${report.reportType == 'BOARD' ? '게시글' : '댓글'}"></td>
+
+        <th>신고 일자</th>
+        <td th:text="${report.reportDate}"></td>
+      </tr>
+
+      <tr>
+        <th>신고자</th>
+        <td th:text="${report.reporterNickname}"></td>
+
+        <th>신고 사유</th>
+        <td colspan="3" th:text="${report.reportReason}"></td>
+      </tr>
+
+      <tr>
+        <th>신고글 제목</th>
+        <td colspan="3" th:text="${report.targetTitle}"></td>
+      </tr>
+
+      <tr th:if="${report.reportType == 'BOARD'}">
+        <th>신고 상세 사유</th>
+        <td colspan="3"
+            th:text="${report.reportDetail != null and report.reportDetail != '' 
+                        ? report.reportDetail 
+                        : '작성된 상세 사유가 없습니다.'}">
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+</section>
+
+<!-- ================= 게시글 상세 ================= -->
+<main class="board-detail-area">
+
+  <h2 class="board-title" th:text="${board.boardTitle}">
+    게시글 제목
+  </h2>
+
+  <div class="board-content" th:utext="${board.boardContent}">
+    게시글 내용
+  </div>
+
+</main>
+
+<!-- ================= 댓글 영역 ================= -->
+<section class="comment-area">
+
+  <h3 class="comment-title">댓글 목록</h3>
+
+  <!-- 댓글 없음 -->
+  <p th:if="${#lists.isEmpty(board.commentList)}" class="no-comment">
+    등록된 댓글이 없습니다.
+  </p>
+
+  <!-- 댓글 목록 -->
+  <ul id="commentList"
+      th:if="${!#lists.isEmpty(board.commentList)}">
+
+    <li th:each="comment : ${board.commentList}"
+        class="comment-row"
+        th:classappend="
+          ${comment.parentCommentNo != null} ? ' child-comment' : ''
+        "
+    >
+
+      <!-- 작성자 정보 -->
+      <div class="comment-writer">
+        <img th:src="${comment.profileImg != null ? comment.profileImg : '/images/user.png'}">
+        <span th:text="${comment.memberNickname}">작성자</span>
+        <span class="comment-date"
+              th:text="${#dates.format(comment.commentWriteDate, 'yyyy-MM-dd HH:mm')}">
+        </span>
+      </div>
+
+      <!-- 댓글 내용 -->
+      <div class="comment-content"
+           th:text="${comment.commentDelFl == 'Y'
+                      ? '삭제된 댓글입니다.'
+                      : comment.commentContent}">
+      </div>
+
+      <!-- 버튼 영역 (관리자 전용: 표시만, 동작 없음) -->
+      <div class="comment-btn-area">
+        <button type="button">답글</button>
+      </div>
+
+    </li>
+  </ul>
+
+</section>
+
+<!-- ================= 하단 (이전글, 다음글, 목록) ================= -->
+<section class="prev-next-area">
+
+  <table class="prev-next-table">
+    <tbody>
+
+    <!-- 이전글 -->
+    <tr th:if="${prevReportNo != null}">
+    <th class="label">이전글</th>
+        <td class="title">
+            <a th:href="@{/admin/report/{reportType}/{reportNo}(
+                    reportType=${reportType},
+                    reportNo=${prevReportNo})}">
+                <span th:text="${prevReportTitle}"></span>
+            </a>
+        </td>
+    </tr>
+
+      <!-- 다음글 -->
+    <tr th:if="${nextReportNo != null}">
+    <th class="label">다음글</th>
+    <td class="title">
+        <a th:href="@{/admin/report/{reportType}/{reportNo}(
+                reportType=${reportType},
+                reportNo=${nextReportNo})}">
+            <span th:text="${nextReportTitle}"></span>
+        </a>
+    </td>
+    </tr>
+
+    </tbody>
+  </table>
+
+  <!-- 목록 버튼 -->
+  <div class="list-btn-area">
+    <a href="/admin/report" class="list-btn">목록</a>
+  </div>
+
+</section>
+<!-- 공통 푸터 -->
+<th:block th:replace="~{common/footer}"></th:block>
+</body>
+</html>

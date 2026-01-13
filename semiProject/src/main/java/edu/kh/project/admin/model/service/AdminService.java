@@ -1,0 +1,136 @@
+package edu.kh.project.admin.model.service;
+
+import java.util.List;
+import java.util.Map;
+
+import edu.kh.project.admin.dto.AdminMember;
+import edu.kh.project.admin.dto.AdminReportComment;
+import edu.kh.project.admin.dto.Report;
+import edu.kh.project.board.model.dto.Board;
+import edu.kh.project.board.model.dto.Pagination;
+
+public interface AdminService {
+
+	/** 회원 수 조회
+	 * @param paramMap
+	 * @return
+	 */
+	int getMemberCount(Map<String, Object> paramMap);
+
+	/** 회원 목록 조회
+	 * @param paramMap
+	 * @return
+	 */
+	List<AdminMember> selectMemberList(Map<String, Object> paramMap);
+
+	/** 회원 강제 탈퇴
+	 * @param paramMap
+	 * @return
+	 */
+	int updateMemberStatus(Map<String, Object> paramMap);
+
+	/** 공지사항 조회
+	 * @param cp : 현재 페이지 번호. 이하 게시글 메서드에서도 동일한 의미.
+	 * @param paramMap : 검색 조건. 이하 게시글 메서드에서도 동일한 의미.
+	 * @return
+	 */
+	Map<String, Object> selectNoticeList(int cp, Map<String, Object> paramMap);
+
+	/** 공지사항 삭제/복구
+	 * @param paramMap
+	 * @return
+	 */
+	int updateNoticeStatus(Map<String, Object> paramMap);
+
+	/** 고객지원 게시글 목록 조회
+	 * @param cp 
+	 * @param paramMap
+	 * @return
+	 */
+	Map<String, Object> selectSupportList(int cp, Map<String, Object> paramMap);
+
+	/** 고객지원 게시글 삭제/복구
+	 * @param paramMap
+	 * @return
+	 */
+	int updateSupportStatus(Map<String, Object> paramMap);
+
+		
+	/** 신고글 목록 조회
+	 * @param paramMap
+	 * @return
+	 */
+	Map<String, Object> selectReportList(Map<String, Object> paramMap);
+
+	/** 신고글 기각
+	 * @param reportNo
+	 */
+	void rejectReport(int reportNo);
+
+	/** 신고글 삭제
+	 * @param paramMap
+	 */
+	void deleteReport(Map<String, Object> paramMap);
+
+	/** 신고 대상(게시글 or 댓글)에 따른 게시글 번호
+	 * @param targetNo
+	 * @return
+	 */
+	Integer selectBoardNoByReportTarget(int targetNo);
+
+	/** 이전 글
+	 * @param reportNo
+	 * @return
+	 */
+	Integer selectPrevReportNo(int reportNo);
+
+	/** 다음 글
+	 * @param reportNo
+	 * @return
+	 */
+	Integer selectNextReportNo(int reportNo);
+
+	/** 이전글, 다음글 제목(신고된 게시글, 댓글 분류)
+	 * @param prevReportNo
+	 * @return
+	 */
+	String selectReportTitle(int reportNo, String reportType);
+
+	/** 게시글 상세 목록 
+	 * @param boardNo
+	 * @return
+	 */
+	Board selectBoardDetailForReport(int boardNo);
+
+	/** 댓글 목록(관리자 전용)
+	 * @param boardNo
+	 * @return
+	 */
+	List<AdminReportComment> selectCommentListForReport(int boardNo);
+
+	/** 게시글 신고 상세
+	 * @param reportNo
+	 * @return
+	 */
+	Report selectBoardReportDetail(int reportNo);
+
+	/** 댓글 신고 상세
+	 * @param reportNo
+	 * @return
+	 */
+	Report selectCommentReportDetail(int reportNo);
+
+	
+
+
+
+
+	
+
+	
+
+	
+
+	
+
+}

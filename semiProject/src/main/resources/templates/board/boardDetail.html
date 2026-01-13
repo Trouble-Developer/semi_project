@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title
+      th:each="board : ${application.boardTypeList}"
+      th:if="${board.boardCode == boardCode}"
+      th:text="${board.boardName}"
+    >
+      게시판 이름
+    </title>
+    <link rel="stylesheet" href="/css/common/common.css" />
+    <link rel="stylesheet" href="/css/board/boardDetail.css" />
+    <link rel="stylesheet" href="/css/board/comment.css" />
+  </head>
+  <body>
+    <th:block th:replace="~{common/header}"></th:block>
+    <div id="container" th:object="${boardInfo}">
+      <div id="board-title">
+        <p id="board-title-text" th:text="*{boardTitle}"></p>
+        <!-- 스크랩 기능 -->
+        <button
+          id="scrap-btn"
+          th:if="${session.loginMember != null}"
+          th:classappend="${boardInfo.scrapCheck == 1} ? 'scrapped' : ''"
+        >
+          <i
+            th:class="${boardInfo.scrapCheck == 1}
+      ? 'fa-solid fa-star'
+      : 'fa-regular fa-star'"
+          ></i>
+        </button>
+      </div>
+
+      <div id="board-user-info">
+        <div id="user-info">
+          <p>등록자</p>
+          <p th:text="*{memberNickname}">유저닉네임</p>
+        </div>
+
+        <div id="board-info">
+          <div>
+            <p>작성일</p>
+            <p th:text="*{boardWriteDate}">작성일</p>
+          </div>
+          <div>
+            <p>조회수</p>
+            <p th:text="*{readCount}">조회수</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="content">
+        <th:block th:if="${boardInfo.boardCode == 3}">
+          <div id="v-info-detail">
+            <div class="v-detail-row">
+              <div class="v-detail-item">
+                <div class="v-detail-label">봉사기간</div>
+                <div class="v-detail-value">
+                  <span th:text="*{volunteerStart}">시작일</span>
+                  <th:block
+                    th:if="*{volunteerStart != null and volunteerEnd != null}"
+                  >
+                    ~
+                  </th:block>
+                  <span th:text="*{volunteerEnd}">종료일</span>
+                </div>
+              </div>
+
+              <div class="v-detail-item">
+                <div class="v-detail-label">봉사분야</div>
+                <div class="v-detail-value" th:text="*{volunteerCategory}">
+                  기타
+                </div>
+              </div>
+            </div>
+
+            <div class="v-detail-row">
+              <div class="v-detail-item">
+                <div class="v-detail-label">모집기관</div>
+                <div class="v-detail-value" th:text="*{volunteerAgency}">
+                  기관명 없음
+                </div>
+              </div>
+
+              <div class="v-detail-item">
+                <div class="v-detail-label">봉사자 유형</div>
+                <div class="v-detail-value" th:text="*{volunteerType}">
+                  성인
+                </div>
+              </div>
+            </div>
+          </div>
+        </th:block>
+
+        <p th:utext="*{boardContent}">컨텐츠</p>
+      </div>
+
+      <div id="btn">
+        <!-- 로그인 했을 때만 활성화 -->
+        <button
+          id="report-btn"
+          th:if="${session.loginMember != null and session.loginMember.memberNo != boardInfo.memberNo and boardCode != 4}"
+        >
+          신고
+        </button>
+
+        <button
+          id="like-btn"
+          th:if="${session.loginMember != null and (boardCode == 1 or boardCode == 3)}"
+        >
+          <!-- 빈 하트 -->
+          <i
+            th:class="${boardInfo.likeCheck == 1}
+          ? 'fa-solid fa-heart'
+          : 'fa-regular fa-heart'"
+          ></i>
+          <span id="likeCount" th:text="${boardInfo.likeCount}">좋아요수</span>
+          <!-- <i class="fa-solid fa-heart"></i> 꽉찬 하트 -->
+        </button>
+
+        <!-- 본인 글일 때, 즉 로그인한 회원과 게시글의 회원이 같을 때 활성화 -->
+        <button
+          id="update-btn"
+          th:if="${session.loginMember != null and session.loginMember.memberNo == boardInfo.memberNo}"
+        >
+          수정
+        </button>
+
+        <button
+          id="delete-btn"
+          th:if="${session.loginMember != null and (session.loginMember.authority == 2 or session.loginMember.memberNo == boardInfo.memberNo)}"
+        >
+          삭제
+        </button>
+      </div>
+
+      <div id="page">
+        <div id="before-board">
+          <th:block th:if="${prevBoard}">
+            <p>이전글</p>
+            <p>
+              <a
+                th:href="@{/board/{boardCode}/{boardNo}(boardCode=${boardCode}, boardNo=${prevBoard.boardNo}, cp=${cp})}"
+                th:text="${prevBoard.boardTitle}"
+                >이전글</a
+              >
+            </p>
+          </th:block>
+        </div>
+
+        <div id="after-board">
+          <th:block th:if="${nextBoard}">
+            <p>다음글</p>
+            <p>
+              <a
+                th:href="@{/board/{boardCode}/{boardNo}(boardCode=${boardCode}, boardNo=${nextBoard.boardNo}, cp=${cp})}"
+                th:text="${nextBoard.boardTitle}"
+                >다음글</a
+              >
+            </p>
+          </th:block>
+        </div>
+      </div>
+
+      <div id="list-btn">
+        <!-- from 값에 따라 목록 버튼 경로 변경(마이페이지 - 전재민) -->
+        <a th:if="${from == 'mypage'}" th:href="@{/mypage/posts(cp=${cp})}"
+          >목록</a
+        >
+        <a th:if="${from == 'comments'}" th:href="@{/mypage/comments(cp=${cp})}"
+          >목록</a
+        >
+        <a th:if="${from == 'scrap'}" th:href="@{/mypage/scraps(cp=${cp})}"
+          >목록</a
+        >
+
+        <th:block
+          th:unless="${from == 'mypage' or from == 'comments' or from == 'scrap'}"
+        >
+          <!-- 목록 버튼 클릭 시 관리자 게시판에서 이동한 거면 관리자 전용으로, 일반 게시판에서 이동한 거면 해당 게시판으로 - 현동근, 26.01.08 수정 -->
+          <a th:if="${from == 'adminNotice'}" th:href="@{/admin/notice}">
+            목록
+          </a>
+
+          <a th:if="${from == 'adminSupport'}" th:href="@{/admin/support}">
+            목록
+          </a>
+
+          <a th:if="${from == 'adminReport'}" th:href="@{/admin/report}">
+            목록
+          </a>
+
+          <!-- 일반 사용자 관점일 때 - 관리자 계정 로그인일 때 경로를 보고 목록 버튼의 요청주소 구별을 위해 th:if문 한 줄 추가. - 현동근, 26.01.08 수정 -->
+          <a
+            th:if="${from != 'adminNotice' and from != 'adminSupport' and from != 'adminReport'}"
+            th:href="@{/board/{boardCode}(boardCode=${boardCode}, cp=${cp})}"
+          >
+            목록
+          </a>
+        </th:block>
+      </div>
+
+      <!-- ===== 댓글 영역 ===== -->
+      <!-- 공지사항(boardCode=4)을 제외한 게시판에만 댓글 표시 -->
+      <th:block th:if="${boardCode != 4}">
+        <div th:replace="~{board/comment :: commentFragment}"></div>
+      </th:block>
+    </div>
+
+    <th:block th:replace="~{common/footer}"></th:block>
+
+    <script th:inline="javascript">
+      const boardNo = /*[[${boardInfo.boardNo}]]*/ "게시판 번호";
+      const boardCode = /*[[${boardCode}]]*/ "게시판 코드";
+      const memberNo =
+        /*[[${session.loginMember?.memberNo}]]*/ "로그인한 유저 번호";
+      const loginMemberNo = memberNo; // comment.js를 위한 변수
+      const userDefaultImage = "/images/user.png"; // 기본 프로필 이미지
+      let likeCheck = Number(/*[[${boardInfo.likeCheck}]]*/ 0);
+      let scrapCheck = Number(/*[[${boardInfo.scrapCheck}]]*/ 0);
+
+      // dev_CCL 쪽에서 쓰던 값(권한/작성자 판별용)
+      const boardWriter = /*[[${boardInfo.memberNo}]]*/ 0;
+      const loginAuthority = /*[[${session.loginMember?.authority}]]*/ null;
+
+      // development 쪽에서 쓰던 값(상세 데이터 통째로 필요할 때)
+      const boardInfo = /*[[${boardInfo}]]*/ "게시판 내용";
+
+      // (선택) 디버깅 로그는 운영에 불필요하면 제거 권장
+      // console.log("현재 boardCode:", boardCode, "타입:", typeof boardCode);
+    </script>
+
+    <script
+      src="https://kit.fontawesome.com/c0777c617e.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="/js/board/boardDetail.js"></script>
+    <script src="/js/board/comment.js"></script>
+  </body>
+</html>

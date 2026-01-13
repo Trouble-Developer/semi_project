@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>게시글 작성</title>
+    <link rel="stylesheet" href="/css/common/common.css" />
+    <link rel="stylesheet" href="/css/board/boardWrite.css" />
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote.min.js"></script>
+</head>
+<body>
+    <th:block th:replace="~{common/header}"></th:block>
+    
+    <div id="container">
+        <div id="title">
+            <th:block th:each="board : ${application.boardTypeList}">
+                <p id="title-text" th:if="${board.boardCode == boardCode}" th:text="${board.boardName}">게시판 유형</p>
+            </th:block>
+        </div>
+
+        <form method="post" 
+              th:action="${boardInfo == null} ? @{/editBoard/{boardCode}/insert(boardCode=${boardCode})} : @{/editBoard/{boardCode}/{boardNo}/update(boardCode=${boardCode}, boardNo=${boardInfo.boardNo})}" 
+              id="summernote-write" enctype="multipart/form-data">
+            
+            <div id="board-write">
+                <th:block th:if="${boardCode == 3}">
+                    <div id="volunteer-info-container">
+                        <div class="v-row">
+                            <div class="v-cell">
+                                <label class="v-label">봉사기간</label>
+                                <div class="v-input-area">
+                                    <input type="date" name="volunteerStart" id="sdate" th:value="${boardInfo?.volunteerStart}">
+                                    <span> ~ </span>
+                                    <input type="date" name="volunteerEnd" id="edate" th:value="${boardInfo?.volunteerEnd}">
+                                </div>
+                            </div>
+                            <div class="v-cell">
+                                <label class="v-label" for="volunteerCategory">봉사분야</label>
+                                <div class="v-input-area">
+                                    <select name="volunteerCategory" id="volunteerCategory">
+                                        <option value="생활지원" th:selected="${boardInfo?.volunteerCategory == '생활지원'}">생활지원</option>
+                                        <option value="주거환경" th:selected="${boardInfo?.volunteerCategory == '주거환경'}">주거환경</option>
+                                        <option value="행정지원" th:selected="${boardInfo?.volunteerCategory == '행정지원'}">행정지원</option>
+                                        <option value="보건의료" th:selected="${boardInfo?.volunteerCategory == '보건의료'}">보건의료</option>
+                                        <option value="문화체육" th:selected="${boardInfo?.volunteerCategory == '문화체육'}">문화체육</option>
+                                        <option value="환경보호" th:selected="${boardInfo?.volunteerCategory == '환경보호'}">환경보호</option>
+                                        <option value="기타" th:selected="${boardInfo?.volunteerCategory == '기타'}">기타</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="v-row">
+                            <div class="v-cell">
+                                <label class="v-label">모집기관</label>
+                                <div class="v-input-area">
+                                    <input type="text" name="volunteerAgency" placeholder="기관명 입력" th:value="${boardInfo?.volunteerAgency}">
+                                </div>
+                            </div>
+                            <div class="v-cell">
+                                <label class="v-label" for="volunteerType">봉사자유형</label>
+                                <div class="v-input-area">
+                                    <select name="volunteerType" id="volunteerType">
+                                        <option value="성인" th:selected="${boardInfo?.volunteerType == '성인'}">성인</option>
+                                        <option value="청소년" th:selected="${boardInfo?.volunteerType == '청소년'}">청소년</option>
+                                        <option value="누구나" th:selected="${boardInfo?.volunteerType == '누구나'}">누구나</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="thumbnail-section">
+                      <div class="v-label">썸네일 등록</div>
+                      <div class="thumbnail-upload-box">
+                          <div class="preview-area">
+                              <img id="profileImg" th:src="${boardInfo?.thumbnailPath ?: '/images/footer-logo.png'}">
+                              <span id="deleteImage">X</span>
+                          </div>
+                          
+                          <div class="button-area">
+                              <label for="imageInput" class="select-btn">이미지 선택</label>
+                              <input type="file" name="thumbnail" id="imageInput" accept="image/*" style="display:none;">
+                          </div>
+                      </div>
+                  </div>
+                </th:block>
+
+                <div id="board-info">
+                    <div id="board-info-text">
+                        <input type="text" id="board-title" placeholder="제목을 입력해주세요." name="title" 
+                               th:value="${boardInfo?.boardTitle}" maxlength="30" />
+                    </div>
+                    <div id="secret-wrapper" style="display: none;">
+                        <input type="checkbox" id="checkbox" name="checkbox" th:checked="${boardInfo?.boardLock == 'Y'}" />
+                        <label id="secret-check" for="checkbox">비밀글(작성자와 관리자만 볼 수 있습니다)</label>
+                    </div>
+                </div>
+            </div>
+
+            <div id="board-write-info">
+              <textarea id="summernote" name="editordata" th:utext="${boardInfo != null ? boardInfo.boardContent : ''}"></textarea>
+              
+              <div id="byte-wrapper" style="text-align: right; margin-top: 5px; font-size: 14px; width: 1130px;">
+                  <span id="current-byte" style="font-weight: bold;">0</span> / <span id="max-byte">4000</span> bytes
+              </div>
+          
+              <div id="write">
+                  <button th:if="${boardInfo == null}" id="write-btn">등록하기</button>
+                  <button th:if="${boardInfo != null}" id="write-btn">수정하기</button>
+              </div>
+          </div>
+        </form>
+    </div>
+
+    <th:block th:replace="~{common/footer}"></th:block>
+
+    <script th:inline="javascript">
+      const boardInfo = /*[[${boardInfo}]]*/ null;
+      const boardCode = /*[[${boardCode}]]*/ 0;
+  
+  </script>
+    <script src="/js/board/boardWrite.js"></script>
+</body>
+</html>

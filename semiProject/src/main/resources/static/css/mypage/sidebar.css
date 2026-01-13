@@ -1,0 +1,63 @@
+@charset "UTF-8";
+
+/* 사이드바 전체 컨테이너 */
+.sidebar {
+    min-width: 250px;
+    max-width: 250px;
+    background-color: #f9f9f9; 
+    padding: 40px 20px;
+    border-right: 1px solid #eee;
+    box-sizing: border-box;
+    height: auto; 
+}
+
+/* "마이 페이지" 제목 */
+.sidebar h3 {
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 40px; 
+    letter-spacing: -0.5px;
+}
+
+/* 리스트 스타일 초기화 */
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* 메뉴 아이템 간격 */
+.sidebar li {
+    margin-bottom: 12px; 
+}
+
+/* 링크(버튼) 스타일 */
+.sidebar li a {
+    display: flex; 
+    align-items: center;
+    padding: 15px 20px; 
+    border-radius: 10px; 
+    text-decoration: none;
+    color: #555;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.sidebar li a::before {
+    margin-right: 8px; 
+}
+
+.sidebar li:hover a {
+    background-color: #eee;
+    color: #333;
+}
+
+.sidebar li.active a {
+    background-color: #FFD86E; 
+    color: #333; 
+    font-weight: 700; 
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}

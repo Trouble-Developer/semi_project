@@ -4,44 +4,64 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link rel="stylesheet" href="/css/header.css" />
+    <link rel="stylesheet" href="/css/common/header.css" />
   </head>
   <body>
     <header>
       <section id="header-content-1">
         <ul id="user">
-          <!-- 로그인 안했을 때 -->
-          <!-- <li><a href="#" id="loginText">로그인</a></li> -->
-          <!-- <li><a href="#" id="signInText">회원가입</a></li> -->
-          <!-- 로그인 했을 때 (일반 유저) -->
-          <!-- <li><b>동근동근</b>님 환영합니다.</li> -->
-          <!-- <li><a href="#" id="loginText">로그아웃</a></li> -->
-          <!-- <li><a href="#" id="signInText">마이페이지</a></li> -->
-          <!-- 로그인 했을 때 (관리자) -->
-          <li><b>관리자님</b> 환영합니다.</li>
-          <li><a href="#" id="loginText">로그아웃</a></li>
+          <th:block th:if="${session.loginMember == null}">
+            <li><a th:href="@{/member/login}" id="loginText">로그인</a></li>
+            <li><a th:href="@{/member/signup}" id="signInText">회원가입</a></li>
+          </th:block>
+
+          <th:block th:unless="${session.loginMember == null}">
+            <li>
+              <b th:text="${session.loginMember.memberNickname}">사용자</b>님
+              환영합니다.
+            </li>
+            <li><a th:href="@{/member/logout}" id="loginText">로그아웃</a></li>
+            <li>
+              <a th:href="@{/mypage/profile}" id="signInText">마이페이지</a>
+            </li>
+          </th:block>
         </ul>
       </section>
       <div id="header">
         <!-- home으로 -> "/" -->
-        <a href="../메인페이지/main.html">
-          <img src="images/logo.jpg" alt="logo" id="logo" />
-        </a>
+        <a href="/"> <img src="/images/logo.jpg" alt="logo" id="logo" /> </a>
         <nav id="nav">
           <ul id="navigation">
-            <!-- <th:block th:each="boardType : ${application.boardTypeList}" -->
-            <!-- <a th:href="@{/board/{boardCode}(boardCode=${boardType.boardCode})}"
-          th:text="${boardType.boardName}"> 게시판이름</a>-->
             <th:block th:each="boardType : ${application.boardTypeList}">
-              <li class="navList">
+              <!-- 정보게시판 -->
+              <li class="navList" th:if="${boardType.boardCode == 2}">
+                <a
+                  th:href="@{/info/listPage}"
+                  th:text="${boardType.boardName}"
+                ></a>
+              </li>
+
+              <!-- 일반 게시판 -->
+              <li
+                class="navList"
+                th:if="${boardType.boardCode != 2 and boardType.boardCode != 6}"
+              >
                 <a
                   th:href="@{/board/{boardCode}(boardCode=${boardType.boardCode})}"
                   th:text="${boardType.boardName}"
-                  id="freeBoard"
-                  >게시판 글 타입</a
-                >
+                ></a>
               </li>
-              <!-- 관리자는 추후 회원관리 기능 구현되면 추가할 것 -->
+
+              <!-- 관리자 게시판 -->
+              <li
+                class="navList"
+                th:if="${boardType.boardCode == 6 
+              and session.loginMember != null 
+              and session.loginMember.authority == 2}"
+              >
+                <a th:href="@{/admin/member}" th:text="${boardType.boardName}">
+                </a>
+              </li>
             </th:block>
           </ul>
         </nav>

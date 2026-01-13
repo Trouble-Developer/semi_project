@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="/css/board/boardReport.css" />
+    <link rel="stylesheet" href="/css/common/common.css" />
+    <title>게시글 신고</title>
+  </head>
+  <body>
+    <th:blcok th:replace="~{common/header}" />
+    <form id="container">
+      <div id="title">게시글 신고</div>
+
+      <div id="report">
+        <div id="board-info">
+          <p>내용 : <span th:text="${board.boardTitle}">게시글 제목</span></p>
+          <p>작성자 : <span th:text="${board.memberNickname}">작성자</span></p>
+        </div>
+        <div id="reason">
+          <ul>
+            <li>
+              <label>
+                <input
+                  type="radio"
+                  name="reportReason"
+                  value="영리목적/홍보성"
+                />
+                <span>영리목적/홍보성</span>
+              </label>
+            </li>
+            <li>
+              <label>
+                <input type="radio" name="reportReason" value="개인정보노출" />
+                <span>개인정보노출</span>
+              </label>
+            </li>
+            <li>
+              <label>
+                <input type="radio" name="reportReason" value="불법정보" />
+                <span>불법정보</span>
+              </label>
+            </li>
+            <li>
+              <label>
+                <input type="radio" name="reportReason" value="음란성/선정성" />
+                <span>음란성/선정성</span>
+              </label>
+            </li>
+            <li>
+              <label>
+                <input type="radio" name="reportReason" value="욕설/인신공격" />
+                <span>욕설/인신공격</span>
+              </label>
+            </li>
+            <li>
+              <label>
+                <input type="radio" name="reportReason" value="아이디/DB거래" />
+                <span>아이디/DB거래</span>
+              </label>
+            </li>
+            <li>
+              <label>
+                <input
+                  type="radio"
+                  name="reportReason"
+                  value="같은 내용 반복(도배)"
+                />
+                <span>같은 내용 반복(도배)</span>
+              </label>
+            </li>
+            <li>
+              <label>
+                <input type="radio" name="reportReason" value="운영규칙 위반" />
+                <span>운영규칙 위반</span>
+              </label>
+            </li>
+            <li>
+              <label>
+                <input type="radio" name="reportReason" value="기타" />
+                <span>기타</span>
+              </label>
+            </li>
+          </ul>
+        </div>
+        <div id="detail-reason">
+          <p>상세내용(선택)</p>
+          <textarea name="reasonDetail" id="reason-detail-content"></textarea>
+        </div>
+      </div>
+      <button id="submit-btn">신고하기</button>
+    </form>
+    <th:blcok th:replace="~{common/footer}" />
+    <script th:inline="javascript">
+      const boardCode = /*[[${board.boardCode}]]*/ "게시판 코드 번호";
+      const boardNo = /*[[${board.boardNo}]]*/ "게시판번호";
+      const cp = /*[[${cp}]]*/ "cp";
+    </script>
+    <script src="/js/board/boardReport.js"></script>
+  </body>
+</html>

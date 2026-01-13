@@ -2,14 +2,101 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="edu.kh.project.main.model.mapper.MainMapper">
 
-	<!-- name 수정 필요 -->
+	<select id="getVolunteerList" resultType="Board">
+		SELECT * FROM (
+		SELECT
+		B.BOARD_NO,
+		B.BOARD_TITLE,
+		B.BOARD_CODE,
+		M.MEMBER_NICKNAME,
+		I.IMG_PATH,
+		I.IMG_RENAME
+		FROM "BOARD" B
+		JOIN "MEMBER" M
+		ON (B.MEMBER_NO = M.MEMBER_NO)
+		LEFT JOIN "BOARD_IMG" I ON (B.BOARD_NO =
+		I.BOARD_NO AND I.IMG_ORDER = 0)
+		WHERE B.BOARD_CODE = 3
+		AND
+		B.BOARD_DEL_FL = 'N'
+		ORDER BY B.BOARD_NO DESC
+		)
+    <![CDATA[
+    WHERE ROWNUM <= 10
+    ]]>
+	</select>
 
-	<select id="testData">
-		SELECT MEMBER_NO, MEMBER_ID,
-		MEMBER_NICKNAME,
-		MEMBER_EMAIL,
-		MEMBER_RRN,
-		MEMBER_TEL FROM "MEMBER"
-		WHERE MEMBER_NO = 1
+	<!-- 자유게시판 좋아요 순 상위 5개 -->
+	<select id="getFreeBoardList" resultType="Board">
+    SELECT * FROM (
+        SELECT 
+            B.BOARD_CODE,
+            B.BOARD_NO,
+            B.BOARD_TITLE,
+            B.READ_COUNT,
+            B.MEMBER_NO,
+            (SELECT COUNT(*) FROM BOARD_LIKE L WHERE L.BOARD_NO = B.BOARD_NO) AS LIKE_COUNT
+        FROM BOARD B
+        WHERE B.BOARD_DEL_FL = 'N' 
+        AND B.BOARD_CODE = 1
+        <![CDATA[
+        AND B.BOARD_WRITE_DATE >= TRUNC(NEXT_DAY(SYSDATE - 8, '월요일')) -- 이번주 월요일 00시
+        AND B.BOARD_WRITE_DATE < TRUNC(NEXT_DAY(SYSDATE, '월요일'))    -- 다음주 월요일 00시 (즉, 이번주 일요일 23:59:59까지)
+        ]]>
+        ORDER BY LIKE_COUNT DESC, B.READ_COUNT DESC, B.BOARD_NO DESC
+    )
+    WHERE <![CDATA[ ROWNUM <= 5 ]]>
+</select>
+	<!-- 공지사항 최신순 5개 -->
+	<select id="getNoticeBoardList" resultType="Board">
+		SELECT BOARD_NO, BOARD_CODE, BOARD_TITLE, READ_COUNT
+		FROM (
+		SELECT *
+		FROM BOARD
+		WHERE BOARD_CODE = 4
+		ORDER BY BOARD_NO DESC )
+		WHERE <![CDATA[ROWNUM <= 5]]>
+	</select>
+	<select id="getReviewBestUser" resultType="Board">
+		SELECT * FROM (
+		SELECT
+		M.MEMBER_NO,
+		M.MEMBER_NICKNAME,
+		M.PROFILE_IMG AS
+		profileImg, COUNT(B.BOARD_NO) AS postCount FROM "MEMBER" M
+		JOIN "BOARD"
+		B ON (M.MEMBER_NO = B.MEMBER_NO)
+		WHERE B.BOARD_CODE = 3
+		AND
+		B.BOARD_DEL_FL = 'N'
+          <![CDATA[
+          AND B.BOARD_WRITE_DATE >= TRUNC(SYSDATE, 'MM')
+          AND B.BOARD_WRITE_DATE < ADD_MONTHS(TRUNC(SYSDATE, 'MM'), 1)
+          ]]>
+		GROUP BY M.MEMBER_NO, M.MEMBER_NICKNAME, M.PROFILE_IMG
+		ORDER BY
+		postCount DESC, M.MEMBER_NO ASC
+		)
+		WHERE ROWNUM = 1
+	</select>
+	<select id="getInfoBoardList" resultType="infoBoard">
+		SELECT *
+		FROM (
+			SELECT
+				INFO_BOARD_NO,
+				PROGRM_NM,
+				TO_CHAR(TO_DATE(PROGRM_BGNDE, 'YYYYMMDD'), 'YYYY-MM-DD') AS PROGRM_BGNDE,
+				TO_CHAR(TO_DATE(PROGRM_ENDDE, 'YYYYMMDD'), 'YYYY-MM-DD') AS PROGRM_ENDDE,
+				TO_CHAR(TO_DATE(NOTICE_BGN_DE, 'YYYYMMDD'), 'YYYY-MM-DD') AS NOTICE_BGN_DE,
+				TO_CHAR(TO_DATE(NOTICE_END_DE, 'YYYYMMDD'), 'YYYY-MM-DD') AS NOTICE_END_DE,
+				ACT_BEGIN_TM,
+				ACT_END_TM,
+				ACT_RM
+			FROM "INFO_BOARD"
+			ORDER BY NOTICE_END_DE DESC, PROGRM_BGNDE
+		)
+		<![CDATA[
+		WHERE ROWNUM <= 4
+		]]>
 	</select>
 </mapper>

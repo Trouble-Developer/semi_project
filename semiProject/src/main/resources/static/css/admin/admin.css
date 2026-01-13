@@ -1,0 +1,242 @@
+/* ===========================
+   관리자 공통 레이아웃
+   =========================== */
+
+.admin-wrapper {
+  width: 1200px;
+  margin: 0 auto;
+}
+
+.admin-container {
+  display: flex;
+  min-height: 700px;
+}
+
+/* ===========================
+   관리자 사이드바
+   =========================== */
+
+.admin-side {
+  width: 200px;
+  padding: 20px;
+  background-color: #f5f6f7;
+}
+
+.admin-side-title {
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.admin-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.admin-menu li {
+  margin-bottom: 10px;
+}
+
+.admin-menu li a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 6px;
+  color: #333;
+}
+
+.admin-menu li.active a {
+  background-color: #FFD86E;
+  font-weight: bold;
+}
+
+/* ===========================
+   관리자 메인 영역
+   =========================== */
+
+.admin-main {
+  flex: 1;
+  padding: 30px;
+}
+
+.admin-page-title {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+/* 제목 + 버튼 정렬 (공지사항) */
+.admin-title-wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ===========================
+   관리자 테이블
+   =========================== */
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.admin-table thead {
+  background-color: #FFD86E;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 12px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+  font-size: 14px;
+}
+
+.admin-table tbody tr:hover {
+  background-color: #fafafa;
+}
+
+/* ===========================
+   버튼 공통
+   =========================== */
+
+/* 공통 아웃라인 버튼 */
+.admin-table button.btn-outline {
+  padding: 6px 14px;
+  font-size: 12px;
+  border-radius: 20px;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+/* ===========================
+   회원 관리 버튼
+   =========================== */
+
+/* 탈퇴 버튼 */
+.admin-table button.withdraw-btn {
+  border: 1px solid #ff6b6b;
+  color: #ff6b6b;
+}
+
+.admin-table button.withdraw-btn:hover {
+  background-color: #ff6b6b;
+  color: #fff;
+}
+
+/* 복구 버튼 */
+.admin-table button.restore-btn {
+  border: 1px solid #4caf50;
+  color: #4caf50;
+}
+
+.admin-table button.restore-btn:hover {
+  background-color: #4caf50;
+  color: #fff;
+}
+
+/* ===========================
+   공지사항 버튼
+   =========================== */
+
+/* 글작성 버튼 */
+.btn-write {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  margin: 20px 0;
+  width: 165px;
+  height: 63px;
+  font-size: 24px;
+  border-radius: 20px;
+  cursor: pointer;
+  background-color: #ff5900;
+  color: white;
+}
+.btn-write:hover {
+  background-color: #ffd879;
+  color: #ff5900;
+}
+
+/* 공지사항 삭제 버튼 */
+.admin-table button.danger {
+  border: 1px solid #ff6b6b;
+  color: #ff6b6b;
+  border-radius: 20px; 
+  padding: 6px 14px;
+  font-size: 12px;
+}
+
+.admin-table button.danger:hover {
+  background-color: #ff6b6b;
+  color: #fff;
+}
+
+/* ===========================
+   페이지네이션
+   =========================== */
+
+#page {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+}
+
+#page ul {
+  display: flex;
+  gap: 6px;
+  list-style: none;
+  padding: 0;
+}
+
+.page-btn {
+  padding: 6px 10px;
+  border-radius: 50%;
+  font-size: 13px;
+  color: #333;
+}
+
+.page-btn.curr-page {
+  background-color: #ff6b6b;
+  color: #fff;
+  font-weight: bold;
+}
+
+/* ===========================
+   검색 영역
+   =========================== */
+
+.search-area {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+}
+
+.search-area form {
+  display: flex;
+  gap: 6px;
+}
+
+#search-box,
+#search-input {
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+#search-btn {
+  padding: 6px 14px;
+  border-radius: 4px;
+  background-color: #FFD86E;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+#search-btn:hover {
+  background-color: #ffcc4d;
+}

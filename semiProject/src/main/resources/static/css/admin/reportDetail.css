@@ -1,0 +1,281 @@
+/* ===============================
+   신고 상세 정보 테이블
+   =============================== */
+
+.report-info-area {
+  width: 900px;
+  margin: 40px auto 60px;
+}
+
+.page-title {
+  text-align: center;
+  font-size: 26px;
+  margin-bottom: 30px;
+}
+
+.report-info-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-top: 2px solid #333;
+}
+
+.report-info-table th,
+.report-info-table td {
+  border-bottom: 1px solid #ddd;
+  padding: 14px 16px;
+  font-size: 15px;
+}
+
+.report-info-table th {
+  width: 140px;
+  background-color: #f5f6f7;
+  text-align: left;
+  font-weight: 600;
+}
+
+.report-info-table td {
+  background-color: #fff;
+}
+
+/* ===============================
+   신고 대상 게시글 영역
+   =============================== */
+
+.board-detail-area {
+  width: 900px;
+  margin: 0 auto 60px;
+  padding: 30px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background-color: #fff;
+}
+
+.board-title {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #eee;
+}
+
+.board-content {
+  font-size: 15px;
+  line-height: 1.7;
+  white-space: pre-wrap; /* 줄바꿈 유지 */
+}
+
+/* 이전/다음 글 영역 */
+.prev-next-area {
+    max-width: 1000px;
+    margin: 60px auto 0;
+    border-top: 1px solid #000;
+}
+
+/* 테이블 */
+.prev-next-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* 행 */
+.prev-next-table tr {
+    border-bottom: 1px solid #ddd;
+}
+
+/* 왼쪽 라벨 */
+.prev-next-table th.label {
+    width: 120px;
+    padding: 15px;
+    font-weight: bold;
+    text-align: left;
+    background-color: #f9f9f9;
+}
+
+/* 제목 */
+.prev-next-table td.title {
+    padding: 15px;
+}
+
+.prev-next-table td.title a {
+    color: #333;
+    text-decoration: none;
+}
+
+.prev-next-table td.title a:hover {
+    text-decoration: underline;
+}
+
+/* 목록 버튼 */
+.list-btn-area {
+    text-align: center;
+    margin: 40px 0;
+}
+
+.list-btn {
+    display: inline-block;
+    padding: 12px 28px;
+    border: 2px solid #ff7a00;
+    border-radius: 30px;
+    color: #ff7a00;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.list-btn:hover {
+    background-color: #ff7a00;
+    color: #fff;
+}
+
+/* ===============================
+   신고 상세 정보 테이블
+   =============================== */
+
+.report-info-area {
+  width: 900px;
+  margin: 40px auto 60px;
+}
+
+.page-title {
+  text-align: center;
+  font-size: 26px;
+  margin-bottom: 30px;
+}
+
+.report-info-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-top: 2px solid #333;
+}
+
+.report-info-table th,
+.report-info-table td {
+  border-bottom: 1px solid #ddd;
+  padding: 14px 16px;
+  font-size: 15px;
+}
+
+.report-info-table th {
+  width: 140px;
+  background-color: #f5f6f7;
+  text-align: left;
+  font-weight: 600;
+}
+
+.report-info-table td {
+  background-color: #fff;
+}
+
+/* ===============================
+   신고 대상 게시글 영역
+   =============================== */
+
+.board-detail-area {
+  width: 900px;
+  margin: 0 auto 60px;
+  padding: 30px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background-color: #fff;
+}
+
+.board-title {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #eee;
+}
+
+.board-content {
+  font-size: 15px;
+  line-height: 1.7;
+  white-space: pre-wrap; /* 줄바꿈 유지 */
+}
+
+/* 이전/다음 글 영역 */
+.prev-next-area {
+    max-width: 1000px;
+    margin: 60px auto 0;
+    border-top: 1px solid #000;
+}
+
+/* 테이블 */
+.prev-next-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* 행 */
+.prev-next-table tr {
+    border-bottom: 1px solid #ddd;
+}
+
+/* 왼쪽 라벨 */
+.prev-next-table th.label {
+    width: 120px;
+    padding: 15px;
+    font-weight: bold;
+    text-align: left;
+    background-color: #f9f9f9;
+}
+
+/* 제목 */
+.prev-next-table td.title {
+    padding: 15px;
+}
+
+.prev-next-table td.title a {
+    color: #333;
+    text-decoration: none;
+}
+
+.prev-next-table td.title a:hover {
+    text-decoration: underline;
+}
+
+/* 목록 버튼 */
+.list-btn-area {
+    text-align: center;
+    margin: 40px 0;
+}
+
+.list-btn {
+    display: inline-block;
+    padding: 12px 28px;
+    border: 2px solid #ff7a00;
+    border-radius: 30px;
+    color: #ff7a00;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.list-btn:hover {
+    background-color: #ff7a00;
+    color: #fff;
+}
+
+/* 이전 / 다음 글 영역 */
+.prev-next-area {
+    width: 900px;          /* 신고 정보 / 게시글과 동일 */
+    margin: 40px auto;
+    border-top: 1px solid #000;
+}
+
+/* 테이블 */
+.prev-next-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* 신고 상세 페이지 본문 줄바꿈 처리 */
+.board-content {
+  max-width: 100%;
+  
+  /* 핵심 */
+  white-space: pre-wrap;        /* 줄바꿈 + 공백 유지 */
+  word-break: break-all;        /* 공백 없는 문자열 강제 줄바꿈 */
+  overflow-wrap: break-word;    /* 컨테이너 밖으로 넘치지 않게 */
+
+  /* 안전장치 */
+  box-sizing: border-box;
+}

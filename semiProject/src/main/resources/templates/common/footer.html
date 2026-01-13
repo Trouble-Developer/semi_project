@@ -4,17 +4,43 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link rel="stylesheet" href="/css/footer.css" />
+    <link rel="stylesheet" href="/css/common/footer.css" />
   </head>
   <body>
     <footer id="footer">
-      <p id="footerText">ⓒCopyright. All rights reserved.</p>
+      <div class="footer-brand">
+        <img src="/images/footer-logo.png" alt="봉사로고" id="footer-logo" />
+      </div>
+
+      <div id="info-content-1">
+        <a href="/policy/terms">이용약관</a>
+        <span>|</span>
+        <a href="/policy/privacy">개인정보처리방침</a>
+        <span>|</span>
+        <a href="/policy/copyright">저작권정책</a>
+      </div>
+
+      <div class="footer-info">
+        <p>이메일 : dhgkqwlwhf@gmail.com</p>
+        <p>Copyright 2026 온기(On-Gi) All rights Reserved.</p>
+      </div>
     </footer>
 
     <script th:inline="javascript">
-      const message = /*[[${message}]]*/ "전달 받은 message";
+      const message = /*[[${message}]]*/ null;
 
-      if (message != null) alert(message);
+      if (message != null) {
+        const navigationEntries =
+          window.performance.getEntriesByType("navigation");
+        const isBackForward =
+          navigationEntries.length > 0 &&
+          navigationEntries[0].type === "back_forward";
+
+        if (!isBackForward) {
+          alert(message);
+          history.replaceState(null, "", location.pathname);
+        }
+      }
     </script>
   </body>
 </html>

@@ -1,0 +1,220 @@
+<section class="admin-main">
+
+  <!-- ===============================
+       페이지 제목 + 분류
+       =============================== -->
+  <div class="admin-page-header">
+    <h1 class="admin-page-title">신고글 목록</h1>
+
+    <!-- 신고 유형 분류 -->
+    <select class="admin-select" id="reportTypeSelect" name="reportType">
+      <option value="all"
+        th:selected="${reportType == null or reportType == 'all'}">
+        전체
+      </option>
+      <option value="BOARD"
+        th:selected="${reportType == 'BOARD'}">
+        게시글
+      </option>
+      <option value="COMMENT"
+        th:selected="${reportType == 'COMMENT'}">
+        댓글
+      </option>
+    </select>
+  </div>
+
+  <hr>
+
+  <!-- ===============================
+       신고글 목록 테이블
+       =============================== -->
+<div id="reportTableArea">
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>번호</th>
+        <th>유형</th>
+        <th>제목</th>
+        <th>작성일</th>
+        <th>신고 취소</th>
+        <th>삭제</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr th:each="report : ${reportList}">
+
+        <!-- 신고 번호 -->
+        <td th:text="${report.reportNo}">1</td>
+
+        <!-- 신고 유형 -->
+        <td th:text="${report.reportType}">게시글</td>
+
+        <!-- 제목 -->
+        <td class="admin-title">
+          <a th:href="@{/admin/report/{type}/{reportNo}(
+                  type=${report.reportType},
+                  reportNo=${report.reportNo}
+              )}">
+              <span th:text="${report.targetTitle}"></span>
+          </a>
+        </td>
+
+        <!-- 작성일 -->
+        <td th:text="${report.reportDate}">2025-12-07</td>
+
+        <!-- 신고 기각 -->
+        <td>
+          <button
+            type="button"
+            class="danger"
+            th:onclick="|rejectReport(${report.reportNo})|">
+            취소
+          </button>
+        </td>
+
+        <!-- 삭제 -->
+        <td>
+          <button
+            type="button"
+            class="danger"
+            th:attr="
+              data-target-no=${report.targetNo},
+              data-report-no=${report.reportNo},
+              data-report-type=${report.reportType}"
+            onclick="deleteReport(this)">
+            삭제
+          </button>
+        </td>
+      </tr>
+
+      <!-- 신고글 없을 때 -->
+      <tr th:if="${#lists.isEmpty(reportList)}">
+        <td colspan="6" class="admin-empty">
+          신고된 게시글이 없습니다.
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+<!-- ================= 페이지네이션 (검색 X) ================= -->
+<div
+    id="page"
+    th:if="${param.key == null and reportList != null and !#lists.isEmpty(reportList)}">
+    <ul>
+        <li>
+        <a th:href="@{/admin/report(cp=1, reportType=${param.reportType})}"
+            class="page-btn">&lt;&lt;</a>
+        </li>
+
+        <li>
+        <a th:href="@{/admin/report(cp=${pagination.prevPage}, reportType=${param.reportType})}"
+            class="page-btn">&lt;</a>
+        </li>
+
+        <th:block th:each="i : ${#numbers.sequence(pagination.startPage, pagination.endPage)}">
+        <li>
+            <a th:href="@{/admin/report(cp=${i}, reportType=${param.reportType})}"
+            th:text="${i}"
+            class="page-btn"
+            th:classappend="${i == pagination.currentPage} ? ' curr-page' : ''">
+            </a>
+        </li>
+        </th:block>
+
+        <li>
+        <a th:href="@{/admin/report(cp=${pagination.nextPage}, reportType=${param.reportType})}"
+            class="page-btn">&gt;</a>
+        </li>
+
+        <li>
+        <a th:href="@{/admin/report(cp=${pagination.maxPage}, reportType=${param.reportType})}"
+            class="page-btn">&gt;&gt;</a>
+        </li>
+    </ul>
+</div>
+
+<!-- ================= 페이지네이션 (검색 O) ================= -->
+<div
+  id="page"
+  th:if="${param.key != null and reportList != null and !#lists.isEmpty(reportList)}"
+  th:object="${pagination}">
+    <ul>
+        <li>
+        <a th:href="@{/admin/report(cp=1,
+           reportType=${param.reportType},
+           key=${param.key},
+           query=${param.query})}"
+            class="page-btn">&lt;&lt;</a>
+        </li>
+
+        <li>
+        <a th:href="@{/admin/report(cp=*{prevPage},
+           reportType=${param.reportType},
+           key=${param.key},
+           query=${param.query})}"
+            class="page-btn">&lt;</a>
+        </li>
+
+        <th:block th:each="i : ${#numbers.sequence(pagination.startPage, pagination.endPage)}">
+        <li>
+            <a th:href="@{/admin/report(cp=${i},
+                reportType=${param.reportType},
+                key=${param.key},
+                query=${param.query})}"
+            th:text="${i}"
+            class="page-btn"
+            th:classappend="${i == pagination.currentPage} ? ' curr-page' : ''">
+            </a>
+        </li>
+        </th:block>
+
+        <li>
+        <a th:href="@{/admin/report(cp=*{nextPage},
+           reportType=${param.reportType},
+           key=${param.key},
+           query=${param.query})}"
+            class="page-btn">&gt;</a>
+        </li>
+
+        <li>
+        <a th:href="@{/admin/report(cp=*{maxPage},
+           reportType=${param.reportType},
+           key=${param.key},
+           query=${param.query})}"
+            class="page-btn">&gt;&gt;</a>
+        </li>
+    </ul>
+  </div>
+</div>
+
+  <!-- ================= 검색 ================= -->
+<div class="search-area">
+  <form action="/admin/report" method="get">
+
+    <!-- 분류 유지 -->
+    <input type="hidden" name="reportType" th:value="${param.reportType}">
+
+    <select name="key" id="search-box">
+      <option value="title"
+              th:selected="${param.key == 'title'}">제목</option>
+      <option value="content"
+              th:selected="${param.key == 'content'}">내용</option>
+      <option value="writer"
+              th:selected="${param.key == 'writer'}">작성자</option>
+    </select>
+
+    <input type="text"
+           name="query"
+           id="search-input"
+           th:value="${param.query}"
+           placeholder="검색어를 입력해주세요">
+
+    <button type="submit" id="search-btn">
+      검색
+    </button>
+  </form>
+</div>
+
+</section>
+<script src="/js/admin/reportManage.js"></script>

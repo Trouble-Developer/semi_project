@@ -1,0 +1,153 @@
+
+body {
+    display: flex;
+    flex-direction: column; 
+    min-height: 100vh;      
+    margin: 0;          
+}
+
+.mypage-container {
+    flex: 1;
+    display: flex;
+    width: 1200px;
+    margin: 0 auto;
+    padding: 50px 0;
+    gap: 40px;
+}
+
+.main-content {
+    flex-grow: 1;            
+    width: 100%;             
+}
+
+/* 제목 스타일 */
+.page-title {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #333;
+}
+
+/* 테이블 스타일 */
+.board-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+    font-size: 14px;
+    border-top: 2px solid #333;
+		min-width: 800px;
+		table-layout: fixed;
+}
+
+/* 헤더 배경색 (이미지랑 맞춤) */
+.board-table thead th {
+    background-color: #FFE8B8; 
+    padding: 15px 0;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+}
+
+/* 행 스타일 */
+.board-table tbody td {
+    padding: 15px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+/* 제목 왼쪽 정렬 */
+.title-col {
+    text-align: center !important;
+    padding-left: 0 !important; 
+}
+
+
+.title-col a {
+    text-decoration: none;
+    color: #333;
+    display: block;            
+    width: 100%;              
+    white-space: nowrap;      
+    overflow: hidden;       
+    text-overflow: ellipsis; 
+}
+
+.title-col a:hover {
+    text-decoration: underline;
+    color: #FF9F1C;
+}
+
+/* 게시글 없음 */
+.empty-list {
+    padding: 50px 0 !important;
+    color: #999;
+}
+
+/* 페이지네이션 전체 영역 */
+.pagination-area {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+}
+
+/* 숫자들이 들어있는 리스트 (ul) */
+.pagination {
+  display: flex;
+  gap: 6px; 
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  align-items: center;
+}
+
+/* 숫자 & 화살표 버튼 (a 태그) */
+.pagination li a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  width: 32px;        
+  height: 32px;        
+  border-radius: 50%;  
+  
+  font-size: 13px;
+  color: #333;
+  text-decoration: none; 
+  transition: 0.2s;
+}
+
+.pagination li a.current {
+  background-color: #ff6b6b;
+  color: #fff;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+}
+
+/* 현재 페이지 활성화 */
+.pagination li a.current {
+		background-color: #ff6b6b;
+		color: #fff;
+		font-weight: bold;
+}
+
+/* 검색창 */
+.search-area {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin-bottom: 100px;
+}
+
+.search-area select, .search-area input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    outline: none;
+}
+
+.search-area button {
+    padding: 8px 15px;
+    background-color: #FFD56D;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}

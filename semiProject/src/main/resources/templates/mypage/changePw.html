@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>비밀번호 변경</title>
+		<link rel="stylesheet" href="/css/mypage/changePw.css">
+		<link rel="stylesheet" href="/css/mypage/sidebar.css">
+    </head>
+<body>
+    <th:block th:replace="~{common/header}"></th:block>
+
+    <main class="mypage-main">
+        <th:block th:replace="~{mypage/sidebar :: sidebar(menu='changePw')}"></th:block>
+
+        <section class="mypage-content">
+            <h2 class="mypage-title">비밀번호 변경</h2>
+            
+            <form action="/mypage/changePw" method="POST" name="changePwForm" id="changePwForm">
+                
+                <div class="myPage-row">
+                    <label>현재 비밀번호</label>
+                    <input type="password" name="currentPw" id="currentPw" maxlength="20" placeholder="현재 비밀번호 입력">
+                </div>
+
+                <div class="myPage-row">
+                    <label>새 비밀번호</label>
+                    <input type="password" name="newPw" id="newPw" maxlength="20" placeholder="새 비밀번호 입력">
+                    <span class="signUp-message" id="pwMessage">영어,숫자,특수문자(!@#$%^&*) 6~20글자 사이</span>
+
+                </div>
+                
+                <div class="myPage-row">
+                    <label>새 비밀번호 확인</label>
+                    <input type="password" name="newPwConfirm" id="newPwConfirm" maxlength="20" placeholder="새 비밀번호 확인">
+                    <span class="signUp-message" id="pwConfirmMessage"></span>
+                </div>
+
+
+                <button class="myPage-submit">변경하기</button>
+
+            </form>
+        </section>
+    </main>
+    
+    <th:block th:replace="~{common/footer}"></th:block>
+    <script src="/js/mypage/changePw.js"></script>
+</body>
+</html>

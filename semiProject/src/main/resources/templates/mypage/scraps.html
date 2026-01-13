@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>스크랩한 글</title>
+    <link rel="stylesheet" href="/css/common/header.css">
+    <link rel="stylesheet" href="/css/common/footer.css">
+    <link rel="stylesheet" href="/css/mypage/sidebar.css">
+    <link rel="stylesheet" href="/css/mypage/scraps.css"> </head>
+<body>
+    <th:block th:replace="~{common/header :: header}"></th:block>
+
+    <div class="mypage-container">
+        <th:block th:replace="~{mypage/sidebar :: sidebar(menu='scraps')}"></th:block>
+
+        <main class="main-content">
+            <h2 class="page-title">스크랩한 글</h2>
+
+            <div class="board-list-area">
+                <table class="board-table">
+									      <colgroup>
+                            <col style="width: 5%;">  <col style="width: 15%;"> <col style="width: 40%;"> 
+                            <col style="width: 15%;"> <col style="width: 10%;"> <col style="width: 7%;">  
+                            <col style="width: 7%;">  
+                        </colgroup>
+                     <thead>
+                        <tr>
+                            <th>번호</th>
+                            <th>게시판 유형</th>
+                            <th>제목</th>
+                            <th>닉네임(기관)</th>
+                            <th>작성일(시작일)</th>
+                            <th>조회수</th>
+                            <th>좋아요</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${#lists.isEmpty(map.boardList)}">
+                        <td colspan="7" class="empty-list">스크랩한 게시글이 없습니다.</td>
+                    </tr>
+
+                    <tr th:unless="${#lists.isEmpty(map.boardList)}" th:each="board : ${map.boardList}">
+                        <td th:text="${board.boardNo}"></td>
+
+                        <td>
+                        <th:block th:switch="${board.boardCode}">
+                            <span th:case="1">자유 게시판</span>
+                            <span th:case="2">정보 게시판</span> 
+                            <span th:case="3">봉사후기</span>
+                            <span th:case="4">공지사항</span>
+                            <span th:case="5">고객지원</span>
+                            <span th:case="*">기타</span>
+                        </th:block>
+                        </td>
+
+                        <td class="title-col">
+                        <a th:if="${board.boardCode == 2}" 
+                            th:href="@{/info/detail/{boardNo}(boardNo=${board.boardNo}, cp=${map.pagination.currentPage}, from='scrap')}"
+                            th:text="${board.boardTitle}">
+                            정보 제목
+                        </a>
+
+                        <a th:unless="${board.boardCode == 2}" 
+                            th:href="@{/board/{boardCode}/{boardNo}(boardCode=${board.boardCode}, boardNo=${board.boardNo}, cp=${map.pagination.currentPage}, from='scrap')}" 
+                            th:text="${board.boardTitle}">
+                            일반 제목
+                        </a>
+                        </td>
+
+                        <td class="nickname-col" th:text="${board.memberNickname}"></td>
+
+                        <td th:text="${board.boardWriteDate}"></td>
+
+                        <td th:text="${board.boardCode == 2 ? '-' : board.readCount}"></td>
+
+                        <td th:text="${board.boardCode == 2 ? '-' : board.likeCount}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="pagination-area" th:if="${!#lists.isEmpty(map.boardList)}">
+                <ul class="pagination">
+                    <li><a th:href="@{/mypage/scraps(cp=1)}">&lt;&lt;</a></li>
+                    <li><a th:href="@{/mypage/scraps(cp=${map.pagination.prevPage})}">&lt;</a></li>
+                    <li th:each="i : ${#numbers.sequence(map.pagination.startPage, map.pagination.endPage)}">
+                        <a th:href="@{/mypage/scraps(cp=${i})}" th:text="${i}" th:classappend="${i == map.pagination.currentPage} ? 'current' : ''"></a>
+                    </li>
+                    <li><a th:href="@{/mypage/scraps(cp=${map.pagination.nextPage})}">&gt;</a></li>
+                    <li><a th:href="@{/mypage/scraps(cp=${map.pagination.maxPage})}">&gt;&gt;</a></li>
+                </ul>
+            </div>
+
+            <form action="scraps" method="get" class="search-area">
+                <select name="key">
+                    <option value="title">제목</option>
+                    <option value="content">내용</option> <option value="all">제목+내용</option>
+                </select>
+                <input type="text" name="query" placeholder="검색어를 입력해주세요">
+                <button type="submit">검색</button>
+            </form>
+        </main>
+    </div>
+    <th:block th:replace="~{common/footer :: footer}"></th:block>
+    <script src="/js/mypage/scraps.js"></script>
+</body>
+</html>

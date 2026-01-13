@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Sidebar</title>
+  <link rel="stylesheet" href="/css/mypage/sidebar.css">
+</head>
+<body>
+
+  <aside class="sidebar" th:fragment="sidebar">
+    <h3>마이 페이지</h3>
+    <ul>
+      <li th:classappend="${menu == 'profile'} ? 'active'">
+        <a th:href="@{/mypage/profile}">프로필 관리</a>
+      </li>
+
+      <li th:classappend="${menu == 'changePw'} ? 'active'">
+        <a th:href="@{/mypage/changePw}">비밀번호 변경</a>
+      </li>
+        
+      <li th:classappend="${menu == 'posts'} ? 'active'">
+        <a th:href="@{/mypage/posts}">내 작성글</a>
+      </li>
+        
+      <li th:classappend="${menu == 'comments'} ? 'active'">
+        <a th:href="@{/mypage/comments}">댓글 단 글</a>
+      </li>
+        
+      <li th:classappend="${menu == 'scraps'} ? 'active'">
+        <a th:href="@{/mypage/scraps}">스크랩한 글</a>
+      </li>
+        
+      <li th:classappend="${menu == 'withdraw'} ? 'active'">
+        <a th:href="@{/mypage/withdraw}">회원 탈퇴</a>
+      </li>
+    </ul>
+  </aside>
+
+</body>
+</html>

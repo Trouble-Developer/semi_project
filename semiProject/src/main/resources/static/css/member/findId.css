@@ -1,0 +1,240 @@
+/* ===== 0. 풋터 하단 고정 레이아웃 ===== */
+body {
+    min-height: 100vh;          /* 최소 높이를 화면 전체로 */
+    display: flex;              /* flexbox 사용 */
+    flex-direction: column;     /* 세로 방향 정렬 */
+}
+
+main {
+    flex: 1;                    /* 남은 공간 모두 차지 */
+}
+
+/* ===== 1. 전체 레이아웃 (중앙 정렬) ===== */
+
+.findId-content {
+    width: 600px;           /* 고정 너비 */
+    margin: 50px auto;      /* 위아래 50px, 좌우 자동(중앙 정렬) */
+    padding: 30px;          /* 내부 여백 */
+}
+
+.findId-content h1 {
+    font-size: 32px;                /* 글자 크기 */
+    font-weight: bold;              /* 굵게 */
+    text-align: left;               /* 왼쪽 정렬 */
+    margin-bottom: 40px;            /* 아래 여백 */
+    border-bottom: 2px solid #ddd;  /* 아래쪽 회색 선 */
+    padding-bottom: 20px;           /* 선과 텍스트 사이 여백 */
+}
+
+
+/* ===== 2. 입력 그룹 (각 입력 필드 묶음) ===== */
+
+.input-group {
+    margin-bottom: 25px;        /* 각 그룹 사이 간격 */
+    display: flex;              /* flexbox 사용 */
+    flex-direction: column;     /* 세로 방향 정렬 (label이 위, input이 아래) */
+}
+
+/* 라벨 스타일 (이름, 주민번호, 이메일 등 레이블) */
+.input-group label {
+    font-size: 14px;        /* 작은 글씨 */
+    font-weight: bold;      /* 굵게 */
+    margin-bottom: 8px;     /* 라벨과 입력칸 사이 간격 */
+    color: #333;            /* 진한 회색 */
+}
+
+
+/* ===== 3. 공통 인풋 박스 스타일 ===== */
+
+/* 모든 텍스트 입력칸에 적용 */
+input[type="text"],
+input[type="password"] {
+    width: 100%;                    /* 가로 너비 100% */
+    height: 50px;                   /* 높이 50px */
+    background-color: #F4F5F9;      /* 회색 배경 */
+    border: none;                   /* 테두리 없음 */
+    border-radius: 4px;             /* 모서리 둥글게 */
+    padding: 0 15px;                /* 좌우 안쪽 여백 */
+    font-size: 15px;                /* 글자 크기 */
+    box-sizing: border-box;         /* 패딩 포함해서 너비 계산 */
+    outline: none;                  /* 클릭 시 파란 테두리 제거 */
+}
+
+/* 입력칸에 포커스(클릭)했을 때 */
+input:focus {
+    background-color: #e9ecef;      /* 조금 더 진한 회색 */
+}
+
+
+/* ===== 4. 버튼 옆에 붙는 레이아웃 ===== */
+
+/* 이메일, 인증번호처럼 입력칸과 버튼이 나란히 있는 경우 */
+.flex-row {
+    display: flex;      /* flexbox 사용 */
+    gap: 10px;          /* 입력칸과 버튼 사이 간격 */
+    width: 100%;        /* 가로 너비 100% */
+}
+
+/* flex-row 안의 input은 남은 공간 모두 차지 */
+.flex-row input {
+    flex: 1;    /* 비율 1 (버튼 빼고 나머지 공간 다 차지) */
+}
+
+
+
+/* ===== 6. 버튼 스타일 ===== */
+
+/* [버튼 스타일 1] 오렌지색 버튼 (인증번호 발송) */
+.btn-orange-solid {
+    background-color: #FF6B00;  /* 오렌지색 배경 */
+    color: white;               /* 흰색 글자 */
+    border: none;               /* 테두리 없음 */
+    border-radius: 25px;        /* 완전 둥글게 */
+    padding: 0 20px;            /* 좌우 여백 */
+    height: 50px;               /* 높이 */
+    font-weight: bold;          /* 굵게 */
+    cursor: pointer;            /* 마우스 올리면 손가락 모양 */
+    white-space: nowrap;        /* 줄바꿈 방지 */
+}
+
+/* 마우스 올렸을 때 (hover) */
+.btn-orange-solid:hover {
+    background-color: #e66000;  /* 조금 더 진한 오렌지 */
+}
+
+/* [버튼 스타일 2] 검은색 서브 버튼 (확인) */
+.btn-sub {
+    background-color: #333;     /* 검은색 배경 */
+    color: white;               /* 흰색 글자 */
+    border: none;               /* 테두리 없음 */
+    border-radius: 4px;         /* 살짝 둥글게 */
+    padding: 0 20px;            /* 좌우 여백 */
+    height: 50px;               /* 높이 */
+    cursor: pointer;            /* 손가락 모양 */
+}
+
+/* 마우스 올렸을 때 */
+.btn-sub:hover {
+    background-color: #555;     /* 조금 밝은 회색 */
+}
+
+
+/* ===== 7. 유효성 검사 메시지 ===== */
+
+/* 에러 메시지 (처음엔 숨김) */
+.error-msg {
+    color: red;             /* 빨간색 글자 */
+    font-size: 12px;        /* 작은 글씨 */
+    margin-top: 5px;        /* 위 여백 */
+    display: none;          /* 처음엔 숨김 */
+}
+
+/* 성공 메시지 (초록색) */
+.confirm {
+    color: green;               /* 초록색 글자 */
+    font-size: 12px;            /* 작은 글씨 */
+    display: block !important;  /* 무조건 보이기 */
+}
+
+/* 에러 메시지 (빨간색) */
+.error {
+    color: red;                 /* 빨간색 글자 */
+    font-size: 12px;            /* 작은 글씨 */
+    display: block !important;  /* 무조건 보이기 */
+}
+
+
+/* ===== 8. 결과 표시 영역 ===== */
+
+.result-area {
+    margin-top: 50px;               /* 위 여백 크게 */
+    padding-top: 30px;              /* 위쪽 안쪽 여백 */
+    border-top: 2px solid #ddd;     /* 위쪽 회색 선 (구분선) */
+}
+
+/* 결과 박스 (회색 배경) */
+.result-box {
+    background-color: #f8f9fa;  /* 연한 회색 배경 */
+    padding: 30px;              /* 안쪽 여백 */
+    border-radius: 8px;         /* 둥근 모서리 */
+    text-align: center;         /* 텍스트 가운데 정렬 */
+    margin-bottom: 30px;        /* 아래 여백 */
+}
+
+/* "회원님의 아이디는" 텍스트 */
+.result-title {
+    font-size: 18px;        /* 글자 크기 */
+    color: #666;            /* 회색 */
+    margin-bottom: 15px;    /* 아래 여백 */
+}
+
+/* 찾은 아이디 (abc***) */
+.result-id {
+    font-size: 28px;            /* 크게 */
+    font-weight: bold;          /* 굵게 */
+    color: #FF6B00;             /* 오렌지색 (포인트 색) */
+    margin: 20px 0;             /* 위아래 여백 */
+    letter-spacing: 2px;        /* 글자 간격 */
+}
+
+/* "입니다" 텍스트 */
+.result-subtitle {
+    font-size: 18px;        /* 글자 크기 */
+    color: #666;            /* 회색 */
+    margin-bottom: 20px;    /* 아래 여백 */
+}
+
+/* 가입일자 표시 */
+.result-date {
+    font-size: 16px;                /* 글자 크기 */
+    color: #333;                    /* 진한 회색 */
+    margin-top: 15px;               /* 위 여백 */
+    padding-top: 15px;              /* 위쪽 안쪽 여백 */
+    border-top: 1px solid #ddd;     /* 위쪽 회색 선 (구분선) */
+}
+
+/* 가입일자 숫자 부분 (강조) */
+.result-date span {
+    font-weight: bold;  /* 굵게 */
+    color: #FF6B00;     /* 오렌지색 (포인트 색) */
+}
+
+
+/* ===== 9. 하단 버튼 영역 ===== */
+
+/* 버튼 2개를 나란히 배치 */
+.btn-area {
+    display: flex;  /* flexbox 사용 */
+    gap: 10px;      /* 버튼 사이 간격 */
+}
+
+/* [버튼 스타일 3] 메인 버튼 (로그인하러 가기, 비밀번호 찾기) */
+.btn-submit {
+    flex: 1;                        /* 비율 1 (균등 분할) */
+    height: 60px;                   /* 높이 크게 */
+    background-color: white;        /* 흰색 배경 */
+    border: 1px solid #FF6B00;      /* 오렌지색 테두리 */
+    color: #FF6B00;                 /* 오렌지색 글자 */
+    font-size: 18px;                /* 글자 크기 */
+    font-weight: bold;              /* 굵게 */
+    border-radius: 30px;            /* 완전 둥글게 */
+    cursor: pointer;                /* 손가락 모양 */
+    transition: 0.2s;               /* 0.2초 동안 부드럽게 변화 */
+}
+
+/* 마우스 올렸을 때 */
+.btn-submit:hover {
+    background-color: #FF6B00;  /* 오렌지색 배경 */
+    color: white;               /* 흰색 글자 */
+}
+
+/* 비밀번호 찾기 버튼 (처음부터 오렌지색) */
+.btn-find-pw {
+    background-color: #FF6B00;  /* 오렌지색 배경 */
+    color: white;               /* 흰색 글자 */
+}
+
+/* 비밀번호 찾기 버튼 마우스 올렸을 때 */
+.btn-find-pw:hover {
+    background-color: #e66000;  /* 진한 오렌지 */
+}

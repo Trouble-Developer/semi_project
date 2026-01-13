@@ -1,0 +1,96 @@
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.mypage-main {
+    flex: 1; 
+    display: flex; 
+    width: 1200px; 
+    margin: 50px auto; 
+    gap: 40px; 
+}
+
+.mypage-content {
+    flex-grow: 1; 
+    width: 100%; 
+    margin: 0; 
+    padding: 0;
+}
+
+.mypage-title {
+    font-size: 32px;
+    font-weight: bold;
+    color: #000;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #000;
+    margin-bottom: 40px;
+}
+
+.myPage-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; 
+  width: 60%;            
+  margin: 0 auto 25px;   
+}
+
+/* 라벨 */
+.myPage-row label {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+/* 입력창 */
+.myPage-row input {
+  width: 100%; 
+  height: 50px;
+  padding: 0 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 15px;
+  box-sizing: border-box;
+  transition: 0.2s ease-in-out;
+}
+
+.myPage-row input:focus {
+    outline: none;
+    border-color: #aaa;
+}
+
+/* 메시지 */
+.signUp-message {
+    display: block;
+    font-size: 13px;
+    margin-top: 10px;
+    margin-bottom: -10px;
+    padding-left: 5px;
+    letter-spacing: -0.5px;
+}
+
+.error { color: #e74c3c; }
+.confirm { color: #07ce5a; }
+
+/* 버튼 */
+.myPage-submit {
+    display: block;
+    width: 200px;
+    height: 50px;
+    margin: 50px auto 0;
+    background-color: #ffc107;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.myPage-submit:hover {
+    background-color: #ffb300;
+}

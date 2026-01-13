@@ -1,14 +1,24 @@
 package edu.kh.project.main.model.mapper;
 
+
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import edu.kh.project.main.model.Member;
+import edu.kh.project.board.model.dto.Board;
+import edu.kh.project.info.model.dto.InfoBoard;
 
 @Mapper
 public interface MainMapper {
 
+	List<Board> getVolunteerList(int boardNo);
 
-	Member testData();
+	List<Board> getNoticeBoardList();
+
+	List<Board> getFreeBoardList();
+
+	Board getReviewBestUser();
+
+	List<InfoBoard> getInfoBoardList();
+
 }

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>아이디 찾기</title>
+  
+  <!-- CSS 파일 연결 -->
+  <link rel="stylesheet" href="/css/member/findId.css">
+</head>
+<body>
+
+  <main>
+    <!-- ===== 공통 헤더 영역 (Thymeleaf 조각 사용) ===== -->
+    <th:block th:replace="~{common/header}"></th:block>
+
+    <!-- ===== 아이디 찾기 메인 영역 ===== -->
+    <section class="findId-content">
+      
+      <!-- 페이지 제목 -->
+      <h1>아이디 찾기</h1>
+
+      <!-- 입력 폼 영역 -->
+      <div class="find-form">
+        
+        <!-- ========== 1. 이름 입력 ========== -->
+        <div class="input-group">
+          <label for="memberName">이름</label>
+          <!-- 
+            - id: JavaScript에서 querySelector로 찾을 때 사용
+            - name: 서버에 전송할 때 사용 (나중에 AJAX에서 사용)
+            - placeholder: 입력칸이 비어있을 때 보이는 안내 문구
+            - maxlength: 최대 입력 가능 글자 수
+            - autocomplete="off": 자동완성 끄기
+          -->
+          <input type="text" name="memberName" id="memberName" 
+                 placeholder="이름 입력 (한글 2글자 이상)" 
+                 maxlength="10" 
+                 autocomplete="off">
+          
+          <!-- 에러 메시지 표시 영역 (처음엔 숨김) -->
+          <span class="error-msg" id="nameMessage"></span>
+        </div>
+
+
+        <!-- ========== 2. 이메일 입력 ========== -->
+        <div class="input-group">
+          <label for="memberEmail">이메일</label>
+          
+          <!-- 이메일 입력칸과 버튼을 나란히 배치 (flex-row) -->
+          <div class="flex-row">
+            <!-- 이메일 입력칸 -->
+            <input type="text" name="memberEmail" id="memberEmail" 
+                   placeholder="가입 시 등록한 이메일 입력" 
+                   maxlength="30" 
+                   autocomplete="off">
+            
+            <!-- 인증번호 발송 버튼 -->
+            <button type="button" class="btn-orange-solid" id="sendAuthKeyBtn">
+              인증번호 발송
+            </button>
+          </div>
+          
+          <!-- 에러 메시지 표시 영역 -->
+          <span class="error-msg" id="emailMessage"></span>
+        </div>
+
+        <!-- ========== 3. 인증번호 입력 ========== -->
+        <div class="input-group">
+          <label for="authKey">인증번호</label>
+          
+          <!-- 인증번호 입력칸과 확인 버튼을 나란히 배치 -->
+          <div class="flex-row">
+            <!-- 인증번호 입력칸 (6자리) -->
+            <input type="text" name="authKey" id="authKey" 
+                   placeholder="인증번호 6자리 입력" 
+                   maxlength="6" 
+                   autocomplete="off">
+            
+            <!-- 확인 버튼 (아이디 찾기 실행) -->
+            <button type="button" class="btn-sub" id="checkAuthKeyBtn">
+              확인
+            </button>
+          </div>
+          
+          <!-- 에러 메시지 표시 영역 -->
+          <span class="error-msg" id="authKeyMessage"></span>
+        </div>
+
+        <!-- ========== 4. 결과 표시 영역 ========== -->
+        <!-- 
+          처음엔 숨김 (style="display: none;")
+          JavaScript에서 아이디 찾기 성공하면 보여줌 (style.display = "block")
+        -->
+        <div class="result-area" id="resultArea" style="display: none;">
+          
+          <!-- 결과 박스 -->
+          <div class="result-box">
+            <p class="result-title">회원님의 아이디는</p>
+            
+            <!-- 찾은 아이디 표시 (JavaScript에서 innerText로 값 넣음) -->
+            <!-- 예: abc*** -->
+            <p class="result-id" id="resultId"></p>
+            
+            <p class="result-subtitle">입니다.</p>
+            
+            <!-- 가입일자 표시 (JavaScript에서 값 넣음) -->
+            <!-- 예: 가입일자: 2024-01-15 -->
+            <p class="result-date">
+              가입일자: <span id="enrollDate"></span>
+            </p>
+          </div>
+          
+          <!-- 버튼 영역 (2개 나란히) -->
+          <div class="btn-area">
+            <!-- 로그인 페이지로 이동 -->
+            <button type="button" class="btn-submit" onclick="location.href='/'">
+              로그인하러 가기
+            </button>
+            
+            <!-- 비밀번호 찾기 페이지로 이동 -->
+            <button type="button" class="btn-submit btn-find-pw" onclick="location.href='/member/findPw'">
+              비밀번호 찾기
+            </button>
+          </div>
+
+        </div>
+        <!-- 결과 영역 끝 -->
+
+      </div>
+      <!-- 입력 폼 영역 끝 -->
+
+    </section>
+    <!-- 메인 영역 끝 -->
+
+  </main>
+    
+    <!-- ===== 공통 푸터 영역 (Thymeleaf 조각 사용) ===== -->
+    <th:block th:replace="~{common/footer}"></th:block>
+
+
+
+  <!-- JavaScript 파일 연결 (맨 마지막에 로드) -->
+  <!-- HTML이 모두 로드된 후 JavaScript 실행 -->
+  <script src="/js/member/findId.js"></script>
+
+</body>
+</html>

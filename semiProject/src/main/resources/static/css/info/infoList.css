@@ -1,0 +1,224 @@
+/* 1. 컨테이너 및 전체 레이아웃 */
+.info-list-container {
+    /* [수정] 푸터 들뜸 방지 핵심 설정 */
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 250px); /* 화면 높이에서 헤더/푸터 제외한 최소 높이 확보 */
+    
+    width: 1100px;
+    margin: 40px auto 0; /* 하단 마진을 없애고 내부 여백으로 조절 */
+    padding-bottom: 100px; /* 푸터와의 최소 간격 확보 */
+    font-family: 'Pretendard', sans-serif;
+    color: #333;
+}
+
+.main-title {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 30px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #333;
+}
+
+/* 2. 상단 5분할 필터바 영역 */
+.search-filter-table {
+    display: flex;
+    width: 100%;
+    border: 1px solid #ddd;
+    border-top: 2px solid #666;
+    margin-bottom: 25px;
+}
+
+.filter-column {
+    flex: 1;
+    border-right: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-column:last-child {
+    border-right: none;
+}
+
+.filter-label {
+    background-color: #f8f8f8;
+    padding: 12px;
+    font-weight: bold;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+.filter-select-box {
+    padding: 15px;
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+}
+
+.filter-select-box select {
+    width: 95%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    background: #fff;
+    border-radius: 4px;
+}
+
+/* 3. 하단 상세 검색 박스 */
+.detail-search-container {
+    border: 1px solid #ddd;
+    padding: 35px;
+    margin-bottom: 40px;
+    background-color: #fff;
+}
+
+.detail-row {
+    display: flex;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    flex: 1;
+}
+
+.orange-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #ff5900;
+    border-radius: 50%;
+    margin-right: 12px;
+}
+
+.detail-item label {
+    font-weight: bold;
+    width: 90px;
+    font-size: 15px;
+}
+
+.detail-item input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    outline: none;
+    border-radius: 4px;
+}
+
+/* 4. 버튼 그룹 스타일 */
+.btn-group {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 25px;
+    flex-wrap: wrap;
+}
+
+.btn-search,
+.btn-reset-gray,
+.btn-sync {
+    padding: 12px 70px;
+    border: none;
+    border-radius: 30px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-search { background-color: #ff5900; color: white; }
+.btn-search:hover { background-color: #ffd879; color: #ff5900; }
+
+.btn-reset-gray { background-color: #888; color: white; }
+.btn-reset-gray:hover { background-color: #666; }
+
+.btn-sync { background-color: #333; color: white; }
+.btn-sync:hover { background-color: #000; }
+
+/* 동기화 아이콘 회전 애니메이션 */
+.fa-spin {
+    animation: spin 2s infinite linear;
+    margin-right: 8px;
+}
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* 5. 봉사 정보 카드 리스트 */
+.info-card {
+    border-bottom: 1px solid #eee;
+    padding: 30px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.2s;
+}
+
+.info-card:hover { background-color: #fcfcfc; }
+.card-tags { color: #ff5900; font-size: 14px; margin-bottom: 10px; }
+.card-title { font-size: 20px; font-weight: bold; margin-bottom: 15px; }
+.card-title a:hover { color: #ff5900; text-decoration: underline; }
+
+.card-info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px 20px;
+    font-size: 14px;
+    color: #666;
+}
+
+.card-right {
+    width: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.deadline-badge {
+    border: 1px solid #ff5900;
+    background-color: #fff;
+    color: #ff5900;
+    padding: 8px 15px;
+    text-align: center;
+    font-size: 13px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    line-height: 1.4;
+}
+
+.status-text { color: #d9534f; font-weight: bold; font-size: 15px; }
+
+#page {
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+}
+
+#page > ul {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    gap: 12px;
+}
+
+#page > ul > li { width: 35px; height: 35px; }
+
+.page-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%; height: 100%;
+    font-size: 16px; font-weight: bold;
+    text-decoration: none; color: #333;
+    border-radius: 50%; transition: all 0.3s ease;
+}
+
+.page-btn:hover { background-color: #ffd879; color: #ff5900; cursor: pointer; }
+
+.page-btn.curr-page { background-color: #ff5900; color: white; pointer-events: none; }
+
+.no-data { text-align: center; padding: 100px 0; font-size: 18px; color: #999; }

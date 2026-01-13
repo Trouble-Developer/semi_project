@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="edu.kh.project.member.model.mapper.MemberMapper">
+
+    <!-- ===================================== -->
+    <!-- resultMap 정의 -->
+    <!-- ===================================== -->
+    
+    <resultMap id="member_rm" type="Member">
+        <id property="memberNo" column="MEMBER_NO"/>
+        <result property="memberId" column="MEMBER_ID"/>
+        <result property="memberPw" column="MEMBER_PW"/>
+        <result property="memberName" column="MEMBER_NAME"/>
+        <result property="memberNickname" column="MEMBER_NICKNAME"/>
+        <result property="memberTel" column="MEMBER_TEL"/>
+        <result property="memberEmail" column="MEMBER_EMAIL"/>
+        <result property="memberAddress" column="MEMBER_ADDRESS"/>
+        <result property="profileImg" column="PROFILE_IMG"/>
+        <result property="enrollDate" column="ENROLL_DATE"/>
+        <result property="memberDelFl" column="MEMBER_DEL_FL"/>
+        <result property="authority" column="AUTHORITY"/>
+    </resultMap>
+
+    <!-- ===================================== -->
+    <!-- 로그인 -->
+    <!-- ===================================== -->
+    
+    <select id="login" resultMap="member_rm">
+        SELECT 
+            MEMBER_NO,
+            MEMBER_ID,
+            MEMBER_PW,
+            MEMBER_NAME,
+            MEMBER_NICKNAME,
+            MEMBER_TEL,
+            MEMBER_EMAIL,
+            MEMBER_ADDRESS,
+            PROFILE_IMG,
+            AUTHORITY,
+            TO_CHAR(ENROLL_DATE, 'YYYY"년" MM"월" DD"일" HH24:MI:SS') AS ENROLL_DATE
+        FROM MEMBER
+        WHERE MEMBER_ID = #{memberId}
+          AND MEMBER_DEL_FL = 'N'
+    </select>
+
+    <!-- ===================================== -->
+    <!-- 아이디 중복 검사 -->
+    <!-- ===================================== -->
+    
+    <select id="checkId" resultType="int">
+        SELECT COUNT(*)
+        FROM MEMBER
+        WHERE MEMBER_ID = #{memberId}
+          AND MEMBER_DEL_FL = 'N'
+    </select>
+
+    <!-- ===================================== -->
+    <!-- 닉네임 중복 검사 -->
+    <!-- ===================================== -->
+    
+    <select id="checkNickname" resultType="int">
+        SELECT COUNT(*)
+        FROM MEMBER
+        WHERE MEMBER_NICKNAME = #{memberNickname}
+          AND MEMBER_DEL_FL = 'N'
+    </select>
+
+    <!-- ===================================== -->
+    <!-- 이메일 중복 검사 -->
+    <!-- ===================================== -->
+    
+    <select id="checkEmail" resultType="int">
+        SELECT COUNT(*)
+        FROM MEMBER
+        WHERE MEMBER_EMAIL = #{memberEmail}
+          AND MEMBER_DEL_FL = 'N'
+    </select>
+    
+    <select id="checkTel" resultType="_int">
+  		SELECT COUNT(*) FROM MEMBER
+  		WHERE MEMBER_TEL = #{memberTel}
+  		AND MEMBER_DEL_FL = 'N'
+    </select>
+
+    <!-- ===================================== -->
+    <!-- 회원가입 -->
+    <!-- ===================================== -->
+    
+    <insert id="signup" parameterType="Member">
+        INSERT INTO MEMBER (
+            MEMBER_NO,
+            MEMBER_ID,
+            MEMBER_PW,
+            MEMBER_NAME,
+            MEMBER_NICKNAME,
+            MEMBER_TEL,
+            MEMBER_EMAIL,
+            MEMBER_ADDRESS
+        ) VALUES (
+            SEQ_MEMBER_NO.NEXTVAL,
+            #{memberId},
+            #{memberPw},
+            #{memberName},
+            #{memberNickname},
+            #{memberTel},
+            #{memberEmail},
+            #{memberAddress}
+        )
+    </insert>
+
+    <!-- ===================================== -->
+    <!-- 아이디 찾기 (이름 + 이메일) -->
+    <!-- ✅ 주민등록번호 제거 -->
+    <!-- ===================================== -->
+    
+    <select id="findId" resultMap="member_rm">
+        SELECT 
+            MEMBER_ID,
+            MEMBER_NAME,
+            TO_CHAR(ENROLL_DATE, 'YYYY"년" MM"월" DD"일"') AS ENROLL_DATE
+        FROM MEMBER
+        WHERE MEMBER_NAME = #{memberName}
+          AND MEMBER_EMAIL = #{memberEmail}
+          AND MEMBER_DEL_FL = 'N'
+    </select>
+
+    <!-- ===================================== -->
+    <!-- 비밀번호 찾기 - 본인 확인 -->
+    <!-- ✅ 아이디 + 이름 + 이메일만으로 확인 -->
+    <!-- ===================================== -->
+    
+    <select id="findPw" resultMap="member_rm">
+        SELECT 
+            MEMBER_NO,
+            MEMBER_ID,
+            MEMBER_NAME,
+            MEMBER_EMAIL,
+            TO_CHAR(ENROLL_DATE, 'YYYY"년" MM"월" DD"일"') AS ENROLL_DATE
+        FROM MEMBER
+        WHERE MEMBER_ID = #{memberId}
+          AND MEMBER_NAME = #{memberName}
+          AND MEMBER_EMAIL = #{memberEmail}
+          AND MEMBER_DEL_FL = 'N'
+    </select>
+
+    
+<update id="resetPw">
+    UPDATE MEMBER
+    SET MEMBER_PW = #{encPw}
+    WHERE MEMBER_ID = #{memberId}
+    AND MEMBER_DEL_FL = 'N'
+</update>
+
+</mapper>

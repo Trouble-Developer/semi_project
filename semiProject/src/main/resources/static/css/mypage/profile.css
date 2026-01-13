@@ -1,0 +1,193 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column; 
+    min-height: 100vh;      
+    margin: 0;              
+}
+
+
+.mypage-container {
+    flex: 1;
+    display: flex;
+    width: 1200px;
+    margin: 0 auto;
+    padding: 50px 0;
+    gap: 40px;
+}
+
+/* 메인 콘텐츠 영역 */
+.main-content {
+    flex: 1;
+    padding: 50px;
+    background-color: #fff;
+    border-radius: 10px;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 50px;
+    font-size: 32px;
+    font-weight: 700;
+    color: #333;
+    border-bottom: 2px solid #333;
+    padding-bottom: 20px;
+}
+
+/* 프로필 이미지 영역 */
+.profile-img-area {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 50px;
+}
+
+.profile-img-area label {
+    position: relative;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.profile-img-area label:hover {
+    filter: brightness(0.9);
+}
+
+.profile-img-area img {
+    width: 200px; 
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #ddd;
+}
+
+/* 카메라 아이콘 */
+.edit-icon {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+    font-size: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+
+.form-group {
+    margin-bottom: 25px;
+    max-width: 700px; 
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #333;
+    font-size: 15px;
+}
+
+.form-group input {
+    width: 100%;
+    height: 50px;
+    padding: 0 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px; 
+    box-sizing: border-box;
+    transition: 0.2s;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #4CAF50; 
+    border-width: 2px; 
+}
+
+/* 읽기 전용 인풋 */
+.form-group input[readonly] {
+    background-color: #f8f9fa;
+    color: #666;
+    cursor: default;
+    border-color: #eee;
+}
+
+.form-group input[readonly]:focus {
+    border-color: #eee;
+    border-width: 1px;
+}
+
+/* 필수 항목 빨간 별 */
+.required-mark {
+    color: #e53935;
+    margin-left: 4px;
+}
+
+/* 주소 검색 영역 */
+.address-group {
+    margin-bottom: 40px;
+}
+
+.address-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.address-row input {
+    flex: 1;
+}
+
+/* 주소 검색 버튼 */
+.btn-dark {
+    width: 120px; 
+    height: 50px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.btn-dark:hover {
+    background-color: #555;
+}
+
+/* 하단 상세주소 */
+.address-group input + input {
+    margin-top: 10px;
+}
+
+/* 버튼 영역 */
+.btn-area {
+    text-align: center;
+    margin-top: 60px;
+}
+
+.btn-submit {
+    width: 250px; 
+    height: 55px;
+    background-color: #ffd54f; 
+    color: #333; 
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-submit:hover {
+    background-color: #ffc107;
+}
